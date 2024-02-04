@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "GeXHlXRADhCSOxwaPq8nOlxmwP1E0hwttIbNeNdE+dBERQ9HMMDIZEGuxFjSVoxzgmr5bNnFJ/vCHQKRuIBqeQ==",
+  "success": true,
+  "projectFilePath": "/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/CompilerC#.csproj",
+  "expectedPackageFiles": [
+    "/home/aylin/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.1/microsoft.aspnetcore.app.ref.8.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
