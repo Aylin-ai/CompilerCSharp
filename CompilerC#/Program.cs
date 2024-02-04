@@ -12,6 +12,11 @@ while (true){
     PrettyPrint(expression);
 }
 
+/*
+Функция, выводящая синтаксическое дерево. Выводит данные
+о токенах. В зависимости от того, последний это элемент в дереве
+или нет выводит 3 символа, указанных вначале функции
+*/
 static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true){
     //├──
     //│
@@ -38,7 +43,7 @@ static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
     }
 }
 
-
+//Виды токенов
 enum SyntaxKind{
     NumberToken,
     WhiteSpaceToken,
@@ -54,6 +59,10 @@ enum SyntaxKind{
     BinaryExpression
 }
 
+/*
+Класс, представляющий токен и все его атрибуты: тип, позиция в тексте,
+лексема и значение, если есть. У данного токена нет дочерних токенов
+*/
 class SyntaxToken : SyntaxNode{
     public SyntaxToken(SyntaxKind kind, int position, string text, object value){
         Kind = kind;
@@ -74,6 +83,11 @@ class SyntaxToken : SyntaxNode{
     }
 }
 
+/*
+Класс, представляющий лексический анализатор, который 
+находит в тексте токены и возвращает их синтаксическому
+анализатору (парсеру)
+*/
 class Lexer{
     private readonly string _text;
     private int _position;
@@ -82,6 +96,10 @@ class Lexer{
         _text = text;
     }
 
+    /*
+    Возращает текущий символ или последний символ в тексте, 
+    в зависимости от значения _position
+    */
     private char Current {
         get{
             if (_position >= _text.Length)
@@ -91,10 +109,24 @@ class Lexer{
         }
     }
 
+    //Переход на следующий символ
     private void Next(){
         _position++;
     }
 
+    /*
+     Функция, возвращающая токен. Если _position в конце или за концом текста,
+     то возвращает токен EndOfFileToken.
+     Если повстречалась цифра, то отмечает это место первого появления.
+     После проходит вперед по символам до тех пор, пока не перестанут появляться
+     цифры. После вычисляет длину лексемы, вычитая из текущей позиции отмеченную нами.
+     После этого пытается перевести данную лексему в значение типа int. После этого
+     создает токен и возвращает его.
+     Такая же логика и с пробельными символами.
+     И в случае спец. символов, указанных в функции возвращает их токены, вместе
+     с этим переходя на символ вперед.
+     В противном случае возвращает токен типа BadToken.
+    */
     public SyntaxToken NextToken(){
         if (_position >= _text.Length)
             return new SyntaxToken(SyntaxKind.EndOfFileToken, _position, "\0", null);
@@ -120,7 +152,6 @@ class Lexer{
             }
 
             int length = _position - start;
-            string text = _text.Substring(start, length);
             return new SyntaxToken(SyntaxKind.WhiteSpaceToken, start, null, null);
         }
 
@@ -142,16 +173,32 @@ class Lexer{
     }
 }
 
+/*
+Абстрактный класс, представляющий узел в синтаксическом дереве.
+От него исходят все остальные классы, включая SyntaxToken.
+Содержит тип токена и метод получения дочерних токенов.
+*/
 abstract class SyntaxNode{
     public abstract SyntaxKind Kind { get;}
 
     public abstract IEnumerable<SyntaxNode> GetChildren();
 }
 
+/*
+Абстрактный класс, представляющий узел выражения,
+от которого идет реализация конкретных узлов выражения, по типу
+NumberExpression или BinaryExpression
+*/
 abstract class ExpressionSyntax : SyntaxNode{
 
 }
 
+/*
+Класс, представляющий узел числа, от которого идет
+узел, представляющий числовой токен.
+В качестве дочерних узлов содержит один узел,
+представляющий число
+*/
 sealed class NumberExpressionSyntax : ExpressionSyntax{
     public NumberExpressionSyntax(SyntaxToken numberToken){
         NumberToken = numberToken;
@@ -167,6 +214,13 @@ sealed class NumberExpressionSyntax : ExpressionSyntax{
     }
 }
 
+/*
+Класс, представляющий узел, от которого исходит 3 узла,
+являющиеся левым операндом, оператором и правым операндом
+бинарного выражения.
+Левые и правые операнды могут ветвиться дальше, то есть
+сами являться деревьями, т.к. класса ExpressionSyntax.
+*/
 sealed class BinaryExpressionSyntax : ExpressionSyntax{
     public BinaryExpressionSyntax(ExpressionSyntax left, SyntaxToken operatorToken, ExpressionSyntax right){
         Left = left;
@@ -188,10 +242,15 @@ sealed class BinaryExpressionSyntax : ExpressionSyntax{
     }
 }
 
+/*
+Класс, представляющий синтаксический анализатор или просто парсер.
+Он строит синтаксическое дерево из токенов, полученных от парсера
+*/
 class Parser{
     private readonly SyntaxToken[] _tokens;
     private int _position;
 
+    //При создании парсера он получает все токены, создавая внутри себя лексер
     public Parser(string text){
         List<SyntaxToken> tokens = new List<SyntaxToken>();
 
@@ -210,6 +269,7 @@ class Parser{
         _tokens = tokens.ToArray();
     }
 
+    //Функция для просмотра на offset токенов вперед
     private SyntaxToken Peek(int offset){
         int index = _position + offset;
         if (index >= _tokens.Length)
@@ -218,14 +278,18 @@ class Parser{
         return _tokens[index];
     }
 
+    //Получение текущего токена
     private SyntaxToken Current => Peek(0);
 
+    //Получение текущего токена и переход к следующему
     private SyntaxToken NextToken(){
         SyntaxToken current = Current;
         _position++;
         return current;
     }
 
+    //Если типы токенов совпадают, то возврат текущего и переход к следующему токену
+    //Если нет, то создание нового токена
     private SyntaxToken Match(SyntaxKind kind){
         if (Current.Kind == kind)
             return NextToken();
@@ -233,19 +297,34 @@ class Parser{
         return new SyntaxToken(kind, Current.Position, null, null);
     }
 
+    /*
+    Метод
+    */
     public ExpressionSyntax Parse(){
+        //Получает токен NumberExpressionSyntax левого операнда бинарного выражения
         ExpressionSyntax left = ParsePrimaryExpression();
 
+        //Пока текущий токен равен плюсу или минусу, делать...
         while (Current.Kind == SyntaxKind.PlusToken ||
                Current.Kind == SyntaxKind.MinusToken){
+            //Получение текущего токена - оператора, и переход к следующему
             SyntaxToken operatorToken = NextToken();
+            ////Получает токен NumberExpressionSyntax правого операнда бинарного выражения
             ExpressionSyntax right = ParsePrimaryExpression();
+            //В качестве левого операнда создает новое бинарное выражения,
+            //в качестве значений которого берет сам себя, найденный оператор и правое бинарное выражение
             left = new BinaryExpressionSyntax(left, operatorToken, right);    
         }
 
+        //Возвращает все выражение
         return left;
     }
 
+    /*
+    Функция, проверяющая, является ли текущий токен числом.
+    После получения токена возвращает токен NumberExpressionSyntax, 
+    хранящий 1 числовой токен
+    */
     public ExpressionSyntax ParsePrimaryExpression(){
         SyntaxToken numberToken = Match(SyntaxKind.NumberToken);
         return new NumberExpressionSyntax(numberToken);
