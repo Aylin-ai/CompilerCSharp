@@ -1,5 +1,6 @@
 ﻿
 
+
 while (true){
     Console.Write("> ");
     string line = Console.ReadLine();
@@ -7,9 +8,20 @@ while (true){
         return;
 
     Parser parser = new Parser(line);
-    ExpressionSyntax expression = parser.Parse();
+    SyntaxTree syntaxTree = parser.Parse();
 
-    PrettyPrint(expression);
+    PrettyPrint(syntaxTree.Root);
+
+
+
+    if (syntaxTree.Diagnostics.Any()){
+        foreach(var diagnostic in syntaxTree.Diagnostics){
+            Console.WriteLine(diagnostic);
+        }
+    } else{
+        Evaluator evaluator = new Evaluator(syntaxTree.Root);
+        Console.WriteLine(evaluator.Evaluate());
+    }
 }
 
 /*
@@ -92,6 +104,10 @@ class Lexer{
     private readonly string _text;
     private int _position;
 
+    private List<string> _diagnostics = new List<string>();
+
+    public IEnumerable<string> Diagnostics => _diagnostics;
+
     public Lexer(string text){
         _text = text;
     }
@@ -140,7 +156,11 @@ class Lexer{
 
             int length = _position - start;
             string text = _text.Substring(start, length);
-            int.TryParse(text, out int value);
+            
+            if(!int.TryParse(text, out int value)){
+                _diagnostics.Add($"ERROR: The number {text} cannot be represented as Int32");
+            }
+            
             return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
         }
 
@@ -169,6 +189,7 @@ class Lexer{
             return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _position++, ")", null);
         }
 
+        _diagnostics.Append($"ERROR: bad character input: '{Current}'");
         return new SyntaxToken(SyntaxKind.BadToken, _position++, _text.Substring(_position - 1, 1), null);
     }
 }
@@ -250,6 +271,10 @@ class Parser{
     private readonly SyntaxToken[] _tokens;
     private int _position;
 
+    private List<string> _diagnostics = new List<string>();
+
+    public IEnumerable<string> Diagnostics => _diagnostics;
+
     //При создании парсера он получает все токены, создавая внутри себя лексер
     public Parser(string text){
         List<SyntaxToken> tokens = new List<SyntaxToken>();
@@ -267,6 +292,7 @@ class Parser{
         } while (token.Kind != SyntaxKind.EndOfFileToken);
 
         _tokens = tokens.ToArray();
+        _diagnostics.AddRange(lexer.Diagnostics);
     }
 
     //Функция для просмотра на offset токенов вперед
@@ -294,26 +320,59 @@ class Parser{
         if (Current.Kind == kind)
             return NextToken();
 
+        _diagnostics.Add($"ERROR: Unexpected token <{Current.Kind}>, expected <{kind}>");
         return new SyntaxToken(kind, Current.Position, null, null);
     }
 
     /*
     Метод
     */
-    public ExpressionSyntax Parse(){
+    public SyntaxTree Parse()
+    {
+        ExpressionSyntax expression = ParsTerm();
+        SyntaxToken endOfFileToken = Match(SyntaxKind.EndOfFileToken);
+        return new SyntaxTree(Diagnostics, expression, endOfFileToken);
+    }
+
+    
+    private ExpressionSyntax ParsTerm()
+    {
+        //Получает токен NumberExpressionSyntax левого операнда бинарного выражения
+        ExpressionSyntax left = ParseFactor();
+
+        //Пока текущий токен равен плюсу или минусу, делать...
+        while (Current.Kind == SyntaxKind.PlusToken ||
+               Current.Kind == SyntaxKind.MinusToken)
+        {
+            //Получение текущего токена - оператора, и переход к следующему
+            SyntaxToken operatorToken = NextToken();
+            ////Получает токен NumberExpressionSyntax правого операнда бинарного выражения
+            ExpressionSyntax right = ParseFactor();
+            //В качестве левого операнда создает новое бинарное выражения,
+            //в качестве значений которого берет сам себя, найденный оператор и правое бинарное выражение
+            left = new BinaryExpressionSyntax(left, operatorToken, right);
+        }
+
+        //Возвращает все выражение
+        return left;
+    }
+
+    private ExpressionSyntax ParseFactor()
+    {
         //Получает токен NumberExpressionSyntax левого операнда бинарного выражения
         ExpressionSyntax left = ParsePrimaryExpression();
 
         //Пока текущий токен равен плюсу или минусу, делать...
-        while (Current.Kind == SyntaxKind.PlusToken ||
-               Current.Kind == SyntaxKind.MinusToken){
+        while (Current.Kind == SyntaxKind.StarToken ||
+               Current.Kind == SyntaxKind.SlashToken)
+        {
             //Получение текущего токена - оператора, и переход к следующему
             SyntaxToken operatorToken = NextToken();
             ////Получает токен NumberExpressionSyntax правого операнда бинарного выражения
             ExpressionSyntax right = ParsePrimaryExpression();
             //В качестве левого операнда создает новое бинарное выражения,
             //в качестве значений которого берет сам себя, найденный оператор и правое бинарное выражение
-            left = new BinaryExpressionSyntax(left, operatorToken, right);    
+            left = new BinaryExpressionSyntax(left, operatorToken, right);
         }
 
         //Возвращает все выражение
@@ -328,5 +387,52 @@ class Parser{
     public ExpressionSyntax ParsePrimaryExpression(){
         SyntaxToken numberToken = Match(SyntaxKind.NumberToken);
         return new NumberExpressionSyntax(numberToken);
+    }
+}
+
+sealed class SyntaxTree{
+    public SyntaxTree(IEnumerable<string> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken){
+        Diagnostics = diagnostics.ToArray();
+        Root = root;
+        EndOfFileToken = endOfFileToken;
+    }
+
+    public IReadOnlyList<string> Diagnostics { get; }
+    public ExpressionSyntax Root { get; }
+    public SyntaxToken EndOfFileToken { get; }
+}
+
+class Evaluator{
+    public Evaluator(ExpressionSyntax root){
+        _root = root;
+    }
+
+    private readonly ExpressionSyntax _root;
+
+    public int Evaluate(){
+        return EvaluateExpression(_root);
+    }
+
+    private int EvaluateExpression(ExpressionSyntax node)
+    {
+        if (node is NumberExpressionSyntax n){
+            return (int) n.NumberToken.Value;
+        }
+        if (node is BinaryExpressionSyntax b){
+            int left = EvaluateExpression(b.Left);
+            int right = EvaluateExpression(b.Right);
+
+            if (b.OperatorToken.Kind == SyntaxKind.PlusToken)
+                return left + right;
+            else if (b.OperatorToken.Kind == SyntaxKind.MinusToken)
+                return left - right;
+            else if (b.OperatorToken.Kind == SyntaxKind.StarToken)
+                return left * right;
+            else if (b.OperatorToken.Kind == SyntaxKind.SlashToken)
+                return left / right;
+            else
+                throw new Exception($"Unexpected binary operator {b.OperatorToken.Kind}");
+        }
+        throw new Exception($"Unexpected node {node.Kind}");
     }
 }
