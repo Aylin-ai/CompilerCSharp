@@ -1,0 +1,15 @@
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/bin/Debug/net8.0/CompilerC#
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/bin/Debug/net8.0/CompilerC#.deps.json
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/bin/Debug/net8.0/CompilerC#.runtimeconfig.json
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/bin/Debug/net8.0/CompilerC#.dll
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/bin/Debug/net8.0/CompilerC#.pdb
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/CompilerC#.GeneratedMSBuildEditorConfig.editorconfig
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/CompilerC#.AssemblyInfoInputs.cache
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/CompilerC#.AssemblyInfo.cs
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/CompilerC#.csproj.CoreCompileInputs.cache
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/CompilerC#.sourcelink.json
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/CompilerC#.dll
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/refint/CompilerC#.dll
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/CompilerC#.pdb
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/CompilerC#.genruntimeconfig.cache
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/ref/CompilerC#.dll
