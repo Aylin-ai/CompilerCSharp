@@ -68,7 +68,8 @@ enum SyntaxKind{
     BadToken,
     EndOfFileToken,
     NumberExpression,
-    BinaryExpression
+    BinaryExpression,
+    ParethesizedExpression
 }
 
 /*
@@ -263,6 +264,26 @@ sealed class BinaryExpressionSyntax : ExpressionSyntax{
     }
 }
 
+sealed class ParenthesizedExpressionSyntax : ExpressionSyntax{
+    public ParenthesizedExpressionSyntax(SyntaxToken openParenthesisToken, ExpressionSyntax expression,
+    SyntaxToken closeParenthesisToken){
+        OpenParenthesisToken = openParenthesisToken;
+        Expression = expression;
+        CloseParenthesisToken = closeParenthesisToken;
+    }
+    public override SyntaxKind Kind => SyntaxKind.ParethesizedExpression;
+    public SyntaxToken OpenParenthesisToken { get; }
+    public ExpressionSyntax Expression { get; }
+    public SyntaxToken CloseParenthesisToken { get; }
+
+    public override IEnumerable<SyntaxNode> GetChildren()
+    {
+        yield return OpenParenthesisToken;
+        yield return Expression;
+        yield return CloseParenthesisToken;
+    }
+}
+
 /*
 Класс, представляющий синтаксический анализатор или просто парсер.
 Он строит синтаксическое дерево из токенов, полученных от парсера
@@ -329,13 +350,18 @@ class Parser{
     */
     public SyntaxTree Parse()
     {
-        ExpressionSyntax expression = ParsTerm();
+        ExpressionSyntax expression = ParseTerm();
         SyntaxToken endOfFileToken = Match(SyntaxKind.EndOfFileToken);
         return new SyntaxTree(Diagnostics, expression, endOfFileToken);
     }
 
-    
-    private ExpressionSyntax ParsTerm()
+    private ExpressionSyntax ParseExpression(){
+        return ParseTerm();
+    }
+
+
+    //Вычисление + и -
+    private ExpressionSyntax ParseTerm()
     {
         //Получает токен NumberExpressionSyntax левого операнда бинарного выражения
         ExpressionSyntax left = ParseFactor();
@@ -357,6 +383,7 @@ class Parser{
         return left;
     }
 
+    //Вычисление * и /
     private ExpressionSyntax ParseFactor()
     {
         //Получает токен NumberExpressionSyntax левого операнда бинарного выражения
@@ -385,6 +412,13 @@ class Parser{
     хранящий 1 числовой токен
     */
     public ExpressionSyntax ParsePrimaryExpression(){
+        if (Current.Kind == SyntaxKind.OpenParenthesisToken){
+            SyntaxToken left = NextToken();
+            ExpressionSyntax expression = ParseExpression();
+            SyntaxToken right = Match(SyntaxKind.CloseParenthesisToken);
+            return new ParenthesizedExpressionSyntax(left, expression, right);
+        }
+
         SyntaxToken numberToken = Match(SyntaxKind.NumberToken);
         return new NumberExpressionSyntax(numberToken);
     }
@@ -433,6 +467,10 @@ class Evaluator{
             else
                 throw new Exception($"Unexpected binary operator {b.OperatorToken.Kind}");
         }
+
+        if (node is ParenthesizedExpressionSyntax p)
+            return EvaluateExpression(p.Expression);
+
         throw new Exception($"Unexpected node {node.Kind}");
     }
 }
