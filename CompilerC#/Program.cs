@@ -1,5 +1,5 @@
 ﻿
-
+bool showTree = false;
 
 while (true){
     Console.Write("> ");
@@ -7,12 +7,19 @@ while (true){
     if (string.IsNullOrEmpty(line))
         return;
 
-    Parser parser = new Parser(line);
-    SyntaxTree syntaxTree = parser.Parse();
+    if (line == "#showTree"){
+        showTree = !showTree;
+        Console.WriteLine(showTree ? "Showing parse tree" : "Not showing parse tree");
+        continue;
+    } else if (line == "#clear"){
+        Console.Clear();
+        continue;
+    }
 
-    PrettyPrint(syntaxTree.Root);
+    SyntaxTree syntaxTree = SyntaxTree.Parse(line);
 
-
+    if (showTree)
+        PrettyPrint(syntaxTree.Root);
 
     if (syntaxTree.Diagnostics.Any()){
         foreach(var diagnostic in syntaxTree.Diagnostics){
@@ -434,6 +441,11 @@ sealed class SyntaxTree{
     public IReadOnlyList<string> Diagnostics { get; }
     public ExpressionSyntax Root { get; }
     public SyntaxToken EndOfFileToken { get; }
+
+    public static SyntaxTree Parse(string text){
+        Parser parser = new Parser(text);
+        return parser.Parse();
+    }
 }
 
 class Evaluator{
