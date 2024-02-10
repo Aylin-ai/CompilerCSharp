@@ -28,8 +28,11 @@ while (true){
     if (showTree)
         PrettyPrint(syntaxTree.Root);
 
-    if (diagnostics.Any()){
+    if (diagnostics.Any() || syntaxTree.Diagnostics.Any()){
         foreach(var diagnostic in diagnostics){
+            Console.WriteLine(diagnostic);
+        }
+        foreach(var diagnostic in syntaxTree.Diagnostics){
             Console.WriteLine(diagnostic);
         }
     } else{

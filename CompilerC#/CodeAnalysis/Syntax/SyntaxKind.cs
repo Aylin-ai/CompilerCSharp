@@ -14,6 +14,9 @@ namespace CompilerCSharp.CodeAnalysis.Syntax
         BadToken,
         EndOfFileToken,
         IdentifierToken,
+        BangToken,
+        AmpersandAmpersandToken,
+        PipePipeToken,
 
         //Expressions
         LiteralExpression,
@@ -24,6 +27,5 @@ namespace CompilerCSharp.CodeAnalysis.Syntax
         //Keywords
         TrueKeyword,
         FalseKeyword,
-        
     }
 }
