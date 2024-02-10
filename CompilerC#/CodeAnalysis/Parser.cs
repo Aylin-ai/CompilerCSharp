@@ -72,55 +72,40 @@ namespace CompilerCSharp.CodeAnalysis
             return new SyntaxTree(Diagnostics, expression, endOfFileToken);
         }
 
-        private ExpressionSyntax ParseExpression(){
-            return ParseTerm();
-        }
-
-
-        //Вычисление + и -
-        private ExpressionSyntax ParseTerm()
-        {
-            //Получает токен NumberExpressionSyntax левого операнда бинарного выражения
-            ExpressionSyntax left = ParseFactor();
-
-            //Пока текущий токен равен плюсу или минусу, делать...
-            while (Current.Kind == SyntaxKind.PlusToken ||
-                Current.Kind == SyntaxKind.MinusToken)
-            {
-                //Получение текущего токена - оператора, и переход к следующему
-                SyntaxToken operatorToken = NextToken();
-                ////Получает токен NumberExpressionSyntax правого операнда бинарного выражения
-                ExpressionSyntax right = ParseFactor();
-                //В качестве левого операнда создает новое бинарное выражения,
-                //в качестве значений которого берет сам себя, найденный оператор и правое бинарное выражение
-                left = new BinaryExpressionSyntax(left, operatorToken, right);
-            }
-
-            //Возвращает все выражение
-            return left;
-        }
-
-        //Вычисление * и /
-        private ExpressionSyntax ParseFactor()
-        {
-            //Получает токен NumberExpressionSyntax левого операнда бинарного выражения
+        /*
+        Строит дерево с учетом приоритетов операторов.
+        Требуется дальнейшее рассмотрение
+        */
+        private ExpressionSyntax ParseExpression(int parentPrecedence = 0){
             ExpressionSyntax left = ParsePrimaryExpression();
 
-            //Пока текущий токен равен плюсу или минусу, делать...
-            while (Current.Kind == SyntaxKind.StarToken ||
-                Current.Kind == SyntaxKind.SlashToken)
-            {
-                //Получение текущего токена - оператора, и переход к следующему
+            while (true){
+                int precedence = GetBinaryOperatorPrecedence(Current.Kind);
+                if (precedence == 0 || precedence <= parentPrecedence)
+                    break;
+                
                 SyntaxToken operatorToken = NextToken();
-                ////Получает токен NumberExpressionSyntax правого операнда бинарного выражения
-                ExpressionSyntax right = ParsePrimaryExpression();
-                //В качестве левого операнда создает новое бинарное выражения,
-                //в качестве значений которого берет сам себя, найденный оператор и правое бинарное выражение
+                ExpressionSyntax right = ParseExpression(precedence);
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 
-            //Возвращает все выражение
             return left;
+        }
+
+        //Получает приоритет оператора
+        private static int GetBinaryOperatorPrecedence(SyntaxKind kind){
+            switch (kind){
+                case SyntaxKind.SlashToken:
+                case SyntaxKind.StarToken:
+                    return 2;
+                    
+                case SyntaxKind.PlusToken:
+                case SyntaxKind.MinusToken:
+                    return 1;
+
+                default:
+                    return 0;
+            }
         }
 
         /*
