@@ -1,5 +1,8 @@
 namespace CompilerCSharp.CodeAnalysis
 {
+    /*
+    Класс, представляющий выражение в скобках
+    */
     sealed class ParenthesizedExpressionSyntax : ExpressionSyntax{
         public ParenthesizedExpressionSyntax(SyntaxToken openParenthesisToken, ExpressionSyntax expression,
         SyntaxToken closeParenthesisToken){

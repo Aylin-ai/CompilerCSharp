@@ -1,5 +1,8 @@
 namespace CompilerCSharp.CodeAnalysis
 {
+    /*
+    Класс, вычисляющий выражение, вводимое в консоли
+    */
     class Evaluator{
         public Evaluator(ExpressionSyntax root){
             _root = root;

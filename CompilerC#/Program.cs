@@ -8,6 +8,7 @@ while (true){
     if (string.IsNullOrEmpty(line))
         return;
 
+    //Отладочные команды для показа дерева и очистки консоли
     if (line == "#showTree"){
         showTree = !showTree;
         Console.WriteLine(showTree ? "Showing parse tree" : "Not showing parse tree");
