@@ -48,7 +48,7 @@ namespace CompilerCSharp.CodeAnalysis
         с этим переходя на символ вперед.
         В противном случае возвращает токен типа BadToken.
         */
-        public SyntaxToken NextToken(){
+        public SyntaxToken Lex(){
             if (_position >= _text.Length)
                 return new SyntaxToken(SyntaxKind.EndOfFileToken, _position, "\0", null);
 
@@ -75,23 +75,23 @@ namespace CompilerCSharp.CodeAnalysis
                 while (char.IsWhiteSpace(Current)){
                     Next();
                 }
-
-                int length = _position - start;
+                
                 return new SyntaxToken(SyntaxKind.WhiteSpaceToken, start, null, null);
             }
 
-            if (Current == '+'){
-                return new SyntaxToken(SyntaxKind.PlusToken, _position++, "+", null);
-            } else if (Current == '-'){
-                return new SyntaxToken(SyntaxKind.MinusToken, _position++, "-", null);
-            } else if (Current == '*'){
-                return new SyntaxToken(SyntaxKind.StarToken, _position++, "*", null);
-            } else if (Current == '/'){
-                return new SyntaxToken(SyntaxKind.SlashToken, _position++, "/", null);
-            } else if (Current == '('){
-                return new SyntaxToken(SyntaxKind.OpenParenthesisToken, _position++, "(", null);
-            } else if (Current == ')'){
-                return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _position++, ")", null);
+            switch (Current){
+                case '+':
+                    return new SyntaxToken(SyntaxKind.PlusToken, _position++, "+", null);
+                case '-':
+                    return new SyntaxToken(SyntaxKind.MinusToken, _position++, "-", null);
+                case '*':
+                    return new SyntaxToken(SyntaxKind.StarToken, _position++, "*", null);
+                case '/':
+                    return new SyntaxToken(SyntaxKind.SlashToken, _position++, "/", null);
+                case '(':
+                    return new SyntaxToken(SyntaxKind.OpenParenthesisToken, _position++, "(", null);
+                case ')':
+                    return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _position++, ")", null);
             }
 
             _diagnostics.Append($"ERROR: bad character input: '{Current}'");
