@@ -7,14 +7,19 @@ namespace CompilerCSharp.CodeAnalysis.Syntax
             switch (kind){
                 case SyntaxKind.SlashToken:
                 case SyntaxKind.StarToken:
-                    return 4;
+                    return 5;
                     
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
+                    return 4;
+
+                case SyntaxKind.NotEqualsToken:
+                case SyntaxKind.EqualsEqualsToken:
                     return 3;
 
                 case SyntaxKind.AmpersandAmpersandToken:
                     return 2;
+
                 case SyntaxKind.PipePipeToken:
                     return 1;
 
@@ -28,7 +33,7 @@ namespace CompilerCSharp.CodeAnalysis.Syntax
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
                 case SyntaxKind.BangToken:
-                    return 5;
+                    return 6;
 
                 default:
                     return 0;

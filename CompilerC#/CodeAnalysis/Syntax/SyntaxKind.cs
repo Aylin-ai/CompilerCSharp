@@ -17,6 +17,8 @@ namespace CompilerCSharp.CodeAnalysis.Syntax
         BangToken,
         AmpersandAmpersandToken,
         PipePipeToken,
+        NotEqualsToken,
+        EqualsEqualsToken,
 
         //Expressions
         LiteralExpression,
