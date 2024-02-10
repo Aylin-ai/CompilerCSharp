@@ -13,11 +13,17 @@ namespace CompilerCSharp.CodeAnalysis.Syntax
         CloseParenthesisToken,
         BadToken,
         EndOfFileToken,
+        IdentifierToken,
 
         //Expressions
         LiteralExpression,
         BinaryExpression,
         ParethesizedExpression,
-        UnaryExpression
+        UnaryExpression,
+
+        //Keywords
+        TrueKeyword,
+        FalseKeyword,
+        
     }
 }

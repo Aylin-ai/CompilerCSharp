@@ -13,17 +13,17 @@ namespace CompilerCSharp.CodeAnalysis
 
         private readonly BoundExpression _root;
 
-        public int Evaluate(){
+        public object Evaluate(){
             return EvaluateExpression(_root);
         }
 
-        private int EvaluateExpression(BoundExpression node)
+        private object EvaluateExpression(BoundExpression node)
         {
             if (node is BoundLiteralExpression n){
-                return (int) n.Value;
+                return n.Value;
             }
             if (node is BoundUnaryExpression u){
-                int operand = EvaluateExpression(u.Operand);
+                int operand = (int)EvaluateExpression(u.Operand);
 
                 switch (u.OperatorKind){
                     case BoundUnaryOperatorKind.Identity:
@@ -36,8 +36,8 @@ namespace CompilerCSharp.CodeAnalysis
                 }
             }
             if (node is BoundBinaryExpression b){
-                int left = EvaluateExpression(b.Left);
-                int right = EvaluateExpression(b.Right);
+                int left = (int)EvaluateExpression(b.Left);
+                int right = (int)EvaluateExpression(b.Right);
 
                 switch (b.OperatorKind){
                     case BoundBinaryOperatorKind.Addition:

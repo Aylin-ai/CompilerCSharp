@@ -108,15 +108,24 @@ namespace CompilerCSharp.CodeAnalysis.Syntax
         хранящий 1 числовой токен
         */
         public ExpressionSyntax ParsePrimaryExpression(){
-            if (Current.Kind == SyntaxKind.OpenParenthesisToken){
-                SyntaxToken left = NextToken();
-                ExpressionSyntax expression = ParseExpression();
-                SyntaxToken right = MatchToken(SyntaxKind.CloseParenthesisToken);
-                return new ParenthesizedExpressionSyntax(left, expression, right);
-            }
+            switch (Current.Kind)
+            {
+                case SyntaxKind.OpenParenthesisToken:
+                    SyntaxToken left = NextToken();
+                    ExpressionSyntax expression = ParseExpression();
+                    SyntaxToken right = MatchToken(SyntaxKind.CloseParenthesisToken);
+                    return new ParenthesizedExpressionSyntax(left, expression, right);
 
-            SyntaxToken numberToken = MatchToken(SyntaxKind.NumberToken);
-            return new LiteralExpressionSyntax(numberToken);
+                case SyntaxKind.TrueKeyword:
+                case SyntaxKind.FalseKeyword:
+                    SyntaxToken keywordToken = NextToken();
+                    bool value = Current.Kind == SyntaxKind.TrueKeyword;
+                    return new LiteralExpressionSyntax(keywordToken, value);
+
+                default:
+                    SyntaxToken numberToken = MatchToken(SyntaxKind.NumberToken);
+                    return new LiteralExpressionSyntax(numberToken);
+            }  
         }
     }
 }

@@ -82,7 +82,7 @@ namespace CompilerCSharp.CodeAnalysis.Binding
 
         private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
         {
-            object value = syntax.LiteralToken.Value as int? ?? 0;
+            object value = syntax.Value ?? 0;
             return new BoundLiteralExpression(value);
         }
     }

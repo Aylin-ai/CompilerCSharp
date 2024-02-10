@@ -23,7 +23,7 @@ while (true){
     SyntaxTree syntaxTree = SyntaxTree.Parse(line);
     Binder binder = new Binder();
     BoundExpression boundExpression = binder.BindExpression(syntaxTree.Root);
-    IReadOnlyList<string> diagnostics = syntaxTree.Diagnostics;
+    IReadOnlyList<string> diagnostics = (IReadOnlyList<string>)binder.Diagnostics;
 
     if (showTree)
         PrettyPrint(syntaxTree.Root);
