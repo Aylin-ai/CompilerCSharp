@@ -80,7 +80,7 @@ namespace CompilerCSharp.CodeAnalysis
             ExpressionSyntax left = ParsePrimaryExpression();
 
             while (true){
-                int precedence = GetBinaryOperatorPrecedence(Current.Kind);
+                int precedence = Current.Kind.GetBinaryOperatorPrecedence();
                 if (precedence == 0 || precedence <= parentPrecedence)
                     break;
                 
@@ -90,22 +90,6 @@ namespace CompilerCSharp.CodeAnalysis
             }
 
             return left;
-        }
-
-        //Получает приоритет оператора
-        private static int GetBinaryOperatorPrecedence(SyntaxKind kind){
-            switch (kind){
-                case SyntaxKind.SlashToken:
-                case SyntaxKind.StarToken:
-                    return 2;
-                    
-                case SyntaxKind.PlusToken:
-                case SyntaxKind.MinusToken:
-                    return 1;
-
-                default:
-                    return 0;
-            }
         }
 
         /*
