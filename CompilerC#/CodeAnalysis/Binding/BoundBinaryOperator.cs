@@ -2,6 +2,12 @@ using CompilerCSharp.CodeAnalysis.Syntax;
 
 namespace CompilerCSharp.CodeAnalysis.Binding
 {
+    /*
+    Класс, описывающий бинарный оператор в АСД. Содержит в себе информацию
+    о синтаксическом типе оператора(его токен), тип его оператора,
+    тип левого и правого, к которым приставлен оператор и результирующий тип,
+    который должен получиться в результате выполнения оператора
+    */
     internal sealed class BoundBinaryOperator{
         private BoundBinaryOperator(SyntaxKind syntaxKind, BoundBinaryOperatorKind kind, 
         Type operandtype) : this(syntaxKind, kind, operandtype, operandtype, operandtype) { }

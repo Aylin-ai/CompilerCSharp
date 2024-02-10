@@ -2,6 +2,12 @@ using CompilerCSharp.CodeAnalysis.Syntax;
 
 namespace CompilerCSharp.CodeAnalysis.Binding
 {
+    /*
+    Класс, описывающий унарный оператор в АСД. Содержит в себе информацию
+    о синтаксическом типе оператора(его токен), тип его оператора,
+    тип операнда, к которому приставлен оператор и результирующий тип,
+    который должен получиться в результате выполнения оператора
+    */
     internal sealed class BoundUnaryOperator{
         private BoundUnaryOperator(SyntaxKind syntaxKind, BoundUnaryOperatorKind kind, Type operandType)
         : this(syntaxKind, kind, operandType, operandType) { }
@@ -17,6 +23,7 @@ namespace CompilerCSharp.CodeAnalysis.Binding
         public Type OperandType { get; }
         public Type Type { get; }
 
+        //Список доступных операторов
         private static BoundUnaryOperator[] _operators = {
             new BoundUnaryOperator(SyntaxKind.BangToken, BoundUnaryOperatorKind.LogicalNegation, typeof(bool)),
             
@@ -24,6 +31,7 @@ namespace CompilerCSharp.CodeAnalysis.Binding
             new BoundUnaryOperator(SyntaxKind.MinusToken, BoundUnaryOperatorKind.Negation, typeof(int))
         };
 
+        //Возвращает нужный оператор из списка на основании переданных параметров
         public static BoundUnaryOperator Bind(SyntaxKind syntaxKind, Type operandType){
             foreach (var op in _operators){
                 if (op.SyntaxKind == syntaxKind && op.OperandType == operandType)

@@ -1,7 +1,7 @@
 namespace CompilerCSharp.CodeAnalysis.Binding
 {
     /*
-    Объяснения, зачем нужно абстрактное дерево: 
+    Виды выражений (унарное, бинарное или обычная литера)
     */
     internal enum BoundNodeKind{
         UnaryExpression,

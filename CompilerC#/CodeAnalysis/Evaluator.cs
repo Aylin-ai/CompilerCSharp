@@ -17,6 +17,7 @@ namespace CompilerCSharp.CodeAnalysis
             return EvaluateExpression(_root);
         }
 
+        //Вычисляет выражение, используя построенное АСД
         private object EvaluateExpression(BoundExpression node)
         {
             if (node is BoundLiteralExpression n){

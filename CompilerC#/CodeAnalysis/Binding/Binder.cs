@@ -1,5 +1,19 @@
 using CompilerCSharp.CodeAnalysis.Syntax;
 
+/*
+Абстрактное синтаксическое дерево требуется для того, чтобы
+синтаксическое дерево оставалось неизменяемым.
+АСД(AST) является разделением задач.
+Синтаксические классы показывают синтаксис языка программирования
+наиболее четко чтобы отлавливать ошибки.
+АСД нужны для отображения внутреннего состояния компилятора.
+Разделение просто упрощает понимание и написание кода.
+В данном случае в АСД происходит работа с типами выражений, литерал
+и операторов. Мы рассматриваем классы Binding больше с абстрактной точки 
+зрения, чем с конкретной, в отличие от классов Syntax (Пример, оператор +. 
+В Binding на него есть более подробная информация, когда как в Syntax
+все ограничивается его токеном)
+*/
 namespace CompilerCSharp.CodeAnalysis.Binding
 {
     internal sealed class Binder{
@@ -7,6 +21,7 @@ namespace CompilerCSharp.CodeAnalysis.Binding
 
         public IEnumerable<string> Diagnostics => _diagnostics;
 
+        //Возвращает нужный вид выражение с приведением его параметра к нужному типу
         public BoundExpression BindExpression(ExpressionSyntax syntax){
             switch (syntax.Kind){
                 case SyntaxKind.LiteralExpression:
@@ -21,6 +36,11 @@ namespace CompilerCSharp.CodeAnalysis.Binding
             }
         }
 
+        /*
+        Возвращает объект класса BindBinaryExpression,
+        данные для которого получены из синтаксического 
+        поддерева BinaryExpressionSyntax
+        */
         private BoundExpression BindBinaryExpression(BinaryExpressionSyntax syntax)
         {
             BoundExpression boundLeft = BindExpression(syntax.Left);
@@ -33,6 +53,11 @@ namespace CompilerCSharp.CodeAnalysis.Binding
             return new BoundBinaryExpression(boundLeft, boundOperator, boundRight);
         }
 
+        /*
+        Возвращает объект класса BoundUnaryExpression,
+        данные для которого получены из синтаксического 
+        поддерева UnaryExpressionSyntax
+        */
         private BoundExpression BindUnaryExpression(UnaryExpressionSyntax syntax)
         {
             BoundExpression boundOperand = BindExpression(syntax.Operand);
@@ -44,6 +69,11 @@ namespace CompilerCSharp.CodeAnalysis.Binding
             return new BoundUnaryExpression(boundOperator, boundOperand);
         }
 
+        /*
+        Возвращает объект класса BoundLiteralExpression,
+        содержащий значение, его тип и вид выражения,
+        полученные из синтаксического поддерева LiteralExpressionSyntax
+        */
         private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
         {
             object value = syntax.Value ?? 0;
