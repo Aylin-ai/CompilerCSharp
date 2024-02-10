@@ -15,7 +15,7 @@ namespace CompilerCSharp.CodeAnalysis
         EndOfFileToken,
 
         //Expressions
-        NumberExpression,
+        LiteralExpression,
         BinaryExpression,
         ParethesizedExpression
     }
