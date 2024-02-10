@@ -25,7 +25,7 @@ namespace CompilerCSharp.CodeAnalysis
             if (node is BoundUnaryExpression u){
                 object operand = EvaluateExpression(u.Operand);
 
-                switch (u.OperatorKind){
+                switch (u.Op.Kind){
                     case BoundUnaryOperatorKind.Identity:
                         return (int)operand;
                     case BoundUnaryOperatorKind.Negation:
@@ -34,14 +34,14 @@ namespace CompilerCSharp.CodeAnalysis
                         return !(bool)operand;
                     
                     default:
-                        throw new Exception($"Unexpected unary operator {u.OperatorKind}");
+                        throw new Exception($"Unexpected unary operator {u.Op.Kind}");
                 }
             }
             if (node is BoundBinaryExpression b){
                 object left = EvaluateExpression(b.Left);
                 object right = EvaluateExpression(b.Right);
 
-                switch (b.OperatorKind){
+                switch (b.Op.Kind){
                     case BoundBinaryOperatorKind.Addition:
                         return (int)left + (int)right;
                     case BoundBinaryOperatorKind.Substraction:
@@ -57,7 +57,7 @@ namespace CompilerCSharp.CodeAnalysis
                         return (bool)left || (bool)right;
                     
                     default:
-                        throw new Exception($"Unexpected binary operator {b.OperatorKind}");
+                        throw new Exception($"Unexpected binary operator {b.Op.Kind}");
                 }
             }
 
