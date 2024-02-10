@@ -1,3 +1,5 @@
+using CompilerCSharp.CodeAnalysis.Syntax;
+
 namespace CompilerCSharp.CodeAnalysis
 {
     /*

@@ -1,4 +1,4 @@
-namespace CompilerCSharp.CodeAnalysis
+namespace CompilerCSharp.CodeAnalysis.Syntax
 {
     /*
     Класс, представляющий токен и все его атрибуты: тип, позиция в тексте,

@@ -1,4 +1,4 @@
-namespace CompilerCSharp.CodeAnalysis
+namespace CompilerCSharp.CodeAnalysis.Syntax
 {
     /*
     Класс, представляющий синтаксическое дерево. Содержит в себе

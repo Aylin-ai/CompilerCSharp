@@ -1,4 +1,4 @@
-namespace CompilerCSharp.CodeAnalysis
+namespace CompilerCSharp.CodeAnalysis.Syntax
 {
     /*
     Класс, представляющий узел, от которого исходит 3 узла,

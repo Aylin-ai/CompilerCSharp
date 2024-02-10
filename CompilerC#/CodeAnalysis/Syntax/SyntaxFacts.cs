@@ -1,4 +1,4 @@
-namespace CompilerCSharp.CodeAnalysis
+namespace CompilerCSharp.CodeAnalysis.Syntax
 {
     internal static class SyntaxFacts{
         //Получает приоритет бинарного оператора
