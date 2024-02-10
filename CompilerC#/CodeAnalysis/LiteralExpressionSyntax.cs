@@ -6,18 +6,18 @@ namespace CompilerCSharp.CodeAnalysis
     В качестве дочерних узлов содержит один узел,
     представляющий число
     */
-    sealed class NumberExpressionSyntax : ExpressionSyntax{
-        public NumberExpressionSyntax(SyntaxToken numberToken){
-            NumberToken = numberToken;
+    sealed class LiteralExpressionSyntax : ExpressionSyntax{
+        public LiteralExpressionSyntax(SyntaxToken literalToken){
+            LiteralToken = literalToken;
         }
 
         public override SyntaxKind Kind => SyntaxKind.NumberExpression;
 
-        public SyntaxToken NumberToken { get; }
+        public SyntaxToken LiteralToken { get; }
 
         public override IEnumerable<SyntaxNode> GetChildren()
         {
-            yield return NumberToken;
+            yield return LiteralToken;
         }
     }
 }

@@ -53,7 +53,7 @@ namespace CompilerCSharp.CodeAnalysis
 
         //Если типы токенов совпадают, то возврат текущего и переход к следующему токену
         //Если нет, то создание нового токена
-        private SyntaxToken Match(SyntaxKind kind){
+        private SyntaxToken MatchToken(SyntaxKind kind){
             if (Current.Kind == kind)
                 return NextToken();
 
@@ -68,7 +68,7 @@ namespace CompilerCSharp.CodeAnalysis
         public SyntaxTree Parse()
         {
             ExpressionSyntax expression = ParseExpression();
-            SyntaxToken endOfFileToken = Match(SyntaxKind.EndOfFileToken);
+            SyntaxToken endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
             return new SyntaxTree(Diagnostics, expression, endOfFileToken);
         }
 
@@ -132,12 +132,12 @@ namespace CompilerCSharp.CodeAnalysis
             if (Current.Kind == SyntaxKind.OpenParenthesisToken){
                 SyntaxToken left = NextToken();
                 ExpressionSyntax expression = ParseExpression();
-                SyntaxToken right = Match(SyntaxKind.CloseParenthesisToken);
+                SyntaxToken right = MatchToken(SyntaxKind.CloseParenthesisToken);
                 return new ParenthesizedExpressionSyntax(left, expression, right);
             }
 
-            SyntaxToken numberToken = Match(SyntaxKind.NumberToken);
-            return new NumberExpressionSyntax(numberToken);
+            SyntaxToken numberToken = MatchToken(SyntaxKind.NumberToken);
+            return new LiteralExpressionSyntax(numberToken);
         }
     }
 }

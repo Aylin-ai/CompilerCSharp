@@ -55,7 +55,7 @@ static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
     }
     Console.WriteLine();
 
-    indent += isLast ? "    " : "│   ";
+    indent += isLast ? "   " : "│   ";
 
     SyntaxNode lastChild = node.GetChildren().LastOrDefault();
 
