@@ -1,4 +1,5 @@
-﻿using CompilerCSharp.CodeAnalysis;
+﻿using CompilerCSharp.CodeAnalysis.Binding;
+using CompilerCSharp.CodeAnalysis;
 using CompilerCSharp.CodeAnalysis.Syntax;
 
 bool showTree = false;
@@ -20,16 +21,19 @@ while (true){
     }
 
     SyntaxTree syntaxTree = SyntaxTree.Parse(line);
+    Binder binder = new Binder();
+    BoundExpression boundExpression = binder.BindExpression(syntaxTree.Root);
+    IReadOnlyList<string> diagnostics = syntaxTree.Diagnostics;
 
     if (showTree)
         PrettyPrint(syntaxTree.Root);
 
-    if (syntaxTree.Diagnostics.Any()){
-        foreach(var diagnostic in syntaxTree.Diagnostics){
+    if (diagnostics.Any()){
+        foreach(var diagnostic in diagnostics){
             Console.WriteLine(diagnostic);
         }
     } else{
-        Evaluator evaluator = new Evaluator(syntaxTree.Root);
+        Evaluator evaluator = new Evaluator(boundExpression);
         Console.WriteLine(evaluator.Evaluate());
     }
 }

@@ -1,4 +1,5 @@
 using CompilerCSharp.CodeAnalysis.Syntax;
+using CompilerCSharp.CodeAnalysis.Binding;
 
 namespace CompilerCSharp.CodeAnalysis
 {
@@ -6,55 +7,52 @@ namespace CompilerCSharp.CodeAnalysis
     Класс, вычисляющий выражение, вводимое в консоли
     */
     class Evaluator{
-        public Evaluator(ExpressionSyntax root){
+        public Evaluator(BoundExpression root){
             _root = root;
         }
 
-        private readonly ExpressionSyntax _root;
+        private readonly BoundExpression _root;
 
         public int Evaluate(){
             return EvaluateExpression(_root);
         }
 
-        private int EvaluateExpression(ExpressionSyntax node)
+        private int EvaluateExpression(BoundExpression node)
         {
-            if (node is LiteralExpressionSyntax n){
-                return (int) n.LiteralToken.Value;
+            if (node is BoundLiteralExpression n){
+                return (int) n.Value;
             }
-            if (node is UnaryExpressionSyntax u){
+            if (node is BoundUnaryExpression u){
                 int operand = EvaluateExpression(u.Operand);
 
-                switch (u.OperatorToken.Kind){
-                    case SyntaxKind.PlusToken:
+                switch (u.OperatorKind){
+                    case BoundUnaryOperatorKind.Identity:
                         return operand;
-                    case SyntaxKind.MinusToken:
+                    case BoundUnaryOperatorKind.Negation:
                         return -operand;
                     
                     default:
-                        throw new Exception($"Unexpected unary operator {u.OperatorToken.Kind}");
+                        throw new Exception($"Unexpected unary operator {u.OperatorKind}");
                 }
             }
-            if (node is BinaryExpressionSyntax b){
+            if (node is BoundBinaryExpression b){
                 int left = EvaluateExpression(b.Left);
                 int right = EvaluateExpression(b.Right);
 
-                switch (b.OperatorToken.Kind){
-                    case SyntaxKind.PlusToken:
+                switch (b.OperatorKind){
+                    case BoundBinaryOperatorKind.Addition:
                         return left + right;
-                    case SyntaxKind.MinusToken:
+                    case BoundBinaryOperatorKind.Substraction:
                         return left - right;
-                    case SyntaxKind.StarToken:
+                    case BoundBinaryOperatorKind.Multiplication:
                         return left * right;
-                    case SyntaxKind.SlashToken:
+                    case BoundBinaryOperatorKind.Division:
                         return left / right;
                     
                     default:
-                        throw new Exception($"Unexpected binary operator {b.OperatorToken.Kind}");
+                        throw new Exception($"Unexpected binary operator {b.OperatorKind}");
                 }
             }
-
-            if (node is ParenthesizedExpressionSyntax p)
-                return EvaluateExpression(p.Expression);
 
             throw new Exception($"Unexpected node {node.Kind}");
         }
