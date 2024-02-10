@@ -17,6 +17,7 @@ namespace CompilerCSharp.CodeAnalysis
         //Expressions
         LiteralExpression,
         BinaryExpression,
-        ParethesizedExpression
+        ParethesizedExpression,
+        UnaryExpression
     }
 }

@@ -19,20 +19,36 @@ namespace CompilerCSharp.CodeAnalysis
             if (node is LiteralExpressionSyntax n){
                 return (int) n.LiteralToken.Value;
             }
+            if (node is UnaryExpressionSyntax u){
+                int operand = EvaluateExpression(u.Operand);
+
+                switch (u.OperatorToken.Kind){
+                    case SyntaxKind.PlusToken:
+                        return operand;
+                    case SyntaxKind.MinusToken:
+                        return -operand;
+                    
+                    default:
+                        throw new Exception($"Unexpected unary operator {u.OperatorToken.Kind}");
+                }
+            }
             if (node is BinaryExpressionSyntax b){
                 int left = EvaluateExpression(b.Left);
                 int right = EvaluateExpression(b.Right);
 
-                if (b.OperatorToken.Kind == SyntaxKind.PlusToken)
-                    return left + right;
-                else if (b.OperatorToken.Kind == SyntaxKind.MinusToken)
-                    return left - right;
-                else if (b.OperatorToken.Kind == SyntaxKind.StarToken)
-                    return left * right;
-                else if (b.OperatorToken.Kind == SyntaxKind.SlashToken)
-                    return left / right;
-                else
-                    throw new Exception($"Unexpected binary operator {b.OperatorToken.Kind}");
+                switch (b.OperatorToken.Kind){
+                    case SyntaxKind.PlusToken:
+                        return left + right;
+                    case SyntaxKind.MinusToken:
+                        return left - right;
+                    case SyntaxKind.StarToken:
+                        return left * right;
+                    case SyntaxKind.SlashToken:
+                        return left / right;
+                    
+                    default:
+                        throw new Exception($"Unexpected binary operator {b.OperatorToken.Kind}");
+                }
             }
 
             if (node is ParenthesizedExpressionSyntax p)
