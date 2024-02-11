@@ -1,4 +1,3 @@
-using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using CompilerCSharpLibrary.CodeAnalysis.Binding;
 
 namespace CompilerCSharpLibrary.CodeAnalysis

@@ -21,23 +21,20 @@ while (true){
     }
 
     SyntaxTree syntaxTree = SyntaxTree.Parse(line);
-    Binder binder = new Binder();
-    BoundExpression boundExpression = binder.BindExpression(syntaxTree.Root);
-    IReadOnlyList<string> diagnostics = (IReadOnlyList<string>)binder.Diagnostics;
+    Compilation compilation = new Compilation(syntaxTree);
+    EvaluationResult result = compilation.Evaluate();
+
+    IReadOnlyList<string> diagnostics = result.Diagnostics;
 
     if (showTree)
         PrettyPrint(syntaxTree.Root);
 
-    if (diagnostics.Any() || syntaxTree.Diagnostics.Any()){
+    if (diagnostics.Any()){
         foreach(var diagnostic in diagnostics){
             Console.WriteLine(diagnostic);
         }
-        foreach(var diagnostic in syntaxTree.Diagnostics){
-            Console.WriteLine(diagnostic);
-        }
     } else{
-        Evaluator evaluator = new Evaluator(boundExpression);
-        Console.WriteLine(evaluator.Evaluate());
+        Console.WriteLine(result.Value);
     }
 }
 
