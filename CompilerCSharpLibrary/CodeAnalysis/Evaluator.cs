@@ -7,6 +7,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
     */
     public class Evaluator{
         private readonly BoundExpression _root;
+        //Словарь всех переменных. Ключ - имя переменной, Значение - значение переменной
         private readonly Dictionary<VariableSymbol, object> _variables;
         
         public Evaluator(BoundExpression root, Dictionary<VariableSymbol, object> variables){
@@ -24,9 +25,18 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             if (node is BoundLiteralExpression n){
                 return n.Value;
             }
+            /*
+            Если node типа BoundVariableExpression,
+            то возвращает значение переменной из списка всех переменных
+            */
             if (node is BoundVariableExpression v){
                 return _variables[v.Variable];
             }
+            /*
+            Если происходит приравнивание переменной какого-то
+            выражения, то получает результат выражения, приравнивает
+            этот результат к переменной и возвращает результат выражения
+            */
             if (node is BoundAssignmentExpression a){
                 var value = EvaluateExpression(a.Expression);
                 _variables[a.Variable] = value;

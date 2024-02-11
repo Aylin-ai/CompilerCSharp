@@ -1,5 +1,10 @@
 namespace CompilerCSharpLibrary.CodeAnalysis
 {
+    /*
+    Класс, представляющий собой пойманную ошибку.
+    Содержит в себе информацию об ошибке в тексте
+    (TextSpan) и текст ошибки
+    */
     public sealed class Diagnostic{
         public Diagnostic(TextSpan span, string message){
             Span = span;

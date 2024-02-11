@@ -3,6 +3,12 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding;
 
 namespace CompilerCSharpLibrary.CodeAnalysis
 {
+    /*
+    Класс, представляющий собой компиляцию. Создан для более
+    удобного взаимодействия с остальными классами.
+    Содержит в себе синтаксическое дерево выражения и
+    метод для вычисления выражения
+    */
     public sealed class Compilation{
         public Compilation(SyntaxTree syntax){
             Syntax = syntax;

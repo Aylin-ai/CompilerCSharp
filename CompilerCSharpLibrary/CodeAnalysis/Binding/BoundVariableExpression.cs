@@ -17,6 +17,10 @@
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
+    /*
+    Класс, представляющий узел с переменной в АСД.
+    Содержит в себе информацию по переменной - имя,тип
+    */
     public sealed class BoundVariableExpression : BoundExpression{
         public BoundVariableExpression(VariableSymbol variable){
             Variable = variable;

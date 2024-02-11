@@ -95,7 +95,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 
                 return new SyntaxToken(kind, start, text, null);
             }
-            //true, false
 
             switch (Current){
                 case '+':

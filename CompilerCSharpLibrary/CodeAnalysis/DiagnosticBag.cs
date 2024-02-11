@@ -3,6 +3,10 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 
 namespace CompilerCSharpLibrary.CodeAnalysis
 {
+    /*
+    Класс, содержащий список с пойманными ошибками, а также
+    методы для их отлавливания и добавления в список
+    */
     public sealed class DiagnosticBag : IEnumerable<Diagnostic>{
         private readonly List<Diagnostic> _diagnostics = new List<Diagnostic>();
 

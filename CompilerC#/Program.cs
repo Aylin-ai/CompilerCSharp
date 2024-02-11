@@ -30,6 +30,7 @@ while (true){
     if (showTree)
         PrettyPrint(syntaxTree.Root);
 
+    //Выдает ошибку с некоторыми выражениями (например, 2++)
     if (diagnostics.Any()){
         foreach(var diagnostic in diagnostics){
             Console.WriteLine(diagnostic);

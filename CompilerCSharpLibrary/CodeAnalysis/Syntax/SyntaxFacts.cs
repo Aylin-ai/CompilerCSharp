@@ -39,7 +39,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return 0;
             }
         }
-
+        //Получает тип ключевого слова
         public static SyntaxKind GetKeywordKind(string text)
         {
             switch (text){

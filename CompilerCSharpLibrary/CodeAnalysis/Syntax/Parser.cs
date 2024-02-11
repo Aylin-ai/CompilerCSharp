@@ -76,6 +76,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             return ParseAssignmentExpression();
         }
 
+        /*
+        Строит дерево для выражения приравнивания.
+        Если текущий токен - идентификатор и следующий - =,
+        то возвращает объект типа AssignmentExpressionSyntax.
+        В обратном случае вызывает дальнейшее построение
+        дерева (метод ParseBinaryExpression)
+        */
         private ExpressionSyntax ParseAssignmentExpression(){
             if (Peek(0).Kind == SyntaxKind.IdentifierToken && 
                 Peek(1).Kind == SyntaxKind.EqualsToken){

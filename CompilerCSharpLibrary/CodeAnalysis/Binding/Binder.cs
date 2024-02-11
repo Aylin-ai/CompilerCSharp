@@ -50,7 +50,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
             }
         }
-
+        /*
+        Метод, срабатывающий при приравнивании переменной к значению. Получает
+        имя переменной, рассматривает выражение. Если такая переменная уже
+        существует, то удаляет ее из списка и пересоздает по новой. Если
+        такой переменной нет, то просто создает её. В конце возвращает
+        узел с информацией по переменной и выражению BoundAssignmentExpression
+        */
         private BoundExpression BindAssignmentExpression(AssignmentExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
@@ -65,7 +71,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
             return new BoundAssignmentExpression(variable, boundExpression);
         }
-
+        /*
+        Метод, срабатывающий при вызове переменной. Получает ее имя и ищет среди
+        всех переменных. Если находит, то возвращает узел с информацией
+        по этой переменной BoundVariableExpression. Если нет, то ловит ошибку
+        и возвращает узел с литералом, равным 0
+        */
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
@@ -80,6 +91,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             return new BoundVariableExpression(variable);
         }
 
+        //Реализация выражений в скобках
         private BoundExpression BindParethesizedExpression(ParenthesizedExpressionSyntax syntax)
         {
             return BindExpression(syntax.Expression);
