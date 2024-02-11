@@ -13,13 +13,15 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 зрения, чем с конкретной, в отличие от классов Syntax (Пример, оператор +. 
 В Binding на него есть более подробная информация, когда как в Syntax
 все ограничивается его токеном)
+АСД нужно, чтобы хранить больше информации, в отличие от
+синтаксического дерева, а также чтобы последнее было неизменяемо
 */
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
     public sealed class Binder{
-        private readonly List<string> _diagnostics = new List<string>();
+        private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
 
-        public IEnumerable<string> Diagnostics => _diagnostics;
+        public DiagnosticBag Diagnostics => _diagnostics;
 
         //Возвращает нужный вид выражение с приведением его параметра к нужному типу
         public BoundExpression BindExpression(ExpressionSyntax syntax){
@@ -49,7 +51,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             BoundExpression boundRight = BindExpression(syntax.Right);
             BoundBinaryOperator boundOperator = BoundBinaryOperator.Bind(syntax.OperatorToken.Kind, boundLeft.Type, boundRight.Type);
             if (boundOperator == null){
-                _diagnostics.Add($"Binary operator '{syntax.OperatorToken.Text}' is not defined for type {boundLeft.Type} and {boundRight.Type}");
+                _diagnostics.ReportUndefinedBinaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, boundLeft.Type, boundRight.Type);
                 return boundLeft;
             }
             return new BoundBinaryExpression(boundLeft, boundOperator, boundRight);
@@ -65,7 +67,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             BoundExpression boundOperand = BindExpression(syntax.Operand);
             BoundUnaryOperator boundOperator = BoundUnaryOperator.Bind(syntax.OperatorToken.Kind, boundOperand.Type);
             if (boundOperator == null){
-                _diagnostics.Add($"Unary operator '{syntax.OperatorToken.Text}' is not defined for type {boundOperand.Type}");
+                _diagnostics.ReportUndefinedUnaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, boundOperand.Type);
                 return boundOperand;
             }
             return new BoundUnaryExpression(boundOperator, boundOperand);

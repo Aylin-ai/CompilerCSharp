@@ -24,7 +24,7 @@ while (true){
     Compilation compilation = new Compilation(syntaxTree);
     EvaluationResult result = compilation.Evaluate();
 
-    IReadOnlyList<string> diagnostics = result.Diagnostics;
+    DiagnosticBag diagnostics = result.Diagnostics;
 
     if (showTree)
         PrettyPrint(syntaxTree.Root);
@@ -32,7 +32,20 @@ while (true){
     if (diagnostics.Any()){
         foreach(var diagnostic in diagnostics){
             Console.WriteLine(diagnostic);
+
+            string prefix = line.Substring(0, diagnostic.Span.Start);
+            string error = line.Substring(diagnostic.Span.Start, diagnostic.Span.Length);
+            string suffix = line.Substring(diagnostic.Span.End);
+
+            Console.Write("    ");
+            Console.Write(prefix);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(error);
+            Console.ResetColor();
+            Console.Write(suffix);
+            Console.WriteLine();
         }
+        Console.WriteLine();
     } else{
         Console.WriteLine(result.Value);
     }

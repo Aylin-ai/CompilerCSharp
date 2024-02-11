@@ -1,12 +1,12 @@
 namespace CompilerCSharpLibrary.CodeAnalysis
 {
     public sealed class EvaluationResult{
-        public EvaluationResult(IEnumerable<string> diagnostics, object value){
-            Diagnostics = diagnostics.ToArray();
+        public EvaluationResult(DiagnosticBag diagnostics, object value){
+            Diagnostics = diagnostics;
             Value = value;
         }
 
-        public IReadOnlyList<string> Diagnostics { get; }
+        public DiagnosticBag Diagnostics { get; }
         public object Value { get; }
     }
 }

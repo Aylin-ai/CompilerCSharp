@@ -14,14 +14,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Binder binder = new Binder();
             BoundExpression boundExpression = binder.BindExpression(Syntax.Root);
 
-            var diagnostics = Syntax.Diagnostics.Concat(binder.Diagnostics).ToArray();
-            if (diagnostics.Any()){
-                return new EvaluationResult(diagnostics, null);
+            Syntax.Diagnostics.AddRange(binder.Diagnostics);
+            if (Syntax.Diagnostics.Any()){
+                return new EvaluationResult(Syntax.Diagnostics, null);
             }
 
             Evaluator evaluator = new Evaluator(boundExpression);
             object value = evaluator.Evaluate();
-            return new EvaluationResult(Array.Empty<string>(), value);
+            return new EvaluationResult([], value);
         }
     }
 }

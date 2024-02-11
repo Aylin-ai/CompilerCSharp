@@ -9,9 +9,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         private readonly string _text;
         private int _position;
 
-        private List<string> _diagnostics = new List<string>();
+        private DiagnosticBag _diagnostics = new DiagnosticBag();
 
-        public IEnumerable<string> Diagnostics => _diagnostics;
+        public DiagnosticBag Diagnostics => _diagnostics;
 
         public Lexer(string text){
             _text = text;
@@ -56,8 +56,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             if (_position >= _text.Length)
                 return new SyntaxToken(SyntaxKind.EndOfFileToken, _position, "\0", null);
 
+            int start = _position;
+
             if (char.IsDigit(Current)){
-                int start = _position;
 
                 while (char.IsDigit(Current)){
                     Next();
@@ -67,14 +68,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 string text = _text.Substring(start, length);
                 
                 if(!int.TryParse(text, out int value)){
-                    _diagnostics.Add($"ERROR: The number {text} cannot be represented as Int32");
+                    _diagnostics.ReportInvalidNumber(new TextSpan(start, length), text, typeof(int));
                 }
                 
                 return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
             }
 
             if (char.IsWhiteSpace(Current)){
-                int start = _position;
 
                 while (char.IsWhiteSpace(Current)){
                     Next();
@@ -84,7 +84,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             }
 
             if (char.IsLetter(Current)){
-                int start = _position;
 
                 while (char.IsLetter(Current)){
                     Next();
@@ -113,24 +112,32 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _position++, ")", null);
 
                 case '!':
-                    if (Lookahead == '=')
-                        return new SyntaxToken(SyntaxKind.NotEqualsToken, _position += 2, "!=", null);
+                    if (Lookahead == '='){
+                        _position += 2;
+                        return new SyntaxToken(SyntaxKind.NotEqualsToken, start, "!=", null);
+                    }  
                     return new SyntaxToken(SyntaxKind.BangToken, _position++, "!", null);
                 case '&':
-                    if (Lookahead == '&')
-                        return new SyntaxToken(SyntaxKind.AmpersandAmpersandToken, _position += 2, "&&", null);
+                    if (Lookahead == '&'){
+                        _position += 2;
+                        return new SyntaxToken(SyntaxKind.AmpersandAmpersandToken, start, "&&", null);
+                    }
                     break;
                 case '|':
-                    if (Lookahead == '|')
-                        return new SyntaxToken(SyntaxKind.PipePipeToken, _position += 2, "||", null);
+                    if (Lookahead == '|'){
+                        _position += 2;
+                        return new SyntaxToken(SyntaxKind.PipePipeToken, start, "||", null);
+                    }
                     break;
                 case '=':
-                    if (Lookahead == '=')
-                        return new SyntaxToken(SyntaxKind.EqualsEqualsToken, _position += 2, "==", null);
+                    if (Lookahead == '='){
+                        _position += 2;
+                        return new SyntaxToken(SyntaxKind.EqualsEqualsToken, start, "==", null);
+                    }
                     break;
             }
 
-            _diagnostics.Add($"ERROR: bad character input: '{Current}'");
+            _diagnostics.ReportBadCharacter(_position, Current);
             return new SyntaxToken(SyntaxKind.BadToken, _position++, _text.Substring(_position - 1, 1), null);
         }
     }
