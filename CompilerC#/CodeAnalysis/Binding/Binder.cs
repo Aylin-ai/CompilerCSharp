@@ -30,6 +30,8 @@ namespace CompilerCSharp.CodeAnalysis.Binding
                     return BindUnaryExpression((UnaryExpressionSyntax)syntax);
                 case SyntaxKind.BinaryExpression:
                     return BindBinaryExpression((BinaryExpressionSyntax)syntax);
+                case SyntaxKind.ParethesizedExpression:
+                    return BindExpression(((ParenthesizedExpressionSyntax)syntax).Expression);
 
                 default:
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
