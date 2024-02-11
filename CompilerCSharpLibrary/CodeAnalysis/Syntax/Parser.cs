@@ -72,17 +72,33 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             return new SyntaxTree(Diagnostics, expression, endOfFileToken);
         }
 
+        private ExpressionSyntax ParseExpression(){
+            return ParseAssignmentExpression();
+        }
+
+        private ExpressionSyntax ParseAssignmentExpression(){
+            if (Peek(0).Kind == SyntaxKind.IdentifierToken && 
+                Peek(1).Kind == SyntaxKind.EqualsToken){
+                var identifierToken = NextToken();
+                var operatorToken = NextToken();
+                var right = ParseAssignmentExpression();
+                return new AssignmentExpressionSyntax(identifierToken, operatorToken, right);
+            }
+
+            return ParseBinaryExpression();
+        }
+
         /*
         Строит дерево с учетом приоритетов операторов.
         Требуется дальнейшее рассмотрение
         */
-        private ExpressionSyntax ParseExpression(int parentPrecedence = 0){
+        private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0){
             ExpressionSyntax left;
 
             int unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
             if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence){
                 SyntaxToken operatorToken = NextToken();
-                ExpressionSyntax operand = ParseExpression(unaryOperatorPrecedence);
+                ExpressionSyntax operand = ParseBinaryExpression(unaryOperatorPrecedence);
                 left = new UnaryExpressionSyntax(operatorToken, operand);
             } 
             else {
@@ -95,7 +111,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     break;
                 
                 SyntaxToken operatorToken = NextToken();
-                ExpressionSyntax right = ParseExpression(precedence);
+                ExpressionSyntax right = ParseBinaryExpression(precedence);
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 
@@ -121,6 +137,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     SyntaxToken keywordToken = NextToken();
                     bool value = keywordToken.Kind == SyntaxKind.TrueKeyword;
                     return new LiteralExpressionSyntax(keywordToken, value);
+
+                case SyntaxKind.IdentifierToken:
+                    var identifierToken = NextToken();
+                    return new NameExpressionSyntax(identifierToken);
 
                 default:
                     SyntaxToken numberToken = MatchToken(SyntaxKind.NumberToken);

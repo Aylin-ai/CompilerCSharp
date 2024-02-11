@@ -134,7 +134,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                         _position += 2;
                         return new SyntaxToken(SyntaxKind.EqualsEqualsToken, start, "==", null);
                     }
-                    break;
+                    return new SyntaxToken(SyntaxKind.EqualsToken, _position++, "=", null);
             }
 
             _diagnostics.ReportBadCharacter(_position, Current);

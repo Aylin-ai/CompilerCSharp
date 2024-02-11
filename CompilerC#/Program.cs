@@ -3,6 +3,7 @@ using CompilerCSharpLibrary.CodeAnalysis;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 
 bool showTree = false;
+var variables = new Dictionary<VariableSymbol, object>();
 
 while (true){
     Console.Write("> ");
@@ -22,7 +23,7 @@ while (true){
 
     SyntaxTree syntaxTree = SyntaxTree.Parse(line);
     Compilation compilation = new Compilation(syntaxTree);
-    EvaluationResult result = compilation.Evaluate();
+    EvaluationResult result = compilation.Evaluate(variables);
 
     DiagnosticBag diagnostics = result.Diagnostics;
 

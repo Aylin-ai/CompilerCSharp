@@ -6,6 +6,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
     public enum BoundNodeKind{
         UnaryExpression,
         LiteralExpression,
-        BinaryExpression
+        BinaryExpression,
+        VariableExpression,
+        AssignmentExpression
     }
 }

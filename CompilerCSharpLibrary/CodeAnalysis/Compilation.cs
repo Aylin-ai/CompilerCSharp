@@ -10,8 +10,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         public SyntaxTree Syntax { get; }
 
-        public EvaluationResult Evaluate(){
-            Binder binder = new Binder();
+        public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables){
+            Binder binder = new Binder(variables);
             BoundExpression boundExpression = binder.BindExpression(Syntax.Root);
 
             Syntax.Diagnostics.AddRange(binder.Diagnostics);
@@ -19,7 +19,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 return new EvaluationResult(Syntax.Diagnostics, null);
             }
 
-            Evaluator evaluator = new Evaluator(boundExpression);
+            Evaluator evaluator = new Evaluator(boundExpression, variables);
             object value = evaluator.Evaluate();
             return new EvaluationResult([], value);
         }

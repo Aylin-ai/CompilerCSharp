@@ -19,15 +19,19 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         PipePipeToken,
         NotEqualsToken,
         EqualsEqualsToken,
+        EqualsToken,
 
         //Expressions
         LiteralExpression,
         BinaryExpression,
         ParethesizedExpression,
         UnaryExpression,
+        NameExpression,
+        AssignmentExpression,
 
         //Keywords
         TrueKeyword,
         FalseKeyword,
+        
     }
 }
