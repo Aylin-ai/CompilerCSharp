@@ -1,0 +1,12 @@
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerCSharpLibrary/bin/Debug/net8.0/CompilerCSharpLibrary.deps.json
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerCSharpLibrary/bin/Debug/net8.0/CompilerCSharpLibrary.dll
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerCSharpLibrary/bin/Debug/net8.0/CompilerCSharpLibrary.pdb
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerCSharpLibrary/obj/Debug/net8.0/CompilerCSharpLibrary.GeneratedMSBuildEditorConfig.editorconfig
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerCSharpLibrary/obj/Debug/net8.0/CompilerCSharpLibrary.AssemblyInfoInputs.cache
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerCSharpLibrary/obj/Debug/net8.0/CompilerCSharpLibrary.AssemblyInfo.cs
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerCSharpLibrary/obj/Debug/net8.0/CompilerCSharpLibrary.csproj.CoreCompileInputs.cache
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerCSharpLibrary/obj/Debug/net8.0/CompilerCSharpLibrary.sourcelink.json
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerCSharpLibrary/obj/Debug/net8.0/CompilerCSharpLibrary.dll
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerCSharpLibrary/obj/Debug/net8.0/refint/CompilerCSharpLibrary.dll
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerCSharpLibrary/obj/Debug/net8.0/CompilerCSharpLibrary.pdb
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerCSharpLibrary/obj/Debug/net8.0/ref/CompilerCSharpLibrary.dll

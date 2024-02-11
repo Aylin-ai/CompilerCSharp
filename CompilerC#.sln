@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompilerC#", "CompilerC#\CompilerC#.csproj", "{0AB86FBC-0491-4469-8D96-9A4EDB6C8190}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompilerCSharpLibrary", "CompilerCSharpLibrary\CompilerCSharpLibrary.csproj", "{6426235F-88AB-4822-9295-67E1D7C39C73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{0AB86FBC-0491-4469-8D96-9A4EDB6C8190}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AB86FBC-0491-4469-8D96-9A4EDB6C8190}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AB86FBC-0491-4469-8D96-9A4EDB6C8190}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6426235F-88AB-4822-9295-67E1D7C39C73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6426235F-88AB-4822-9295-67E1D7C39C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6426235F-88AB-4822-9295-67E1D7C39C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6426235F-88AB-4822-9295-67E1D7C39C73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

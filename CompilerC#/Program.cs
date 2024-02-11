@@ -1,6 +1,6 @@
-﻿using CompilerCSharp.CodeAnalysis.Binding;
-using CompilerCSharp.CodeAnalysis;
-using CompilerCSharp.CodeAnalysis.Syntax;
+﻿using CompilerCSharpLibrary.CodeAnalysis.Binding;
+using CompilerCSharpLibrary.CodeAnalysis;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 
 bool showTree = false;
 

@@ -13,3 +13,7 @@
 /home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/CompilerC#.pdb
 /home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/CompilerC#.genruntimeconfig.cache
 /home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/ref/CompilerC#.dll
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/bin/Debug/net8.0/CompilerCSharpLibrary.dll
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/bin/Debug/net8.0/CompilerCSharpLibrary.pdb
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/CompilerC#.csproj.AssemblyReference.cache
+/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/CompilerC#/obj/Debug/net8.0/CompilerC#.csproj.CopyComplete
