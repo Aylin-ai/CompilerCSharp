@@ -11,11 +11,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         private int _position;
 
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
+        private readonly SourceText _text;
 
         public DiagnosticBag Diagnostics => _diagnostics;
 
         //При создании парсера он получает все токены, создавая внутри себя лексер
-        public Parser(string text){
+        public Parser(SourceText text){
             List<SyntaxToken> tokens = new List<SyntaxToken>();
 
             Lexer lexer = new Lexer(text);
@@ -32,6 +33,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
             _tokens = tokens.ToArray();
             _diagnostics.AddRange(lexer.Diagnostics);
+            _text = text;
         }
 
         //Функция для просмотра на offset токенов вперед
@@ -71,7 +73,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         {
             ExpressionSyntax expression = ParseExpression();
             SyntaxToken endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(Diagnostics, expression, endOfFileToken);
+            return new SyntaxTree(_text, Diagnostics, expression, endOfFileToken);
         }
 
         private ExpressionSyntax ParseExpression(){

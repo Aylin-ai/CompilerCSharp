@@ -8,7 +8,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     анализатору (парсеру)
     */
     public class Lexer{
-        private readonly string _text;
+        private readonly SourceText _text;
         private DiagnosticBag _diagnostics = new DiagnosticBag();
         public DiagnosticBag Diagnostics => _diagnostics;
 
@@ -19,7 +19,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         private object _value;
 
 
-        public Lexer(string text){
+        public Lexer(SourceText text){
             _text = text;
         }
 
@@ -159,7 +159,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             int length = _position - _start;
             string text = SyntaxFacts.GetText(_kind);
             if (text == null)
-                text = _text.Substring(_start, length);
+                text = _text.ToString(_start, length);
 
             return new SyntaxToken(_kind, _position, text, _value);
         }
@@ -172,7 +172,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             }
 
             int length = _position - _start;
-            string text = _text.Substring(_start, length);
+            string text = _text.ToString(_start, length);
             _kind = SyntaxFacts.GetKeywordKind(text);
         }
 
@@ -194,7 +194,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             }
 
             int length = _position - _start;
-            string text = _text.Substring(_start, length);
+            string text = _text.ToString(_start, length);
 
             if (!int.TryParse(text, out int value))
             {

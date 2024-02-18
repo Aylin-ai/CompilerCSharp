@@ -32,12 +32,19 @@ while (true){
 
     //Выдает ошибку с некоторыми выражениями (например, 2++)
     if (diagnostics.Any()){
+        var text = syntaxTree.Text;
+
         foreach(var diagnostic in diagnostics){
+            int lineIndex = text.GetLineIndex(diagnostic.Span.Start);
+            var lineNumber = lineIndex + 1;
+            var character = diagnostic.Span.Start - text.Lines[lineIndex].Start;
+
+            Console.Write($"({lineNumber}, {character}): ");
             Console.WriteLine(diagnostic);
 
-            string prefix = line.Substring(0, diagnostic.Span.Start);
-            string error = line.Substring(diagnostic.Span.Start, diagnostic.Span.Length);
-            string suffix = line.Substring(diagnostic.Span.End);
+            string prefix = line.Substring(0, diagnostic.Span.Start - 1);
+            string error = line.Substring(diagnostic.Span.Start - 1, diagnostic.Span.Length);
+            string suffix = line.Substring(diagnostic.Span.End - 1);
 
             Console.Write("    ");
             Console.Write(prefix);
