@@ -52,5 +52,56 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return SyntaxKind.IdentifierToken;
             }
         }
+
+        public static IEnumerable<SyntaxKind> GetBinaryOperators(){
+            var kinds = (SyntaxKind[]) Enum.GetValues(typeof(SyntaxKind));
+            foreach (var kind in kinds){
+                if (GetBinaryOperatorPrecedence(kind) > 0)
+                    yield return kind;
+            }
+        }
+        
+        public static IEnumerable<SyntaxKind> GetUnaryOperators(){
+            var kinds = (SyntaxKind[]) Enum.GetValues(typeof(SyntaxKind));
+            foreach (var kind in kinds){
+                if (GetUnaryOperatorPrecedence(kind) > 0)
+                    yield return kind;
+            }
+        }
+
+        public static string GetText(SyntaxKind kind){
+            switch (kind){
+                case SyntaxKind.PlusToken:
+                    return "+";
+                case SyntaxKind.MinusToken:
+                    return "-";
+                case SyntaxKind.StarToken:
+                    return "*";
+                case SyntaxKind.SlashToken:
+                    return "/";
+                case SyntaxKind.BangToken:
+                    return "!";
+                case SyntaxKind.EqualsToken:
+                    return "=";
+                case SyntaxKind.AmpersandAmpersandToken:
+                    return "&&";
+                case SyntaxKind.PipePipeToken:
+                    return "||";
+                case SyntaxKind.EqualsEqualsToken:
+                    return "==";
+                case SyntaxKind.NotEqualsToken:
+                    return "!=";
+                case SyntaxKind.OpenParenthesisToken:
+                    return "(";
+                case SyntaxKind.CloseParenthesisToken:
+                    return ")";
+                case SyntaxKind.FalseKeyword:
+                    return "false";
+                case SyntaxKind.TrueKeyword:
+                    return "true";
+                default:
+                    return null;
+            }
+        }
     }
 }
