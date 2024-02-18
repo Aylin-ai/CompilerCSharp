@@ -28,7 +28,7 @@ while (true){
     DiagnosticBag diagnostics = result.Diagnostics;
 
     if (showTree)
-        PrettyPrint(syntaxTree.Root);
+        syntaxTree.Root.WriteTo(Console.Out);
 
     //Выдает ошибку с некоторыми выражениями (например, 2++)
     if (diagnostics.Any()){
@@ -50,37 +50,6 @@ while (true){
         Console.WriteLine();
     } else{
         Console.WriteLine(result.Value);
-    }
-}
-
-/*
-Функция, выводящая синтаксическое дерево. Выводит данные
-о токенах. В зависимости от того, последний это элемент в дереве
-или нет выводит 3 символа, указанных вначале функции
-*/
-static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true){
-    //├──
-    //│
-    //└──
-
-    string marker = isLast ? "└──" : "├──";
-
-
-    Console.Write(indent);
-    Console.Write(marker);
-    Console.Write(node.Kind);
-
-    if (node is SyntaxToken t && t.Value != null){
-        Console.Write($" {t.Value}");
-    }
-    Console.WriteLine();
-
-    indent += isLast ? "   " : "│  ";
-
-    SyntaxNode lastChild = node.GetChildren().LastOrDefault();
-
-    foreach (var child in node.GetChildren()){
-        PrettyPrint(child, indent, child == lastChild);
     }
 }
 

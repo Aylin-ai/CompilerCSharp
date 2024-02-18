@@ -40,5 +40,48 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 }
             }
         }
+
+        public void WriteTo(TextWriter writer){
+            PrettyPrint(writer, this);
+        }
+
+        /*
+        Функция, выводящая синтаксическое дерево. Выводит данные
+        о токенах. В зависимости от того, последний это элемент в дереве
+        или нет выводит 3 символа, указанных вначале функции
+        */
+        public static void PrettyPrint(TextWriter writer, SyntaxNode node, string indent = "", bool isLast = true){
+            //├──
+            //│
+            //└──
+
+            string marker = isLast ? "└──" : "├──";
+
+
+            writer.Write(indent);
+            writer.Write(marker);
+            writer.Write(node.Kind);
+
+            if (node is SyntaxToken t && t.Value != null){
+                writer.Write($" {t.Value}");
+            }
+            writer.WriteLine();
+
+            indent += isLast ? "   " : "│  ";
+
+            SyntaxNode lastChild = node.GetChildren().LastOrDefault();
+
+            foreach (var child in node.GetChildren()){
+                PrettyPrint(writer, child, indent, child == lastChild);
+            }
+        }
+
+        public override string ToString()
+        {
+            using (var writer = new StringWriter()){
+                WriteTo(writer);
+                return writer.ToString();
+            }
+        }
     }
 }
