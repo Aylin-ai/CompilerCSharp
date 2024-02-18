@@ -1,4 +1,4 @@
-﻿using CompilerCSharpLibrary.CodeAnalysis.Binding;
+﻿using CompilerCSharpLibrary.CodeAnalysis.Text;
 using CompilerCSharpLibrary.CodeAnalysis;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 

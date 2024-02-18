@@ -1,5 +1,5 @@
 
-namespace CompilerCSharpLibrary.CodeAnalysis
+namespace CompilerCSharpLibrary.CodeAnalysis.Text
 {
     /*
     Класс, содержащий информацию о размере текста,
