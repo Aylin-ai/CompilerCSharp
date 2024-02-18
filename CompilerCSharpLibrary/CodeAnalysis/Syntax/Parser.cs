@@ -8,7 +8,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         private readonly SyntaxToken[] _tokens;
         private int _position;
 
-        private DiagnosticBag _diagnostics = new DiagnosticBag();
+        private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
 
         public DiagnosticBag Diagnostics => _diagnostics;
 
@@ -134,25 +134,46 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             switch (Current.Kind)
             {
                 case SyntaxKind.OpenParenthesisToken:
-                    SyntaxToken left = NextToken();
-                    ExpressionSyntax expression = ParseExpression();
-                    SyntaxToken right = MatchToken(SyntaxKind.CloseParenthesisToken);
-                    return new ParenthesizedExpressionSyntax(left, expression, right);
+                    return ParseParanthesizedExpression();
 
                 case SyntaxKind.TrueKeyword:
                 case SyntaxKind.FalseKeyword:
-                    SyntaxToken keywordToken = NextToken();
-                    bool value = keywordToken.Kind == SyntaxKind.TrueKeyword;
-                    return new LiteralExpressionSyntax(keywordToken, value);
+                    return ParseBooleanLiteral();
+
+                case SyntaxKind.NumberToken:
+                    return ParseNumberLiteral();
 
                 case SyntaxKind.IdentifierToken:
-                    var identifierToken = NextToken();
-                    return new NameExpressionSyntax(identifierToken);
-
                 default:
-                    SyntaxToken numberToken = MatchToken(SyntaxKind.NumberToken);
-                    return new LiteralExpressionSyntax(numberToken);
+                    return ParseNameExpression();
             }  
+        }
+
+        private ExpressionSyntax ParseNumberLiteral()
+        {
+            SyntaxToken numberToken = MatchToken(SyntaxKind.NumberToken);
+            return new LiteralExpressionSyntax(numberToken);
+        }
+
+        private ExpressionSyntax ParseParanthesizedExpression()
+        {
+            SyntaxToken left = MatchToken(SyntaxKind.OpenParenthesisToken);
+            ExpressionSyntax expression = ParseExpression();
+            SyntaxToken right = MatchToken(SyntaxKind.CloseParenthesisToken);
+            return new ParenthesizedExpressionSyntax(left, expression, right);
+        }
+
+        private ExpressionSyntax ParseBooleanLiteral()
+        {
+            bool isTrue = Current.Kind == SyntaxKind.TrueKeyword;
+            SyntaxToken keywordToken = isTrue ? MatchToken(SyntaxKind.TrueKeyword) : MatchToken(SyntaxKind.FalseKeyword);
+            return new LiteralExpressionSyntax(keywordToken, isTrue);
+        }
+
+        private ExpressionSyntax ParseNameExpression()
+        {
+            var identifierToken = MatchToken(SyntaxKind.IdentifierToken);
+            return new NameExpressionSyntax(identifierToken);
         }
     }
 }
