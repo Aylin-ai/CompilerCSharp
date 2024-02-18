@@ -10,7 +10,20 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     public abstract class SyntaxNode{
         public abstract SyntaxKind Kind { get;}
 
+        public virtual TextSpan Span{
+            get{
+                var first = GetChildren().First().Span;
+                var last = GetChildren().Last().Span;
+                return TextSpan.FromBounds(first.Start, last.End);
+            }
+        }
+
         public IEnumerable<SyntaxNode> GetChildren(){
+            /*
+            BindingFlags.Public | BindingFlags.Instance позволяют сказать методу,
+            чтобы искал Public свойства в классах
+            Порядок расположения свойств в классах важен
+            */
             var properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             foreach (var property in properties){
