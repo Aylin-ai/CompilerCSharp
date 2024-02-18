@@ -17,10 +17,5 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         public SyntaxToken LiteralToken { get; }
         public object Value { get; }
-
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return LiteralToken;
-        }
     }
 }
