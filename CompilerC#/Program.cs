@@ -1,27 +1,45 @@
 ﻿using CompilerCSharpLibrary.CodeAnalysis.Text;
 using CompilerCSharpLibrary.CodeAnalysis;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
+using System.Text;
 
 bool showTree = false;
 var variables = new Dictionary<VariableSymbol, object>();
+var textBuilder = new StringBuilder();
 
 while (true){
-    Console.Write("> ");
-    string line = Console.ReadLine();
-    if (string.IsNullOrEmpty(line))
-        return;
+    if (textBuilder.Length == 0)
+        Console.Write("> ");
+    else
+        Console.Write("| ");
 
-    //Отладочные команды для показа дерева и очистки консоли
-    if (line == "#showTree"){
-        showTree = !showTree;
-        Console.WriteLine(showTree ? "Showing parse tree" : "Not showing parse tree");
-        continue;
-    } else if (line == "#clear"){
-        Console.Clear();
+    string input = Console.ReadLine();
+    var isBlank = string.IsNullOrWhiteSpace(input);
+
+    if (textBuilder.Length == 0){
+        if (isBlank)
+            break;
+        //Отладочные команды для показа дерева и очистки консоли
+        else if (input == "#showTree"){
+            showTree = !showTree;
+            Console.WriteLine(showTree ? "Showing parse tree" : "Not showing parse tree");
+            continue;
+        } 
+        else if (input == "#clear"){
+            Console.Clear();
+            continue;
+        }
+    }
+
+    textBuilder.AppendLine(input);
+    var text = textBuilder.ToString();
+
+    SyntaxTree syntaxTree = SyntaxTree.Parse(text);
+
+    if (!isBlank && syntaxTree.Diagnostics.Any()){
         continue;
     }
 
-    SyntaxTree syntaxTree = SyntaxTree.Parse(line);
     Compilation compilation = new Compilation(syntaxTree);
     EvaluationResult result = compilation.Evaluate(variables);
 
@@ -32,31 +50,39 @@ while (true){
 
     //Выдает ошибку с некоторыми выражениями (например, 2++)
     if (diagnostics.Any()){
-        var text = syntaxTree.Text;
-
         foreach(var diagnostic in diagnostics){
-            int lineIndex = text.GetLineIndex(diagnostic.Span.Start);
+            int lineIndex = syntaxTree.Text.GetLineIndex(diagnostic.Span.Start);
             var lineNumber = lineIndex + 1;
-            var character = diagnostic.Span.Start - text.Lines[lineIndex].Start;
+            var line = syntaxTree.Text.Lines[lineIndex];
+            var character = diagnostic.Span.Start - line.Start + 1;
+
+            Console.WriteLine();
 
             Console.Write($"({lineNumber}, {character}): ");
             Console.WriteLine(diagnostic);
 
-            string prefix = line.Substring(0, diagnostic.Span.Start - 1);
-            string error = line.Substring(diagnostic.Span.Start - 1, diagnostic.Span.Length);
-            string suffix = line.Substring(diagnostic.Span.End - 1);
+            var prefixSpan = TextSpan.FromBounds(line.Start, diagnostic.Span.Start);
+            var suffixSpan = TextSpan.FromBounds(diagnostic.Span.End, line.End);
+
+            string prefix = syntaxTree.Text.ToString(prefixSpan);
+            string error = syntaxTree.Text.ToString(diagnostic.Span);
+            string suffix = syntaxTree.Text.ToString(suffixSpan);
 
             Console.Write("    ");
             Console.Write(prefix);
+
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(error);
             Console.ResetColor();
+
             Console.Write(suffix);
+
             Console.WriteLine();
         }
         Console.WriteLine();
     } else{
         Console.WriteLine(result.Value);
     }
+    textBuilder.Clear();
 }
 
