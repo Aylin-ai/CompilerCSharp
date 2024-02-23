@@ -45,6 +45,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         VariableDeclaration,
         IfStatement,
         WhileStatement,
+        ForStatement,
 
         //Keywords
         TrueKeyword,
@@ -54,5 +55,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         IfKeyword,
         ElseKeyword,
         WhileKeyword,
+        ForKeyword,
+        ToKeyword,
     }
 }
