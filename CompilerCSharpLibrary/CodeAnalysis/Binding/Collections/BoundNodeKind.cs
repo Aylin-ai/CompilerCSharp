@@ -8,6 +8,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
         BlockStatement,
         ExpressionStatement,
         VariableDeclaration,
+        IfStatement,
 
         //Expressions
         UnaryExpression,

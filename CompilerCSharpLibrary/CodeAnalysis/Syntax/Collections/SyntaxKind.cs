@@ -37,17 +37,20 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
 
         //Nodes
         CompilationUnit,
+        ElseClause,
 
         //Statements
         BlockStatement,
         ExpressionStatement,
         VariableDeclaration,
+        IfStatement,
 
         //Keywords
         TrueKeyword,
         FalseKeyword,
         VarKeyword,
         LetKeyword,
-
+        IfKeyword,
+        ElseKeyword,
     }
 }
