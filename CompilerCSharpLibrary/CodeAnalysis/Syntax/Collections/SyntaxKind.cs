@@ -29,9 +29,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         NameExpression,
         AssignmentExpression,
 
+        //Nodes
+        CompilationUnit,
+
         //Keywords
         TrueKeyword,
         FalseKeyword,
-        
     }
 }

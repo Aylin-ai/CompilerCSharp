@@ -19,7 +19,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables){
             Binder binder = new Binder(variables);
-            BoundExpression boundExpression = binder.BindExpression(Syntax.Root);
+            BoundExpression boundExpression = binder.BindExpression(Syntax.Root.Expression);
 
             Syntax.Diagnostics.AddRange(binder.Diagnostics);
             if (Syntax.Diagnostics.Any()){

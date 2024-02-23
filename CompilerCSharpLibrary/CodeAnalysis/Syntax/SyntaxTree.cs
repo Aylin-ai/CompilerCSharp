@@ -10,17 +10,20 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     и токен конца файла
     */
     public sealed class SyntaxTree{
-        public SyntaxTree(SourceText text, DiagnosticBag diagnostics, BaseExpressionSyntax root, SyntaxToken endOfFileToken){
+        private SyntaxTree(SourceText text){
+
+            Parser parser = new Parser(text);
+            var root = parser.ParseCompilationUnit();
+            var diagnostics = parser.Diagnostics;
+
             Text = text;
             Diagnostics = diagnostics;
             Root = root;
-            EndOfFileToken = endOfFileToken;
         }
 
         public SourceText Text { get; }
         public DiagnosticBag Diagnostics { get; }
-        public BaseExpressionSyntax Root { get; }
-        public SyntaxToken EndOfFileToken { get; }
+        public CompilationUnitSyntax Root { get; }
 
         //Создает парсер и возвращает построенное дерево
         public static SyntaxTree Parse(string text){
@@ -29,8 +32,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         }
 
         public static SyntaxTree Parse(SourceText text){
-            Parser parser = new Parser(text);
-            return parser.Parse();
+            return new SyntaxTree(text);
         }
 
         public static IEnumerable<SyntaxToken> ParseTokens(string text){

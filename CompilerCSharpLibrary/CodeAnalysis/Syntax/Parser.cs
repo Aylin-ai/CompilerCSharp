@@ -72,11 +72,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         Метод для постройки синтаксического дерева. Содержит в себе все
         ошибки, само выражение и токен конца файла
         */
-        public SyntaxTree Parse()
+        public CompilationUnitSyntax ParseCompilationUnit()
         {
             BaseExpressionSyntax expression = ParseExpression();
             SyntaxToken endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(_text, Diagnostics, expression, endOfFileToken);
+            return new CompilationUnitSyntax(expression, endOfFileToken);
         }
 
         private BaseExpressionSyntax ParseExpression(){

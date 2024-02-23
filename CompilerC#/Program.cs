@@ -80,7 +80,8 @@ while (true){
             Console.WriteLine();
         }
         Console.WriteLine();
-    } else{
+    } 
+    else{
         Console.WriteLine(result.Value);
     }
     textBuilder.Clear();
