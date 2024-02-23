@@ -44,6 +44,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         ExpressionStatement,
         VariableDeclaration,
         IfStatement,
+        WhileStatement,
 
         //Keywords
         TrueKeyword,
@@ -52,5 +53,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         LetKeyword,
         IfKeyword,
         ElseKeyword,
+        WhileKeyword,
     }
 }

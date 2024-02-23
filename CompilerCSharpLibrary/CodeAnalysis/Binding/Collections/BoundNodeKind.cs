@@ -9,6 +9,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
         ExpressionStatement,
         VariableDeclaration,
         IfStatement,
+        WhileStatement,
 
         //Expressions
         UnaryExpression,
