@@ -37,7 +37,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         public static BoundGlobalScope BindGlobalScope(BoundGlobalScope previous, CompilationUnitSyntax syntax){
             var parentScope = CreateParentScopes(previous);
             var binder = new Binder(parentScope);
-            var expression = binder.BindExpression(syntax.Expression);
+            var statement = binder.BindStatement(syntax.Statement);
             var variables = binder._scope.GetDeclaredVariables();
             var diagnostics = binder.Diagnostics;
 
@@ -45,7 +45,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 diagnostics.AddRange(previous.Diagnostics);
             }
 
-            return new BoundGlobalScope(previous, diagnostics, variables, expression);
+            return new BoundGlobalScope(previous, diagnostics, variables, statement);
         }
 
         private static BoundScope CreateParentScopes(BoundGlobalScope previous){
@@ -72,8 +72,36 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
         public DiagnosticBag Diagnostics => _diagnostics;
 
+        private BoundStatement BindStatement(StatementSyntax syntax){
+            switch (syntax.Kind){
+                case SyntaxKind.BlockStatement:
+                    return BindBlockStatement((BlockStatementSyntax)syntax);
+                case SyntaxKind.ExpressionStatement:
+                    return BindExpressionStatement((ExpressionStatementSyntax)syntax);
+                default:
+                    throw new Exception($"Unexpected syntax {syntax.Kind}");
+            }
+        }
+
+        private BoundBlockStatement BindBlockStatement(BlockStatementSyntax syntax)
+        {
+            var statements = new List<BoundStatement>();
+            foreach (var statementSyntax in syntax.Statements){
+                var statement = BindStatement(statementSyntax);
+                statements.Add(statement);
+            }
+
+            return new BoundBlockStatement(statements);
+        }
+
+        private BoundExpressionStatement BindExpressionStatement(ExpressionStatementSyntax syntax)
+        {
+            var expression = BindExpression(syntax.Expression);
+            return new BoundExpressionStatement(expression);
+        }
+
         //Возвращает нужный вид выражение с приведением его параметра к нужному типу
-        public BoundExpression BindExpression(BaseExpressionSyntax syntax){
+        private BoundExpression BindExpression(BaseExpressionSyntax syntax){
             switch (syntax.Kind){
                 case SyntaxKind.LiteralExpression:
                     return BindLiteralExpression((LiteralExpressionSyntax)syntax);

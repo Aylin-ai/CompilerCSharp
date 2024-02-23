@@ -43,7 +43,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 return new EvaluationResult(Syntax.Diagnostics, null);
             }
 
-            Evaluator evaluator = new Evaluator(GlobalScope.Expression, variables);
+            Evaluator evaluator = new Evaluator(GlobalScope.Statement, variables);
             object value = evaluator.Evaluate();
             return new EvaluationResult([], value);
         }

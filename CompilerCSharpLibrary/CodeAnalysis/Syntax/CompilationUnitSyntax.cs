@@ -4,12 +4,12 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
     public sealed class CompilationUnitSyntax : SyntaxNode{
-        public CompilationUnitSyntax(BaseExpressionSyntax expression, SyntaxToken endOfFileToken){
-            Expression = expression;
+        public CompilationUnitSyntax(StatementSyntax statement, SyntaxToken endOfFileToken){
+            Statement = statement;
             EndOfFileToken = endOfFileToken;
         }
 
-        public BaseExpressionSyntax Expression { get; }
+        public StatementSyntax Statement { get; }
         public SyntaxToken EndOfFileToken { get; }
 
         public override SyntaxKind Kind => SyntaxKind.CompilationUnit;

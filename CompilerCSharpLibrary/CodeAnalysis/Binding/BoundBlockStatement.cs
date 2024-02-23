@@ -1,5 +1,3 @@
-using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
-
 /*
 Абстрактное синтаксическое дерево требуется для того, чтобы
 синтаксическое дерево оставалось неизменяемым.
@@ -16,20 +14,17 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
 АСД нужно, чтобы хранить больше информации, в отличие от
 синтаксического дерева, а также чтобы последнее было неизменяемо
 */
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
+
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
-    public sealed class BoundGlobalScope{
-        public BoundGlobalScope(BoundGlobalScope previous, DiagnosticBag diagnostics, 
-        List<VariableSymbol> variables, BoundStatement statement){
-            Previous = previous;
-            Diagnostics = diagnostics;
-            Variables = variables;
-            Statement = statement;
+    public sealed class BoundBlockStatement : BoundStatement{
+        public BoundBlockStatement(List<BoundStatement> statements){
+            Statements = statements;
         }
 
-        public BoundGlobalScope Previous { get; }
-        public DiagnosticBag Diagnostics { get; }
-        public List<VariableSymbol> Variables { get; }
-        public BoundStatement Statement { get; }
+        public List<BoundStatement> Statements { get; }
+
+        public override BoundNodeKind Kind => BoundNodeKind.BlockStatement;
     }
 }

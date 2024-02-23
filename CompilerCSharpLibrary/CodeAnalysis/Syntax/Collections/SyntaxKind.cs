@@ -20,6 +20,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         NotEqualsToken,
         EqualsEqualsToken,
         EqualsToken,
+        OpenBraceToken,
+        CloseBraceToken,
 
         //Expressions
         LiteralExpression,
@@ -32,8 +34,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         //Nodes
         CompilationUnit,
 
+        //Statements
+        BlockStatement,
+        ExpressionStatement,
+
         //Keywords
         TrueKeyword,
         FalseKeyword,
+
     }
 }
