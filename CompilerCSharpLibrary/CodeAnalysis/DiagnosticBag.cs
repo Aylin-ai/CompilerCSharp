@@ -73,5 +73,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             string message = $"Cannot conver type '{fromType}' to '{toType}'.";
             Report(span, message);
         }
+
+        internal void ReportCannotAssign(TextSpan span, string name)
+        {
+            string message = $"Variable '{name}' is read-only and cannot be assigned to.";
+            Report(span, message);
+        }
     }
 }

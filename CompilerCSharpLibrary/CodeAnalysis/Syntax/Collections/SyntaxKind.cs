@@ -37,10 +37,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         //Statements
         BlockStatement,
         ExpressionStatement,
+        VariableDeclaration,
 
         //Keywords
         TrueKeyword,
         FalseKeyword,
-
+        VarKeyword,
+        LetKeyword,
     }
 }

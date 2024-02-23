@@ -76,6 +76,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             switch (syntax.Kind){
                 case SyntaxKind.BlockStatement:
                     return BindBlockStatement((BlockStatementSyntax)syntax);
+                case SyntaxKind.VariableDeclaration:
+                    return BindVariableDeclaration((VariableDeclarationSyntax)syntax);
                 case SyntaxKind.ExpressionStatement:
                     return BindExpressionStatement((ExpressionStatementSyntax)syntax);
                 default:
@@ -83,13 +85,29 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             }
         }
 
+        private BoundStatement BindVariableDeclaration(VariableDeclarationSyntax syntax)
+        {
+            var name = syntax.Identifier.Text;
+            var isReadOnly = syntax.Keyword.Kind == SyntaxKind.LetKeyword;
+            var initializer = BindExpression(syntax.Initializer);
+            var variable = new VariableSymbol(name, isReadOnly, initializer.Type);
+            if (!_scope.TryDeclare(variable)){
+                _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
+            }
+
+            return new BoundVariableDeclaration(variable, initializer);
+        }
+
         private BoundBlockStatement BindBlockStatement(BlockStatementSyntax syntax)
         {
             var statements = new List<BoundStatement>();
+            _scope = new BoundScope(_scope);
             foreach (var statementSyntax in syntax.Statements){
                 var statement = BindStatement(statementSyntax);
                 statements.Add(statement);
             }
+
+            _scope = _scope.Parent;
 
             return new BoundBlockStatement(statements);
         }
@@ -133,9 +151,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var boundExpression = BindExpression(syntax.Expression);
 
             if (!_scope.TryLookup(name, out var variable)){
-                variable = new VariableSymbol(name, boundExpression.Type);
-                _scope.TryDeclare(variable);
+                _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
+                return boundExpression;
             }
+
+            if (variable.IsReadOnly)
+                _diagnostics.ReportCannotAssign(syntax.EqualsToken.Span, name);
 
             if (boundExpression.Type != variable.Type){
                 _diagnostics.ReportCannotConvert(syntax.Expression.Span, boundExpression.Type, variable.Type);

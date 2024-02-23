@@ -14,8 +14,21 @@
 АСД нужно, чтобы хранить больше информации, в отличие от
 синтаксического дерева, а также чтобы последнее было неизменяемо
 */
+using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
+
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
-    public abstract class BoundStatement : BoundNode{}
+    public sealed class BoundVariableDeclaration : BoundStatement{
+        public BoundVariableDeclaration(VariableSymbol variable, BoundExpression initializer){
+            Variable = variable;
+            Initializer = initializer;
+        }
+
+        public VariableSymbol Variable { get; }
+        public BoundExpression Initializer { get; }
+
+        public override BoundNodeKind Kind => BoundNodeKind.VariableDeclaration;
+    }
 
 }
