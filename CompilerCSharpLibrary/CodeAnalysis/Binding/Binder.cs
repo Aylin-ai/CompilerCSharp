@@ -2,10 +2,15 @@ using System.Runtime.InteropServices;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
 /*
 Абстрактное синтаксическое дерево требуется для того, чтобы

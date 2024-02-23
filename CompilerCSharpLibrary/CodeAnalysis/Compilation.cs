@@ -1,6 +1,6 @@
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using CompilerCSharpLibrary.CodeAnalysis.Binding;
-using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes;
 
 namespace CompilerCSharpLibrary.CodeAnalysis
 {

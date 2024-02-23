@@ -2,6 +2,8 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis
 {

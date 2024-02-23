@@ -1,7 +1,8 @@
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
-namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
+namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
     public sealed class ExpressionStatementSyntax : StatementSyntax{
         public ExpressionStatementSyntax(BaseExpressionSyntax expression){

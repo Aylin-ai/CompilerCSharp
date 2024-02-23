@@ -1,6 +1,7 @@
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
-namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
+namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
     public sealed class BlockStatementSyntax : StatementSyntax{
         public BlockStatementSyntax(SyntaxToken openBraceToken, List<StatementSyntax> statements, SyntaxToken closeBraceToken){

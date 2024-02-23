@@ -14,37 +14,18 @@
 АСД нужно, чтобы хранить больше информации, в отличие от
 синтаксического дерева, а также чтобы последнее было неизменяемо
 */
-namespace CompilerCSharpLibrary.CodeAnalysis.Binding
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
+
+namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Statements
 {
-    public sealed class BoundScope{
-        private Dictionary<string, VariableSymbol> _variables = new Dictionary<string, VariableSymbol>();
-
-        public BoundScope(BoundScope parent){
-            Parent = parent;
+    public sealed class BoundBlockStatement : BoundStatement{
+        public BoundBlockStatement(List<BoundStatement> statements){
+            Statements = statements;
         }
 
-        public BoundScope Parent { get; }
+        public List<BoundStatement> Statements { get; }
 
-        public bool TryDeclare(VariableSymbol variable){
-            if (_variables.ContainsKey(variable.Name))
-                return false;
-            
-            _variables.Add(variable.Name, variable);
-            return true;
-        }
-
-        public bool TryLookup(string name, out VariableSymbol variable){
-            if (_variables.TryGetValue(name, out variable))
-                return true;
-
-            if (Parent == null)
-                return false;
-            
-            return Parent.TryLookup(name, out variable);
-        }
-
-        public List<VariableSymbol> GetDeclaredVariables(){
-            return _variables.Values.ToList();
-        }
+        public override BoundNodeKind Kind => BoundNodeKind.BlockStatement;
     }
 }
