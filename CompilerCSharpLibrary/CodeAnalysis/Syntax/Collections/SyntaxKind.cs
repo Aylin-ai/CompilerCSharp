@@ -19,6 +19,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         PipePipeToken,
         NotEqualsToken,
         EqualsEqualsToken,
+        GreaterOrEqualsToken,
+        GreaterToken,
+        LessOrEqualsToken,
+        LessToken,
         EqualsToken,
         OpenBraceToken,
         CloseBraceToken,
@@ -44,5 +48,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         FalseKeyword,
         VarKeyword,
         LetKeyword,
+
     }
 }

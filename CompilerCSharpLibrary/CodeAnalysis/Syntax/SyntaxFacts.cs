@@ -17,6 +17,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
                 case SyntaxKind.NotEqualsToken:
                 case SyntaxKind.EqualsEqualsToken:
+                case SyntaxKind.GreaterToken:
+                case SyntaxKind.GreaterOrEqualsToken:
+                case SyntaxKind.LessToken:
+                case SyntaxKind.LessOrEqualsToken:
                     return 3;
 
                 case SyntaxKind.AmpersandAmpersandToken:
@@ -97,6 +101,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return "==";
                 case SyntaxKind.NotEqualsToken:
                     return "!=";
+                case SyntaxKind.GreaterToken:
+                    return ">";
+                case SyntaxKind.GreaterOrEqualsToken:
+                    return ">=";
+                case SyntaxKind.LessToken:
+                    return "<";
+                case SyntaxKind.LessOrEqualsToken:
+                    return "<=";
                 case SyntaxKind.OpenParenthesisToken:
                     return "(";
                 case SyntaxKind.CloseParenthesisToken:

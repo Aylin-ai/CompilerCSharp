@@ -10,5 +10,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
         LogicalOr,
         NotEquals,
         Equals,
+        GreaterOrEquals,
+        Greater,
+        LessOrEquals,
+        Less,
     }
 }

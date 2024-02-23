@@ -112,6 +112,24 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                             break;
                         }
                         break;
+                    case '>':
+                        if (Lookahead == '='){
+                            _kind = SyntaxKind.GreaterOrEqualsToken;
+                            _position += 2;
+                            break;
+                        }
+                        _kind = SyntaxKind.GreaterToken;
+                        _position++;
+                        break;
+                    case '<':
+                        if (Lookahead == '='){
+                            _kind = SyntaxKind.LessOrEqualsToken;
+                            _position += 2;
+                            break;
+                        }
+                        _kind = SyntaxKind.LessToken;
+                        _position++;
+                        break;
                     case '|':
                         if (Lookahead == '|'){
                             _kind = SyntaxKind.PipePipeToken;
