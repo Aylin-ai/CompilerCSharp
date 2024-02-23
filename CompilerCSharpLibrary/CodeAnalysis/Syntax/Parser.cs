@@ -164,8 +164,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
             while (Current.Kind != SyntaxKind.EndOfFileToken &&
             Current.Kind != SyntaxKind.CloseBraceToken){
+                var startToken = Current;
+
                 var statement = ParseStatement();
                 statements.Add(statement);
+
+                //Пропускаем токен, чтобы избежать бесконечного цикла
+                if (Current == startToken){
+                    NextToken();
+                }
             }
 
             var closeBraceToken = MatchToken(SyntaxKind.CloseBraceToken);
