@@ -61,5 +61,17 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             string message = $"Variable '{name}' doesn't exist.";
             Report(span, message);
         }
+
+        public void ReportVariableAlreadyDeclared(TextSpan span, string name)
+        {
+            string message = $"Variable '{name}' is already declared.";
+            Report(span, message);
+        }
+
+        public void ReportCannotConvert(TextSpan span, Type fromType, Type toType)
+        {
+            string message = $"Cannot conver type '{fromType}' to '{toType}'.";
+            Report(span, message);
+        }
     }
 }

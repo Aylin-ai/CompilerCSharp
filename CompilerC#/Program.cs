@@ -6,6 +6,7 @@ using System.Text;
 bool showTree = false;
 var variables = new Dictionary<VariableSymbol, object>();
 var textBuilder = new StringBuilder();
+Compilation previous = null;
 
 while (true){
     if (textBuilder.Length == 0)
@@ -29,6 +30,10 @@ while (true){
             Console.Clear();
             continue;
         }
+        else if (input == "#reset"){
+            previous = null;
+            continue;
+        }
     }
 
     textBuilder.AppendLine(input);
@@ -40,7 +45,7 @@ while (true){
         continue;
     }
 
-    Compilation compilation = new Compilation(syntaxTree);
+    Compilation compilation = previous == null ? new Compilation(syntaxTree) : previous.ContinueWith(syntaxTree);
     EvaluationResult result = compilation.Evaluate(variables);
 
     DiagnosticBag diagnostics = result.Diagnostics;
@@ -83,6 +88,7 @@ while (true){
     } 
     else{
         Console.WriteLine(result.Value);
+        previous = compilation;
     }
     textBuilder.Clear();
 }

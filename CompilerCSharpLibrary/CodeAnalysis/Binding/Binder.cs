@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators;
@@ -24,14 +25,49 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
 */
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
-
     public sealed class Binder{
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
-        private readonly Dictionary<VariableSymbol, object> _variables;
+        private BoundScope _scope;
 
-        public Binder(Dictionary<VariableSymbol, object> variables)
+        public Binder(BoundScope parent)
         {
-            _variables = variables;
+            _scope = new BoundScope(parent);
+        }
+
+        public static BoundGlobalScope BindGlobalScope(BoundGlobalScope previous, CompilationUnitSyntax syntax){
+            var parentScope = CreateParentScopes(previous);
+            var binder = new Binder(parentScope);
+            var expression = binder.BindExpression(syntax.Expression);
+            var variables = binder._scope.GetDeclaredVariables();
+            var diagnostics = binder.Diagnostics;
+
+            if (previous != null){
+                diagnostics.AddRange(previous.Diagnostics);
+            }
+
+            return new BoundGlobalScope(previous, diagnostics, variables, expression);
+        }
+
+        private static BoundScope CreateParentScopes(BoundGlobalScope previous){
+            var stack = new Stack<BoundGlobalScope>();
+            while (previous != null){
+                stack.Push(previous);
+                previous = previous.Previous;
+            }
+
+            BoundScope parent = null;
+
+            while (stack.Count > 0){
+                previous = stack.Pop();
+                var scope = new BoundScope(parent);
+                foreach (var v in previous.Variables){
+                    scope.TryDeclare(v);
+                }
+
+                parent = scope;
+            }
+
+            return parent;
         }
 
         public DiagnosticBag Diagnostics => _diagnostics;
@@ -68,12 +104,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var name = syntax.IdentifierToken.Text;
             var boundExpression = BindExpression(syntax.Expression);
 
-            var existingVariable = _variables.Keys.FirstOrDefault(v => v.Name == name);
-            if (existingVariable != null){
-                _variables.Remove(existingVariable);
+            if (!_scope.TryLookup(name, out var variable)){
+                variable = new VariableSymbol(name, boundExpression.Type);
+                _scope.TryDeclare(variable);
             }
-            var variable = new VariableSymbol(name, boundExpression.Type);
-            _variables[variable] = null;
+
+            if (boundExpression.Type != variable.Type){
+                _diagnostics.ReportCannotConvert(syntax.Expression.Span, boundExpression.Type, variable.Type);
+                return boundExpression;
+            }
 
             return new BoundAssignmentExpression(variable, boundExpression);
         }
@@ -86,10 +125,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
-
-            var variable = _variables.Keys.FirstOrDefault(v => v.Name == name);
-
-            if (variable == null){
+            
+            if (!_scope.TryLookup(name, out var variable)){
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
                 return new BoundLiteralExpression(0);
             }
