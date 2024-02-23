@@ -1,4 +1,7 @@
 using CompilerCSharpLibrary.CodeAnalysis.Text;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
@@ -71,12 +74,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         */
         public SyntaxTree Parse()
         {
-            ExpressionSyntax expression = ParseExpression();
+            BaseExpressionSyntax expression = ParseExpression();
             SyntaxToken endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
             return new SyntaxTree(_text, Diagnostics, expression, endOfFileToken);
         }
 
-        private ExpressionSyntax ParseExpression(){
+        private BaseExpressionSyntax ParseExpression(){
             return ParseAssignmentExpression();
         }
 
@@ -87,7 +90,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         В обратном случае вызывает дальнейшее построение
         дерева (метод ParseBinaryExpression)
         */
-        private ExpressionSyntax ParseAssignmentExpression(){
+        private BaseExpressionSyntax ParseAssignmentExpression(){
             if (Peek(0).Kind == SyntaxKind.IdentifierToken && 
                 Peek(1).Kind == SyntaxKind.EqualsToken){
                 var identifierToken = NextToken();
@@ -103,13 +106,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         Строит дерево с учетом приоритетов операторов.
         Требуется дальнейшее рассмотрение
         */
-        private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0){
-            ExpressionSyntax left;
+        private BaseExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0){
+            BaseExpressionSyntax left;
 
             int unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
             if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence){
                 SyntaxToken operatorToken = NextToken();
-                ExpressionSyntax operand = ParseBinaryExpression(unaryOperatorPrecedence);
+                BaseExpressionSyntax operand = ParseBinaryExpression(unaryOperatorPrecedence);
                 left = new UnaryExpressionSyntax(operatorToken, operand);
             } 
             else {
@@ -122,7 +125,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     break;
                 
                 SyntaxToken operatorToken = NextToken();
-                ExpressionSyntax right = ParseBinaryExpression(precedence);
+                BaseExpressionSyntax right = ParseBinaryExpression(precedence);
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 
@@ -134,7 +137,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         После получения токена возвращает токен NumberExpressionSyntax, 
         хранящий 1 числовой токен
         */
-        public ExpressionSyntax ParsePrimaryExpression(){
+        public BaseExpressionSyntax ParsePrimaryExpression(){
             switch (Current.Kind)
             {
                 case SyntaxKind.OpenParenthesisToken:
@@ -153,28 +156,28 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             }  
         }
 
-        private ExpressionSyntax ParseNumberLiteral()
+        private BaseExpressionSyntax ParseNumberLiteral()
         {
             SyntaxToken numberToken = MatchToken(SyntaxKind.NumberToken);
             return new LiteralExpressionSyntax(numberToken);
         }
 
-        private ExpressionSyntax ParseParanthesizedExpression()
+        private BaseExpressionSyntax ParseParanthesizedExpression()
         {
             SyntaxToken left = MatchToken(SyntaxKind.OpenParenthesisToken);
-            ExpressionSyntax expression = ParseExpression();
+            BaseExpressionSyntax expression = ParseExpression();
             SyntaxToken right = MatchToken(SyntaxKind.CloseParenthesisToken);
             return new ParenthesizedExpressionSyntax(left, expression, right);
         }
 
-        private ExpressionSyntax ParseBooleanLiteral()
+        private BaseExpressionSyntax ParseBooleanLiteral()
         {
             bool isTrue = Current.Kind == SyntaxKind.TrueKeyword;
             SyntaxToken keywordToken = isTrue ? MatchToken(SyntaxKind.TrueKeyword) : MatchToken(SyntaxKind.FalseKeyword);
             return new LiteralExpressionSyntax(keywordToken, isTrue);
         }
 
-        private ExpressionSyntax ParseNameExpression()
+        private BaseExpressionSyntax ParseNameExpression()
         {
             var identifierToken = MatchToken(SyntaxKind.IdentifierToken);
             return new NameExpressionSyntax(identifierToken);

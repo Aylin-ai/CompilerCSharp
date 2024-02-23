@@ -59,7 +59,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
                 }
             }
 
-            if (position > lineStart){
+            if (position >= lineStart){
                 AddLine(lines, sourceText, position, lineStart, 0);
             }
             return lines;

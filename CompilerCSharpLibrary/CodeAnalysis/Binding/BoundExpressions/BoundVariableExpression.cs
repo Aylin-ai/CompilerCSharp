@@ -15,7 +15,10 @@
 синтаксического дерева, а также чтобы последнее было неизменяемо
 */
 
-namespace CompilerCSharpLibrary.CodeAnalysis.Binding
+using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
+
+namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
 {
     /*
     Класс, представляющий узел с переменной в АСД.

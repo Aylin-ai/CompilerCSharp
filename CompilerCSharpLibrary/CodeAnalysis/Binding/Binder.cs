@@ -1,4 +1,10 @@
+using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
 
 /*
 Абстрактное синтаксическое дерево требуется для того, чтобы
@@ -31,7 +37,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         public DiagnosticBag Diagnostics => _diagnostics;
 
         //Возвращает нужный вид выражение с приведением его параметра к нужному типу
-        public BoundExpression BindExpression(ExpressionSyntax syntax){
+        public BoundExpression BindExpression(BaseExpressionSyntax syntax){
             switch (syntax.Kind){
                 case SyntaxKind.LiteralExpression:
                     return BindLiteralExpression((LiteralExpressionSyntax)syntax);

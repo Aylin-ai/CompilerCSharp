@@ -1,4 +1,4 @@
-namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
+namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
 {
     //Виды токенов
     public enum SyntaxKind{

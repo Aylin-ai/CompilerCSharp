@@ -1,10 +1,13 @@
-namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
+
+namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
 {
     /*
     Класс, представляющий выражение с использованием переменной.
     Содержит в себе токен переменной.
     */
-    public sealed class NameExpressionSyntax : ExpressionSyntax{
+    public sealed class NameExpressionSyntax : BaseExpressionSyntax{
         public NameExpressionSyntax(SyntaxToken identifierToken){
             IdentifierToken = identifierToken;
         }

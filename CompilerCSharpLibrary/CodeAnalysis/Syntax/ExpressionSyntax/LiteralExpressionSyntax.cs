@@ -1,4 +1,7 @@
-namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
+
+namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
 {
     /*
     Класс, представляющий узел числа, от которого идет
@@ -6,7 +9,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     В качестве дочерних узлов содержит один узел,
     представляющий число
     */
-    public sealed class LiteralExpressionSyntax : ExpressionSyntax{
+    public sealed class LiteralExpressionSyntax : BaseExpressionSyntax{
         public LiteralExpressionSyntax(SyntaxToken literalToken, object value){
             LiteralToken = literalToken;
             Value = value;

@@ -1,4 +1,4 @@
-namespace CompilerCSharpLibrary.CodeAnalysis.Binding
+namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
 {
     //Список типов бинарного оператора
     public enum BoundBinaryOperatorKind{

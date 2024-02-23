@@ -1,6 +1,7 @@
-using CompilerCSharpLibrary.CodeAnalysis.Syntax;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 
-namespace CompilerCSharpLibrary.CodeAnalysis.Binding
+namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
 {
     /*
     Класс, описывающий бинарный оператор в АСД. Содержит в себе информацию

@@ -1,4 +1,6 @@
 using CompilerCSharpLibrary.CodeAnalysis.Text;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
@@ -8,7 +10,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     и токен конца файла
     */
     public sealed class SyntaxTree{
-        public SyntaxTree(SourceText text, DiagnosticBag diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken){
+        public SyntaxTree(SourceText text, DiagnosticBag diagnostics, BaseExpressionSyntax root, SyntaxToken endOfFileToken){
             Text = text;
             Diagnostics = diagnostics;
             Root = root;
@@ -17,7 +19,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         public SourceText Text { get; }
         public DiagnosticBag Diagnostics { get; }
-        public ExpressionSyntax Root { get; }
+        public BaseExpressionSyntax Root { get; }
         public SyntaxToken EndOfFileToken { get; }
 
         //Создает парсер и возвращает построенное дерево

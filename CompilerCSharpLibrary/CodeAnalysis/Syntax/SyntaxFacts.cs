@@ -1,3 +1,5 @@
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {

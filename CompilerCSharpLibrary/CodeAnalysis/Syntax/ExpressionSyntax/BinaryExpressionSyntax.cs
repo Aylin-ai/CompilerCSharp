@@ -1,6 +1,8 @@
 using System.Linq.Expressions;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 
-namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
+namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
 {
 
     /*
@@ -10,8 +12,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     Левые и правые операнды могут ветвиться дальше, то есть
     сами являться деревьями, т.к. класса ExpressionSyntax.
     */
-    public sealed class BinaryExpressionSyntax : ExpressionSyntax{
-        public BinaryExpressionSyntax(ExpressionSyntax left, SyntaxToken operatorToken, ExpressionSyntax right){
+    public sealed class BinaryExpressionSyntax : BaseExpressionSyntax{
+        public BinaryExpressionSyntax(BaseExpressionSyntax left, SyntaxToken operatorToken, BaseExpressionSyntax right){
             Left = left;
             OperatorToken = operatorToken;
             Right = right;
@@ -19,8 +21,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         public override SyntaxKind Kind => SyntaxKind.BinaryExpression;
 
-        public ExpressionSyntax Left { get; }
+        public BaseExpressionSyntax Left { get; }
         public SyntaxToken OperatorToken { get; }
-        public ExpressionSyntax Right { get; }
+        public BaseExpressionSyntax Right { get; }
     }
 }

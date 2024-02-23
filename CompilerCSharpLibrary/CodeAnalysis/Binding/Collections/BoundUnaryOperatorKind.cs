@@ -1,4 +1,4 @@
-namespace CompilerCSharpLibrary.CodeAnalysis.Binding
+namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
 {
     //Перечисление видов унарного оператора
     public enum BoundUnaryOperatorKind{

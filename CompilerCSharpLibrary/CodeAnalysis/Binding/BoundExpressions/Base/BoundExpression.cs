@@ -1,4 +1,4 @@
-namespace CompilerCSharpLibrary.CodeAnalysis.Binding
+namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base
 {
     /*
     Абстрактный класс, наследуемый от абстрактного класса

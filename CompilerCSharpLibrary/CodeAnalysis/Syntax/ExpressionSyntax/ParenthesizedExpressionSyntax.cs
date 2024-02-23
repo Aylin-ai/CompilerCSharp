@@ -1,10 +1,13 @@
-namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
+
+namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
 {
     /*
     Класс, представляющий выражение в скобках
     */
-    public sealed class ParenthesizedExpressionSyntax : ExpressionSyntax{
-        public ParenthesizedExpressionSyntax(SyntaxToken openParenthesisToken, ExpressionSyntax expression,
+    public sealed class ParenthesizedExpressionSyntax : BaseExpressionSyntax{
+        public ParenthesizedExpressionSyntax(SyntaxToken openParenthesisToken, BaseExpressionSyntax expression,
         SyntaxToken closeParenthesisToken){
             OpenParenthesisToken = openParenthesisToken;
             Expression = expression;
@@ -12,7 +15,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         }
         public override SyntaxKind Kind => SyntaxKind.ParethesizedExpression;
         public SyntaxToken OpenParenthesisToken { get; }
-        public ExpressionSyntax Expression { get; }
+        public BaseExpressionSyntax Expression { get; }
         public SyntaxToken CloseParenthesisToken { get; }
     }
 }

@@ -1,3 +1,5 @@
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
+
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
     /*
