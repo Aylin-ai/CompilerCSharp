@@ -4,6 +4,7 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using System.Text;
 
 bool showTree = false;
+bool showProgram = false;
 var variables = new Dictionary<VariableSymbol, object>();
 var textBuilder = new StringBuilder();
 Compilation previous = null;
@@ -24,6 +25,11 @@ while (true){
         else if (input == "#showTree"){
             showTree = !showTree;
             Console.WriteLine(showTree ? "Showing parse tree" : "Not showing parse tree");
+            continue;
+        } 
+        else if (input == "#showProgram"){
+            showProgram = !showProgram;
+            Console.WriteLine(showProgram ? "Showing program" : "Not showing program");
             continue;
         } 
         else if (input == "#clear"){
@@ -52,6 +58,9 @@ while (true){
 
     if (showTree)
         syntaxTree.Root.WriteTo(Console.Out);
+    if (showProgram){
+        compilation.EmitTree(Console.Out);
+    }
 
     //Выдает ошибку с некоторыми выражениями (например, 2++)
     if (diagnostics.Any()){
