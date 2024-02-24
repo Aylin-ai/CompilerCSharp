@@ -14,10 +14,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
             Parser parser = new Parser(text);
             var root = parser.ParseCompilationUnit();
-            var diagnostics = parser.Diagnostics;
 
             Text = text;
-            Diagnostics = diagnostics;
+            Diagnostics = parser.Diagnostics;
             Root = root;
         }
 

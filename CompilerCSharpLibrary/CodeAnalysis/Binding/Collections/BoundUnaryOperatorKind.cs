@@ -4,6 +4,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
     public enum BoundUnaryOperatorKind{
         Identity,
         Negation,
-        LogicalNegation
+        LogicalNegation,
+        OnesComplement
     }
 }

@@ -96,6 +96,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                         _kind = SyntaxKind.CloseBraceToken;
                         _position++;
                         break;
+                    case '~':
+                        _kind = SyntaxKind.TildeToken;
+                        _position++;
+                        break;
+                    case '^':
+                        _kind = SyntaxKind.HatToken;
+                        _position++;
+                        break;
                     case '!':
                         if (Lookahead == '='){
                             _kind = SyntaxKind.NotEqualsToken;
@@ -111,6 +119,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                             _position += 2;
                             break;
                         }
+                        _kind = SyntaxKind.AmpersandToken;
+                        _position++;
                         break;
                     case '>':
                         if (Lookahead == '='){
@@ -136,6 +146,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                             _position += 2;
                             break;
                         }
+                        _kind = SyntaxKind.PipeToken;
+                        _position++;
                         break;
                     case '=':
                         if (Lookahead == '='){

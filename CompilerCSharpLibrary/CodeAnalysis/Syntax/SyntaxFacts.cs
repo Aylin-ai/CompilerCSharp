@@ -23,9 +23,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 case SyntaxKind.LessOrEqualsToken:
                     return 3;
 
+                case SyntaxKind.AmpersandToken:
                 case SyntaxKind.AmpersandAmpersandToken:
                     return 2;
 
+                case SyntaxKind.PipeToken:
+                case SyntaxKind.HatToken:
                 case SyntaxKind.PipePipeToken:
                     return 1;
 
@@ -39,6 +42,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
                 case SyntaxKind.BangToken:
+                case SyntaxKind.TildeToken:
                     return 6;
 
                 default:
@@ -99,18 +103,22 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return "*";
                 case SyntaxKind.SlashToken:
                     return "/";
+
                 case SyntaxKind.BangToken:
                     return "!";
                 case SyntaxKind.EqualsToken:
                     return "=";
+
                 case SyntaxKind.AmpersandAmpersandToken:
                     return "&&";
                 case SyntaxKind.PipePipeToken:
                     return "||";
+
                 case SyntaxKind.EqualsEqualsToken:
                     return "==";
                 case SyntaxKind.NotEqualsToken:
                     return "!=";
+
                 case SyntaxKind.GreaterToken:
                     return ">";
                 case SyntaxKind.GreaterOrEqualsToken:
@@ -119,14 +127,26 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return "<";
                 case SyntaxKind.LessOrEqualsToken:
                     return "<=";
+
                 case SyntaxKind.OpenParenthesisToken:
                     return "(";
                 case SyntaxKind.CloseParenthesisToken:
                     return ")";
+
                 case SyntaxKind.OpenBraceToken:
                     return "{";
                 case SyntaxKind.CloseBraceToken:
                     return "}";
+
+                case SyntaxKind.AmpersandToken:
+                    return "&";
+                case SyntaxKind.PipeToken:
+                    return "|";
+                case SyntaxKind.TildeToken:
+                    return "~";
+                case SyntaxKind.HatToken:
+                    return "^";
+                    
                 case SyntaxKind.FalseKeyword:
                     return "false";
                 case SyntaxKind.TrueKeyword:

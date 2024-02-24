@@ -26,7 +26,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         EqualsToken,
         OpenBraceToken,
         CloseBraceToken,
-
+        AmpersandToken,
+        PipeToken,
+        TildeToken,
+        HatToken,
+       
         //Expressions
         LiteralExpression,
         BinaryExpression,

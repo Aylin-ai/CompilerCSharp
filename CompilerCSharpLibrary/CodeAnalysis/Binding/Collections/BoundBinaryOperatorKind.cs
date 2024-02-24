@@ -14,5 +14,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
         Greater,
         LessOrEquals,
         Less,
+        BitwiseAnd,
+        BitwiseOr,
+        BitwiseXor,
     }
 }
