@@ -1,6 +1,8 @@
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using CompilerCSharpLibrary.CodeAnalysis.Binding;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Lowering;
 
 namespace CompilerCSharpLibrary.CodeAnalysis
 {
@@ -39,7 +41,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         public void EmitTree(TextWriter writer)
         {
-            GlobalScope.Statement.WriteTo(writer);
+            var statement = GetStatement();
+            statement.WriteTo(writer);
+        }
+
+        private BoundStatement GetStatement()
+        {
+            var result = GlobalScope.Statement;
+            return Lowerer.Lower(result);
         }
 
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables){
@@ -48,7 +57,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 return new EvaluationResult(Syntax.Diagnostics, null);
             }
 
-            Evaluator evaluator = new Evaluator(GlobalScope.Statement, variables);
+            var statement = GetStatement();
+
+            Evaluator evaluator = new Evaluator(statement, variables);
             object value = evaluator.Evaluate();
             return new EvaluationResult([], value);
         }

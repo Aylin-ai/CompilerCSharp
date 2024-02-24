@@ -21,12 +21,12 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Statements
 {
     public sealed class BoundExpressionStatement : BoundStatement{
-        public BoundExpressionStatement(BoundExpression expressions){
-            Expressions = expressions;
+        public BoundExpressionStatement(BoundExpression expression){
+            Expression = expression;
         }
 
         public override BoundNodeKind Kind => BoundNodeKind.ExpressionStatement;
 
-        public BoundExpression Expressions { get; }
+        public BoundExpression Expression { get; }
     }
 }

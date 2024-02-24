@@ -97,7 +97,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         private void EvaluateExpressionStatement(BoundExpressionStatement node)
         {
-            _lastValue = EvaluateExpression(node.Expressions);
+            _lastValue = EvaluateExpression(node.Expression);
         }
 
         //Вычисляет выражение, используя построенное АСД
