@@ -3,6 +3,7 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Lowering;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements;
 
 namespace CompilerCSharpLibrary.CodeAnalysis
 {
@@ -45,7 +46,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             statement.WriteTo(writer);
         }
 
-        private BoundStatement GetStatement()
+        private BoundBlockStatement GetStatement()
         {
             var result = GlobalScope.Statement;
             return Lowerer.Lower(result);

@@ -52,15 +52,16 @@ while (true){
     }
 
     Compilation compilation = previous == null ? new Compilation(syntaxTree) : previous.ContinueWith(syntaxTree);
-    EvaluationResult result = compilation.Evaluate(variables);
 
-    DiagnosticBag diagnostics = result.Diagnostics;
 
     if (showTree)
         syntaxTree.Root.WriteTo(Console.Out);
     if (showProgram){
         compilation.EmitTree(Console.Out);
     }
+
+    EvaluationResult result = compilation.Evaluate(variables);
+    DiagnosticBag diagnostics = result.Diagnostics;
 
     //Выдает ошибку с некоторыми выражениями (например, 2++)
     if (diagnostics.Any()){

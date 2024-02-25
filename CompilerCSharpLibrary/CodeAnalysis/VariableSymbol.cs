@@ -13,5 +13,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
         public string Name { get; }
         public bool IsReadOnly { get; }
         public Type Type { get; }
+
+        public override string ToString() => Name;
     }
 }

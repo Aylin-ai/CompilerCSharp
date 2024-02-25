@@ -14,24 +14,18 @@
 АСД нужно, чтобы хранить больше информации, в отличие от
 синтаксического дерева, а также чтобы последнее было неизменяемо
 */
-using System.Reflection.Emit;
-using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Statements
 {
-    public sealed class BoundIfStatement : BoundStatement{
-        public BoundIfStatement(BoundExpression condition, BoundStatement thenStatement, BoundStatement elseStatement){
-            Condition = condition;
-            ThenStatement = thenStatement;
-            ElseStatement = elseStatement;
+    public sealed class BoundGotoStatement : BoundStatement{
+        public BoundGotoStatement(LabelSymbol label){
+            Label = label;
         }
 
-        public BoundExpression Condition { get; }
-        public BoundStatement ThenStatement { get; }
-        public BoundStatement ElseStatement { get; }
+        public override BoundNodeKind Kind => BoundNodeKind.GotoStatement;
 
-        public override BoundNodeKind Kind => BoundNodeKind.IfStatement;
+        public LabelSymbol Label { get; }
     }
 }

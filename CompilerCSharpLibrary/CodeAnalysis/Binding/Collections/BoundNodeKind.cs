@@ -11,6 +11,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
         IfStatement,
         WhileStatement,
         ForStatement,
+        GotoStatement,
+        LabelStatement,
+        ConditionalGotoStatement,
 
         //Expressions
         UnaryExpression,
