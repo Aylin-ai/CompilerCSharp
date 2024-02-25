@@ -1,3 +1,4 @@
 {
-    "dotnet.defaultSolution": "CompilerC#.sln"
+    "dotnet.defaultSolution": "CompilerC#.sln",
+    "csharp.debug.console": "externalTerminal",
 }

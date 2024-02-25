@@ -54,8 +54,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                     case BoundNodeKind.ConditionalGotoStatement:
                         var cgs = (BoundConditionalGotoStatement)s;
                         var condition = (bool)EvaluateExpression(cgs.Condition);
-                        if (condition && !cgs.JumpIfFalse ||
-                            !condition && cgs.JumpIfFalse)
+                        if (condition == cgs.JumpIfTrue)
                             //Прыжок к нужной строке (индексу)
                             index = labelToIndex[cgs.Label];
                         else
