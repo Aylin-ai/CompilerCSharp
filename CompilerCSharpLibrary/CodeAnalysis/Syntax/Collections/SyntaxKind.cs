@@ -52,6 +52,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         VariableDeclaration,
         IfStatement,
         WhileStatement,
+        DoWhileStatement,
         ForStatement,
 
         //Keywords
@@ -64,5 +65,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         WhileKeyword,
         ForKeyword,
         ToKeyword,
+        DoKeyword,
     }
 }

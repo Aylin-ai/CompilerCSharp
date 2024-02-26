@@ -114,23 +114,47 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 <body>
                 check:
                 gotoTrue <condition> continue
-                end:
             */
 
             var continueLabel = GenerateLabel();
-            var endLabel = GenerateLabel();
             var checkLabel = GenerateLabel();
             
             var gotoCheck = new BoundGotoStatement(checkLabel);
             var continueLabelStatement = new BoundLabelStatement(continueLabel);
             var checkLabelStatement = new BoundLabelStatement(checkLabel);
             var gotoTrue = new BoundConditionalGotoStatement(continueLabel, node.Condition, true);
-            var endLabelStatement = new BoundLabelStatement(endLabel);
 
             var result = new BoundBlockStatement(
                 new List<BoundStatement>(){
                     gotoCheck, continueLabelStatement, node.Body, 
-                    checkLabelStatement, gotoTrue, endLabelStatement
+                    checkLabelStatement, gotoTrue
+                }
+            );
+            return RewriteStatement(result);
+        }
+
+        protected override BoundStatement RewriteDoWhileStatement(BoundDoWhileStatement node)
+        {
+            /*
+                do
+                    <body>
+                while <condition>
+
+                ------->
+
+                continue:
+                <body>
+                gotoTrue <condition> continue
+            */
+
+            var continueLabel = GenerateLabel();
+            
+            var continueLabelStatement = new BoundLabelStatement(continueLabel);
+            var gotoTrue = new BoundConditionalGotoStatement(continueLabel, node.Condition, true);
+
+            var result = new BoundBlockStatement(
+                new List<BoundStatement>(){
+                    continueLabelStatement, node.Body, gotoTrue
                 }
             );
             return RewriteStatement(result);
