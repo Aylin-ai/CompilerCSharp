@@ -21,5 +21,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
         BinaryExpression,
         VariableExpression,
         AssignmentExpression,
+        ErrorExpression,
     }
 }
