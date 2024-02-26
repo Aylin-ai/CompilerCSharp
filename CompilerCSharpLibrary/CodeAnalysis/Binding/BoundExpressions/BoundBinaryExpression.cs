@@ -1,6 +1,7 @@
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
+using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
 {
@@ -17,7 +18,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
             Right = right;
         }
 
-        public override Type Type => Op.Type;
+        public override TypeSymbol Type => Op.Type;
 
         public override BoundNodeKind Kind => BoundNodeKind.BinaryExpression;
 

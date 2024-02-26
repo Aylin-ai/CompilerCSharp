@@ -1,6 +1,7 @@
 using CompilerCSharpLibrary.CodeAnalysis.Text;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using System.Text;
+using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
@@ -290,7 +291,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
             if (!int.TryParse(text, out int value))
             {
-                _diagnostics.ReportInvalidNumber(new TextSpan(_start, length), text, typeof(int));
+                _diagnostics.ReportInvalidNumber(new TextSpan(_start, length), text, TypeSymbol.Int);
             }
 
             _value = value;

@@ -1,3 +1,5 @@
+using CompilerCSharpLibrary.CodeAnalysis.Symbols;
+
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base
 {
     /*
@@ -6,6 +8,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base
     которое содержит в себе.
     */
     public abstract class BoundExpression : BoundNode{
-        public abstract Type Type { get; }
+        public abstract TypeSymbol Type { get; }
     }
 }

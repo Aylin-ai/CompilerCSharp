@@ -17,5 +17,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
         BitwiseAnd,
         BitwiseOr,
         BitwiseXor,
+        Concatination,
     }
 }

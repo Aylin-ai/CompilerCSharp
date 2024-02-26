@@ -1,6 +1,7 @@
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
+using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
 {
@@ -19,7 +20,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
         public BoundUnaryOperator Op { get; }
         public BoundExpression Operand { get; }
 
-        public override Type Type => Op.Type;
+        public override TypeSymbol Type => Op.Type;
 
         public override BoundNodeKind Kind => BoundNodeKind.UnaryExpression;
     }
