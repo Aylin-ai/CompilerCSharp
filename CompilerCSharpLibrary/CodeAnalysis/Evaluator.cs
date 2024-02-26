@@ -16,6 +16,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
         private readonly BoundBlockStatement _root;
         //Словарь всех переменных. Ключ - имя переменной, Значение - значение переменной
         private readonly Dictionary<VariableSymbol, object> _variables;
+        private Random _random;
 
         private object _lastValue;
 
@@ -124,6 +125,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 var message = (string)EvaluateExpression(node.Arguments[0]);
                 Console.WriteLine(message);
                 return null;
+            }
+            else if (node.Function == BuiltInFunctions.Rnd){
+                int minValue = (int)EvaluateExpression(node.Arguments[0]);
+                int maxValue = (int)EvaluateExpression(node.Arguments[1]);
+
+                if (_random == null)
+                    _random = new Random();
+                    
+                int randomNumber = _random.Next(minValue, maxValue);
+                return randomNumber;
             }
             else
                 throw new Exception($"Unexpected function {node.Function}");

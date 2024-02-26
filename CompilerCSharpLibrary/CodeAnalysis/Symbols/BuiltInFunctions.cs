@@ -16,6 +16,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
             new List<ParameterSymbol>(),
             TypeSymbol.String
         );
+        public static readonly FunctionSymbol Rnd = new FunctionSymbol(
+            "rnd", 
+            new List<ParameterSymbol>(){
+                new ParameterSymbol("min", TypeSymbol.Int),
+                new ParameterSymbol("max", TypeSymbol.Int)
+            },
+            TypeSymbol.String
+        );
 
         internal static IEnumerable<FunctionSymbol> GetAll() 
         => typeof(BuiltInFunctions).GetFields(BindingFlags.Public | BindingFlags.Static)
