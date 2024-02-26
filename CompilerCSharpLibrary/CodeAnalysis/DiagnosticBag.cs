@@ -63,9 +63,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Report(span, message);
         }
 
-        public void ReportVariableAlreadyDeclared(TextSpan span, string name)
+        public void ReportSymbolAlreadyDeclared(TextSpan span, string name)
         {
-            string message = $"Variable '{name}' is already declared.";
+            string message = $"'{name}' is already declared.";
             Report(span, message);
         }
 

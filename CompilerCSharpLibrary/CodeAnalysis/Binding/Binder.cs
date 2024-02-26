@@ -11,6 +11,7 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Text;
 
 /*
 Абстрактное синтаксическое дерево требуется для того, чтобы
@@ -222,24 +223,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
             }
         }
-
+        
         private BoundExpression BindExpression(BaseExpressionSyntax syntax, TypeSymbol targetType)
         {
-            var result = BindExpression(syntax);
-            if (targetType != TypeSymbol.Error &&
-                result.Type != TypeSymbol.Error &&
-                result.Type != targetType)
-            {
-                _diagnostics.ReportCannotConvert(syntax.Span, result.Type, targetType);
-
-            }
-            return result;
+            return BindConversion(syntax, targetType);
         }
 
         private BoundExpression BindCallExpression(CallExpressionSyntax syntax)
         {
             if (syntax.Arguments.Count == 1 && LookupType(syntax.Identifier.Text) is TypeSymbol type){
-                return BindConversion(type, syntax.Arguments[0]);
+                return BindConversion(syntax.Arguments[0], type);
             }
                 List<BoundExpression> boundArguments = new List<BoundExpression>();
 
@@ -274,13 +267,30 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             return new BoundCallExpression(function, boundArguments);
         }
 
-        private BoundExpression BindConversion(TypeSymbol type, BaseExpressionSyntax syntax)
+        //Централизация
+        private BoundExpression BindConversion(BaseExpressionSyntax syntax, TypeSymbol type)
         {
             var expression = BindExpression(syntax);
-            var convesion = Conversion.Classify(expression.Type, type);
-            if (!convesion.Exist){
-                _diagnostics.ReportCannotConvert(syntax.Span, expression.Type, type);
+            return BindConversion(syntax.Span, expression, type);
+        }
+
+        private BoundExpression BindConversion(TextSpan diagnosticSpan, BoundExpression expression, TypeSymbol type)
+        {
+            var conversion = Conversion.Classify(expression.Type, type);
+
+            if (!conversion.Exist)
+            {
+                if (expression.Type != TypeSymbol.Error && type != TypeSymbol.Error)
+                {
+                    _diagnostics.ReportCannotConvert(diagnosticSpan, expression.Type, type);
+                }
+
                 return new BoundErrorExpression();
+            }
+
+            if (conversion.IsIdentity)
+            {
+                return expression;
             }
 
             return new BoundConversionExpression(type, expression);
@@ -307,13 +317,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             if (variable.IsReadOnly)
                 _diagnostics.ReportCannotAssign(syntax.EqualsToken.Span, name);
 
-            if (boundExpression.Type != variable.Type)
-            {
-                _diagnostics.ReportCannotConvert(syntax.Expression.Span, boundExpression.Type, variable.Type);
-                return boundExpression;
-            }
+            var convertedExpression = BindConversion(syntax.Expression.Span, boundExpression, variable.Type);
 
-            return new BoundAssignmentExpression(variable, boundExpression);
+            return new BoundAssignmentExpression(variable, convertedExpression);
         }
         /*
         Метод, срабатывающий при вызове переменной. Получает ее имя и ищет среди
@@ -405,7 +411,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
             var isDeclared = _scope.TryDeclareVariable(variable);
             if (declare && !isDeclared)
-                _diagnostics.ReportVariableAlreadyDeclared(identifier.Span, name);
+                _diagnostics.ReportSymbolAlreadyDeclared(identifier.Span, name);
             return variable;
         }
 

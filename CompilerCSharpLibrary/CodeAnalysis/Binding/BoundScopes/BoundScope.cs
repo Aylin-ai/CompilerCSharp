@@ -18,72 +18,73 @@ using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes
 {
-    public sealed class BoundScope{
+    public sealed class BoundScope
+    {
         private Dictionary<string, VariableSymbol> _variables;
         private Dictionary<string, FunctionSymbol> _functions;
+        private Dictionary<string, Symbol> _symbols;
 
-        public BoundScope(BoundScope parent){
+        public BoundScope(BoundScope parent)
+        {
             Parent = parent;
         }
 
         public BoundScope Parent { get; }
 
-        public bool TryDeclareVariable(VariableSymbol variable){
-            if (_variables == null)
-                _variables = new Dictionary<string, VariableSymbol>();
+        public bool TryDeclareVariable(VariableSymbol variable) => TryDeclareSymbol(variable);
+        public bool TryDeclareFunction(FunctionSymbol function) => TryDeclareSymbol(function);
 
-            if (_variables.ContainsKey(variable.Name))
+        public bool TryLookupVariable(string name, out VariableSymbol variable) => TryLookupSymbol(name, out variable);
+        public bool TryLookupFunction(string name, out FunctionSymbol function) => TryLookupSymbol(name, out function);
+
+        public List<VariableSymbol> GetDeclaredVariables() => GetDeclaredSymbols<VariableSymbol>();
+        public List<FunctionSymbol> GetDeclaredFunctions() => GetDeclaredSymbols<FunctionSymbol>();
+
+
+        public bool TryDeclareSymbol<TSymbol>(TSymbol symbol)
+            where TSymbol : Symbol
+        {
+            if (_symbols == null)
+                _symbols = new Dictionary<string, Symbol>();
+            else if (_symbols.ContainsKey(symbol.Name))
                 return false;
-            
-            _variables.Add(variable.Name, variable);
+
+            _symbols.Add(symbol.Name, symbol);
             return true;
         }
 
-        public bool TryLookupVariable(string name, out VariableSymbol variable){
-            variable = null;
+        public bool TryLookupSymbol<TSymbol>(string name, out TSymbol symbol)
+            where TSymbol : Symbol
+        {
+            symbol = null;
 
-            if (_variables != null && _variables.TryGetValue(name, out variable))
-                return true;
+            if (_symbols != null && _symbols.TryGetValue(name, out var declaredSymbol))
+            {
+                if (declaredSymbol is TSymbol matchingSymbol)
+                {
+                    symbol = matchingSymbol;
+                    return true;
+                }
+
+                return false;
+            }
 
             if (Parent == null)
                 return false;
-            
-            return Parent.TryLookupVariable(name, out variable);
+
+            return Parent.TryLookupSymbol(name, out symbol);
         }
 
-        public List<VariableSymbol> GetDeclaredVariables(){
-            if (_variables == null)
-                return new List<VariableSymbol>();
-            return _variables.Values.ToList();
+        private List<TSymbol> GetDeclaredSymbols<TSymbol>()
+            where TSymbol : Symbol
+        {
+            if (_symbols == null)
+                return new List<TSymbol>();
+
+            return _symbols.Values.OfType<TSymbol>().ToList();
         }
 
-        public bool TryDeclareFunction(FunctionSymbol function){
-            if (_functions == null)
-                _functions = new Dictionary<string, FunctionSymbol>();
 
-            if (_functions.ContainsKey(function.Name))
-                return false;
-            
-            _functions.Add(function.Name, function);
-            return true;
-        }
 
-        public bool TryLookupFunction(string name, out FunctionSymbol function){
-            function = null;
-
-            if (_functions != null && _functions.TryGetValue(name, out function))
-                return true;
-
-            if (Parent == null)
-                return false;
-            
-            return Parent.TryLookupFunction(name, out function);
-        }
-
-        public List<FunctionSymbol> GetDeclaredFunctions(){
-            if (_functions == null)
-                return new List<FunctionSymbol>();
-            return _functions.Values.ToList();
-        }
     }
 }
