@@ -134,6 +134,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         public virtual BoundExpression RewriteExpression(BoundExpression node)
         {
             switch (node.Kind){
+                case BoundNodeKind.ErrorExpression:
+                    return RewriteErrorExpression((BoundErrorExpression)node);
                 case BoundNodeKind.UnaryExpression:
                     return RewriteUnaryExpression((BoundUnaryExpression)node);
                 case BoundNodeKind.LiteralExpression:
@@ -148,6 +150,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 default:
                     throw new Exception($"Unexpected node: {node.Kind}");
             }
+        }
+
+        protected virtual BoundExpression RewriteErrorExpression(BoundErrorExpression node)
+        {
+            return node;
         }
 
         protected virtual BoundExpression RewriteUnaryExpression(BoundUnaryExpression node)

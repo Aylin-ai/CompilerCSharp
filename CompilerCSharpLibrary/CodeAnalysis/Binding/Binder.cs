@@ -30,7 +30,8 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 */
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
-    public sealed class Binder{
+    public sealed class Binder
+    {
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
         private BoundScope _scope;
 
@@ -39,33 +40,39 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             _scope = new BoundScope(parent);
         }
 
-        public static BoundGlobalScope BindGlobalScope(BoundGlobalScope previous, CompilationUnitSyntax syntax){
+        public static BoundGlobalScope BindGlobalScope(BoundGlobalScope previous, CompilationUnitSyntax syntax)
+        {
             var parentScope = CreateParentScopes(previous);
             var binder = new Binder(parentScope);
             var statement = binder.BindStatement(syntax.Statement);
             var variables = binder._scope.GetDeclaredVariables();
             var diagnostics = binder.Diagnostics;
 
-            if (previous != null){
+            if (previous != null)
+            {
                 diagnostics.AddRange(previous.Diagnostics);
             }
 
             return new BoundGlobalScope(previous, diagnostics, variables, statement);
         }
 
-        private static BoundScope CreateParentScopes(BoundGlobalScope previous){
+        private static BoundScope CreateParentScopes(BoundGlobalScope previous)
+        {
             var stack = new Stack<BoundGlobalScope>();
-            while (previous != null){
+            while (previous != null)
+            {
                 stack.Push(previous);
                 previous = previous.Previous;
             }
 
             BoundScope parent = null;
 
-            while (stack.Count > 0){
+            while (stack.Count > 0)
+            {
                 previous = stack.Pop();
                 var scope = new BoundScope(parent);
-                foreach (var v in previous.Variables){
+                foreach (var v in previous.Variables)
+                {
                     scope.TryDeclare(v);
                 }
 
@@ -77,8 +84,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
         public DiagnosticBag Diagnostics => _diagnostics;
 
-        private BoundStatement BindStatement(StatementSyntax syntax){
-            switch (syntax.Kind){
+        private BoundStatement BindStatement(StatementSyntax syntax)
+        {
+            switch (syntax.Kind)
+            {
                 case SyntaxKind.BlockStatement:
                     return BindBlockStatement((BlockStatementSyntax)syntax);
                 case SyntaxKind.VariableDeclaration:
@@ -101,20 +110,17 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var lowerBound = BindExpression(syntax.LowerBound, TypeSymbol.Int);
             var upperBound = BindExpression(syntax.UpperBound, TypeSymbol.Int);
 
-            var name = syntax.Identifier.Text;
-
             _scope = new BoundScope(_scope);
 
-            var variable = new VariableSymbol(name, true, TypeSymbol.Int);
-            if (!_scope.TryDeclare(variable))
-                _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
-
+            VariableSymbol variable = BindVariable(syntax.Identifier, isReadOnly: true, TypeSymbol.Int);
             var body = BindStatement(syntax.Body);
 
             _scope = _scope.Parent;
 
             return new BoundForStatement(variable, lowerBound, upperBound, body);
         }
+
+
 
         private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)
         {
@@ -133,13 +139,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
         private BoundStatement BindVariableDeclaration(VariableDeclarationSyntax syntax)
         {
-            var name = syntax.Identifier.Text;
             var isReadOnly = syntax.Keyword.Kind == SyntaxKind.LetKeyword;
             var initializer = BindExpression(syntax.Initializer);
-            var variable = new VariableSymbol(name, isReadOnly, initializer.Type);
-            if (!_scope.TryDeclare(variable)){
-                _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
-            }
+            var variable = BindVariable(syntax.Identifier, isReadOnly, initializer.Type);
 
             return new BoundVariableDeclaration(variable, initializer);
         }
@@ -148,7 +150,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         {
             var statements = new List<BoundStatement>();
             _scope = new BoundScope(_scope);
-            foreach (var statementSyntax in syntax.Statements){
+            foreach (var statementSyntax in syntax.Statements)
+            {
                 var statement = BindStatement(statementSyntax);
                 statements.Add(statement);
             }
@@ -165,8 +168,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         }
 
         //Возвращает нужный вид выражение с приведением его параметра к нужному типу
-        private BoundExpression BindExpression(BaseExpressionSyntax syntax){
-            switch (syntax.Kind){
+        private BoundExpression BindExpression(BaseExpressionSyntax syntax)
+        {
+            switch (syntax.Kind)
+            {
                 case SyntaxKind.LiteralExpression:
                     return BindLiteralExpression((LiteralExpressionSyntax)syntax);
                 case SyntaxKind.UnaryExpression:
@@ -185,10 +190,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             }
         }
 
-        private BoundExpression BindExpression(BaseExpressionSyntax syntax, TypeSymbol targetType){
+        private BoundExpression BindExpression(BaseExpressionSyntax syntax, TypeSymbol targetType)
+        {
             var result = BindExpression(syntax);
-            if (result.Type != targetType)
+            if (targetType != TypeSymbol.Error &&
+                result.Type != TypeSymbol.Error &&
+                result.Type != targetType)
+            {
                 _diagnostics.ReportCannotConvert(syntax.Span, result.Type, targetType);
+
+            }
             return result;
         }
         /*
@@ -203,7 +214,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var name = syntax.IdentifierToken.Text;
             var boundExpression = BindExpression(syntax.Expression);
 
-            if (!_scope.TryLookup(name, out var variable)){
+            if (!_scope.TryLookup(name, out var variable))
+            {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
                 return boundExpression;
             }
@@ -211,7 +223,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             if (variable.IsReadOnly)
                 _diagnostics.ReportCannotAssign(syntax.EqualsToken.Span, name);
 
-            if (boundExpression.Type != variable.Type){
+            if (boundExpression.Type != variable.Type)
+            {
                 _diagnostics.ReportCannotConvert(syntax.Expression.Span, boundExpression.Type, variable.Type);
                 return boundExpression;
             }
@@ -229,8 +242,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var name = syntax.IdentifierToken.Text;
             if (string.IsNullOrEmpty(name))
                 return new BoundErrorExpression();
-            
-            if (!_scope.TryLookup(name, out var variable)){
+
+            if (!_scope.TryLookup(name, out var variable))
+            {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
                 return new BoundErrorExpression();
             }
@@ -256,10 +270,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
             if (boundLeft.Type == TypeSymbol.Error ||
                 boundRight.Type == TypeSymbol.Error)
-                    return new BoundErrorExpression();
+                return new BoundErrorExpression();
 
             BoundBinaryOperator boundOperator = BoundBinaryOperator.Bind(syntax.OperatorToken.Kind, boundLeft.Type, boundRight.Type);
-            if (boundOperator == null){
+            if (boundOperator == null)
+            {
                 _diagnostics.ReportUndefinedBinaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, boundLeft.Type, boundRight.Type);
                 return new BoundErrorExpression();
             }
@@ -279,7 +294,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 return new BoundErrorExpression();
 
             BoundUnaryOperator boundOperator = BoundUnaryOperator.Bind(syntax.OperatorToken.Kind, boundOperand.Type);
-            if (boundOperator == null){
+            if (boundOperator == null)
+            {
                 _diagnostics.ReportUndefinedUnaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, boundOperand.Type);
                 return new BoundErrorExpression();
             }
@@ -295,6 +311,17 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         {
             object value = syntax.Value ?? 0;
             return new BoundLiteralExpression(value);
+        }
+
+        private VariableSymbol BindVariable(SyntaxToken identifier, bool isReadOnly, TypeSymbol type)
+        {
+            var name = identifier.Text ?? "?";
+            var declare = identifier.IsMissing;
+            var variable = new VariableSymbol(name, isReadOnly, type);
+
+            if (declare && !_scope.TryDeclare(variable))
+                _diagnostics.ReportVariableAlreadyDeclared(identifier.Span, name);
+            return variable;
         }
     }
 }
