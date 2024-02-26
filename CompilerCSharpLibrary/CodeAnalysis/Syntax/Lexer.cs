@@ -97,12 +97,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     _kind = SyntaxKind.OpenBraceToken;
                     _position++;
                     break;
+                case '}':
+                    _kind = SyntaxKind.CloseBraceToken;
+                    _position++;
+                    break;
                 case ',':
                     _kind = SyntaxKind.CommaToken;
                     _position++;
                     break;
-                case '}':
-                    _kind = SyntaxKind.CloseBraceToken;
+                case ':':
+                    _kind = SyntaxKind.ColonToken;
                     _position++;
                     break;
                 case '~':

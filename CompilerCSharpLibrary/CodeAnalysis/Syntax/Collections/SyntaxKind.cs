@@ -32,6 +32,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         HatToken,
         StringToken,
         CommaToken,
+        ColonToken,
        
         //Expressions
         LiteralExpression,
@@ -45,6 +46,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         //Nodes
         CompilationUnit,
         ElseClause,
+        TypeClause,
 
         //Statements
         BlockStatement,

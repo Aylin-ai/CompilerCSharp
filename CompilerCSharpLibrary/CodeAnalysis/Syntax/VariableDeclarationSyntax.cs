@@ -1,15 +1,17 @@
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
     public sealed class VariableDeclarationSyntax : StatementSyntax
     {
-        public VariableDeclarationSyntax(SyntaxToken keyword, SyntaxToken identifier, 
+        public VariableDeclarationSyntax(SyntaxToken keyword, SyntaxToken identifier, TypeClauseSyntax typeClause,
         SyntaxToken equalsToken, BaseExpressionSyntax initializer){
             Keyword = keyword;
             Identifier = identifier;
+            TypeClause = typeClause;
             EqualsToken = equalsToken;
             Initializer = initializer;
         }
@@ -17,6 +19,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         public SyntaxToken Keyword { get; }
         public SyntaxToken Identifier { get; }
+        public TypeClauseSyntax TypeClause { get; }
         public SyntaxToken EqualsToken { get; }
         public BaseExpressionSyntax Initializer { get; }
     }

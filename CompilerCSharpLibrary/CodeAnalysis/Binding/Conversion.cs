@@ -20,6 +20,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
     public sealed class Conversion
     {
+        //Implicity - неявное преобразование
+        //Explicity - явное
+        
         public static readonly Conversion None = new Conversion(exist: false, isIdentity: false, isImplicit: false);
         //Identity - типы равны
         public static readonly Conversion Identity = new Conversion(exist: true, isIdentity: true, isImplicit: true);
@@ -51,7 +54,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     return Explicit;
                 }
             }
-            else if (from == TypeSymbol.String){
+            else if (from == TypeSymbol.String)
+            {
                 if (to == TypeSymbol.Int || to == TypeSymbol.Bool)
                     return Explicit;
             }
