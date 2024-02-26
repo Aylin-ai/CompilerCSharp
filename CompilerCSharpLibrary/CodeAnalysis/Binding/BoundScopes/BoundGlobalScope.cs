@@ -1,5 +1,6 @@
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 /*
 Абстрактное синтаксическое дерево требуется для того, чтобы

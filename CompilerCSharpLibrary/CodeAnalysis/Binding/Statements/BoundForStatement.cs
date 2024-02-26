@@ -17,6 +17,7 @@
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Statements
 {

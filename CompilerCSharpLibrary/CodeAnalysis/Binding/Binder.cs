@@ -5,6 +5,7 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
+using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax;

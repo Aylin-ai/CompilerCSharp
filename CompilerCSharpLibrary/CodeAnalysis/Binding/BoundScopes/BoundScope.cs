@@ -14,6 +14,8 @@
 АСД нужно, чтобы хранить больше информации, в отличие от
 синтаксического дерева, а также чтобы последнее было неизменяемо
 */
+using CompilerCSharpLibrary.CodeAnalysis.Symbols;
+
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes
 {
     public sealed class BoundScope{

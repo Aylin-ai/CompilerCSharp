@@ -1,4 +1,4 @@
-namespace CompilerCSharpLibrary.CodeAnalysis
+namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
 {
     /*
     Класс, представляющий переменную. Содержит имя и тип переменной

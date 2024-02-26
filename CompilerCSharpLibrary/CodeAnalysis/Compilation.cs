@@ -4,6 +4,7 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Lowering;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements;
+using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 namespace CompilerCSharpLibrary.CodeAnalysis
 {

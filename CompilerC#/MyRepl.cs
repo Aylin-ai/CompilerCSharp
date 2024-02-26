@@ -2,6 +2,7 @@ using CompilerCSharpLibrary.CodeAnalysis.Text;
 using CompilerCSharpLibrary.CodeAnalysis;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
+using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 namespace CompilerCSharp
 {
