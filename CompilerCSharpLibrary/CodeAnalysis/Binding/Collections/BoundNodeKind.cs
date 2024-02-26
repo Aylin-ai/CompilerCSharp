@@ -23,5 +23,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
         AssignmentExpression,
         ErrorExpression,
         CallExpression,
+        ConversionExpression,
     }
 }
