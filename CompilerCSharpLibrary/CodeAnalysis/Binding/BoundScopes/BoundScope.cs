@@ -19,7 +19,8 @@ using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes
 {
     public sealed class BoundScope{
-        private Dictionary<string, VariableSymbol> _variables = new Dictionary<string, VariableSymbol>();
+        private Dictionary<string, VariableSymbol> _variables;
+        private Dictionary<string, FunctionSymbol> _functions;
 
         public BoundScope(BoundScope parent){
             Parent = parent;
@@ -27,7 +28,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes
 
         public BoundScope Parent { get; }
 
-        public bool TryDeclare(VariableSymbol variable){
+        public bool TryDeclareVariable(VariableSymbol variable){
+            if (_variables == null)
+                _variables = new Dictionary<string, VariableSymbol>();
+
             if (_variables.ContainsKey(variable.Name))
                 return false;
             
@@ -35,18 +39,51 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes
             return true;
         }
 
-        public bool TryLookup(string name, out VariableSymbol variable){
-            if (_variables.TryGetValue(name, out variable))
+        public bool TryLookupVariable(string name, out VariableSymbol variable){
+            variable = null;
+
+            if (_variables != null && _variables.TryGetValue(name, out variable))
                 return true;
 
             if (Parent == null)
                 return false;
             
-            return Parent.TryLookup(name, out variable);
+            return Parent.TryLookupVariable(name, out variable);
         }
 
         public List<VariableSymbol> GetDeclaredVariables(){
+            if (_variables == null)
+                return new List<VariableSymbol>();
             return _variables.Values.ToList();
+        }
+
+        public bool TryDeclareFunction(FunctionSymbol function){
+            if (_functions == null)
+                _functions = new Dictionary<string, FunctionSymbol>();
+
+            if (_functions.ContainsKey(function.Name))
+                return false;
+            
+            _functions.Add(function.Name, function);
+            return true;
+        }
+
+        public bool TryLookupFunction(string name, out FunctionSymbol function){
+            function = null;
+
+            if (_functions != null && _functions.TryGetValue(name, out function))
+                return true;
+
+            if (Parent == null)
+                return false;
+            
+            return Parent.TryLookupFunction(name, out function);
+        }
+
+        public List<FunctionSymbol> GetDeclaredFunctions(){
+            if (_functions == null)
+                return new List<FunctionSymbol>();
+            return _functions.Values.ToList();
         }
     }
 }
