@@ -138,6 +138,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 case SyntaxKind.CloseBraceToken:
                     return "}";
 
+                case SyntaxKind.CommaToken:
+                    return ",";
+
                 case SyntaxKind.AmpersandToken:
                     return "&";
                 case SyntaxKind.PipeToken:

@@ -120,8 +120,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             return new BoundForStatement(variable, lowerBound, upperBound, body);
         }
 
-
-
         private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)
         {
             var condition = BindExpression(syntax.Condition);
@@ -163,12 +161,24 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
         private BoundExpressionStatement BindExpressionStatement(ExpressionStatementSyntax syntax)
         {
-            var expression = BindExpression(syntax.Expression);
+            var expression = BindExpression(syntax.Expression, canBeVoid: true);
             return new BoundExpressionStatement(expression);
         }
 
+        private BoundExpression BindExpression(BaseExpressionSyntax syntax, bool canBeVoid = false)
+        {
+            var result = BindExpressionInternal(syntax);
+            if (!canBeVoid && result.Type == TypeSymbol.Void)
+            {
+                _diagnostics.ReportExpressionMustHaveValue(syntax.Span);
+                return new BoundErrorExpression();
+            }
+
+            return result;
+        }
+
         //Возвращает нужный вид выражение с приведением его параметра к нужному типу
-        private BoundExpression BindExpression(BaseExpressionSyntax syntax)
+        private BoundExpression BindExpressionInternal(BaseExpressionSyntax syntax)
         {
             switch (syntax.Kind)
             {
@@ -184,6 +194,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     return BindNameExpression((NameExpressionSyntax)syntax);
                 case SyntaxKind.AssignmentExpression:
                     return BindAssignmentExpression((AssignmentExpressionSyntax)syntax);
+                case SyntaxKind.CallExpression:
+                    return BindCallExpression((CallExpressionSyntax)syntax);
 
                 default:
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
@@ -202,6 +214,45 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             }
             return result;
         }
+
+        private BoundExpression BindCallExpression(CallExpressionSyntax syntax)
+        {
+            List<BoundExpression> boundArguments = new List<BoundExpression>();
+
+            foreach (var argument in syntax.Arguments)
+            {
+                var boundArgument = BindExpression(argument);
+                boundArguments.Add(boundArgument);
+            }
+
+            var functions = BuiltInFunctions.GetAll();
+
+            var function = functions.SingleOrDefault(f => f.Name == syntax.Identifier.Text);
+            if (function == null)
+            {
+                _diagnostics.ReportUndefinedFunction(syntax.Identifier.Span, syntax.Identifier.Text);
+                return new BoundErrorExpression();
+            }
+
+            if (syntax.Arguments.Count != function.Parameters.Count)
+            {
+                _diagnostics.ReportWrongArgumentCount(syntax.Span, function.Name, function.Parameters.Count, syntax.Arguments.Count);
+            }
+
+            for (int i = 0; i < syntax.Arguments.Count; i++)
+            {
+                var argument = boundArguments[i];
+                var parameter = function.Parameters[i];
+                if (argument.Type != parameter.Type)
+                {
+                    _diagnostics.ReportWrongArgumentType(syntax.Span, parameter.Name, parameter.Type, argument.Type);
+                    return new BoundErrorExpression();
+                }
+            }
+
+            return new BoundCallExpression(function, boundArguments);
+        }
+
         /*
         Метод, срабатывающий при приравнивании переменной к значению. Получает
         имя переменной, рассматривает выражение. Если такая переменная уже
@@ -313,13 +364,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             return new BoundLiteralExpression(value);
         }
 
-        private VariableSymbol BindVariable(SyntaxToken identifier, bool isReadOnly, TypeSymbol type)
+        public VariableSymbol BindVariable(SyntaxToken identifier, bool isReadOnly, TypeSymbol type)
         {
             var name = identifier.Text ?? "?";
             var declare = identifier.IsMissing;
             var variable = new VariableSymbol(name, isReadOnly, type);
 
-            if (declare && !_scope.TryDeclare(variable))
+            var isDeclared = _scope.TryDeclare(variable);
+            if (declare && !isDeclared)
                 _diagnostics.ReportVariableAlreadyDeclared(identifier.Span, name);
             return variable;
         }

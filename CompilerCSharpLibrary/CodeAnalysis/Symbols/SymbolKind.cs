@@ -4,5 +4,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
     {
         Variable,
         Type,
+        Function,
+        Parameter,
     }
 }

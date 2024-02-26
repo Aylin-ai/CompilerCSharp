@@ -8,8 +8,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
     Содержит в себе токены переменной, = и само выражение, результат которого
     присваивается переменной.
     */
-    public sealed class AssignmentExpressionSyntax : BaseExpressionSyntax{
-        public AssignmentExpressionSyntax(SyntaxToken identifierToken, SyntaxToken equalsToken, BaseExpressionSyntax expression){
+    public sealed class AssignmentExpressionSyntax : BaseExpressionSyntax
+    {
+        public AssignmentExpressionSyntax(SyntaxToken identifierToken, SyntaxToken equalsToken, BaseExpressionSyntax expression)
+        {
             IdentifierToken = identifierToken;
             EqualsToken = equalsToken;
             Expression = expression;

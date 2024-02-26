@@ -1,6 +1,7 @@
 using System.Reflection;
 using CompilerCSharpLibrary.CodeAnalysis.Text;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
@@ -9,18 +10,22 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     От него исходят все остальные классы, включая SyntaxToken.
     Содержит тип токена и метод получения дочерних токенов.
     */
-    public abstract class SyntaxNode{
-        public abstract SyntaxKind Kind { get;}
+    public abstract class SyntaxNode
+    {
+        public abstract SyntaxKind Kind { get; }
 
-        public virtual TextSpan Span{
-            get{
+        public virtual TextSpan Span
+        {
+            get
+            {
                 var first = GetChildren().First().Span;
                 var last = GetChildren().Last().Span;
                 return TextSpan.FromBounds(first.Start, last.End);
             }
         }
 
-        public IEnumerable<SyntaxNode> GetChildren(){
+        public IEnumerable<SyntaxNode> GetChildren()
+        {
             /*
             BindingFlags.Public | BindingFlags.Instance позволяют сказать методу,
             чтобы искал Public свойства в классах
@@ -28,17 +33,29 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             */
             var properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            foreach (var property in properties){
+            foreach (var property in properties)
+            {
                 //Можно ли преобразовать property.PropertyType в SyntaxNode?
-                if (typeof(SyntaxNode).IsAssignableFrom(property.PropertyType)){
+                if (typeof(SyntaxNode).IsAssignableFrom(property.PropertyType))
+                {
                     var child = (SyntaxNode)property.GetValue(this);
                     if (child != null)
                         yield return child;
                 }
+                else if (typeof(SeparatedSyntaxList).IsAssignableFrom(property.PropertyType))
+                {
+                    var separatedSyntaxList = (SeparatedSyntaxList)property.GetValue(this);
+                    foreach (var child in separatedSyntaxList.GetWithSeparators())
+                    {
+                        yield return child;
+                    }
+                }
                 //Можно ли преобразовать property.PropertyType в IEnumerable<SyntaxNode>?
-                else if (typeof(IEnumerable<SyntaxNode>).IsAssignableFrom(property.PropertyType)){
+                else if (typeof(IEnumerable<SyntaxNode>).IsAssignableFrom(property.PropertyType))
+                {
                     var children = (IEnumerable<SyntaxNode>)property.GetValue(this);
-                    foreach (var child in children){
+                    foreach (var child in children)
+                    {
                         if (child != null)
                             yield return child;
                     }
@@ -46,14 +63,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             }
         }
 
-        public SyntaxToken GetLastToken(){
+        public SyntaxToken GetLastToken()
+        {
             if (this is SyntaxToken token)
                 return token;
 
             return GetChildren().Last().GetLastToken();
         }
 
-        public void WriteTo(TextWriter writer){
+        public void WriteTo(TextWriter writer)
+        {
             PrettyPrint(writer, this);
         }
 
@@ -62,7 +81,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         о токенах. В зависимости от того, последний это элемент в дереве
         или нет выводит 3 символа, указанных вначале функции
         */
-        public static void PrettyPrint(TextWriter writer, SyntaxNode node, string indent = "", bool isLast = true){
+        public static void PrettyPrint(TextWriter writer, SyntaxNode node, string indent = "", bool isLast = true)
+        {
             //├──
             //│
             //└──
@@ -74,7 +94,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             writer.Write(marker);
             writer.Write(node.Kind);
 
-            if (node is SyntaxToken t && t.Value != null){
+            if (node is SyntaxToken t && t.Value != null)
+            {
                 writer.Write($" {t.Value}");
             }
             writer.WriteLine();
@@ -83,14 +104,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
             SyntaxNode lastChild = node.GetChildren().LastOrDefault();
 
-            foreach (var child in node.GetChildren()){
+            foreach (var child in node.GetChildren())
+            {
                 PrettyPrint(writer, child, indent, child == lastChild);
             }
         }
 
         public override string ToString()
         {
-            using (var writer = new StringWriter()){
+            using (var writer = new StringWriter())
+            {
                 WriteTo(writer);
                 return writer.ToString();
             }

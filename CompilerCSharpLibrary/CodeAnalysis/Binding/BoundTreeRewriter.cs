@@ -6,10 +6,12 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
-    public abstract class BoundTreeRewriter{
+    public abstract class BoundTreeRewriter
+    {
         public virtual BoundStatement RewriteStatement(BoundStatement node)
         {
-            switch (node.Kind){
+            switch (node.Kind)
+            {
                 case BoundNodeKind.BlockStatement:
                     return RewriteBlockStatement((BoundBlockStatement)node);
                 case BoundNodeKind.ExpressionStatement:
@@ -50,18 +52,21 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var condition = RewriteExpression(node.Condition);
             if (condition == node.Condition)
                 return node;
-            
+
             return new BoundConditionalGotoStatement(node.Label, condition, node.JumpIfTrue);
         }
 
         protected virtual BoundStatement RewriteBlockStatement(BoundBlockStatement node)
         {
             List<BoundStatement> statements = null;
-            for (int i = 0; i < node.Statements.Count; i++){
+            for (int i = 0; i < node.Statements.Count; i++)
+            {
                 BoundStatement oldStatement = node.Statements[i];
                 var newStatement = RewriteStatement(oldStatement);
-                if (newStatement != oldStatement){
-                    if (statements == null){
+                if (newStatement != oldStatement)
+                {
+                    if (statements == null)
+                    {
                         statements = new List<BoundStatement>(node.Statements.Count);
 
                         for (int j = 0; j < i; j++)
@@ -84,7 +89,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var expression = RewriteExpression(node.Expression);
             if (expression == node.Expression)
                 return node;
-            
+
             return new BoundExpressionStatement(expression);
         }
 
@@ -127,13 +132,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             if (lowerBound == node.LowerBound && upperBound == node.UpperBound &&
             body == node.Body)
                 return node;
-            
+
             return new BoundForStatement(node.Variable, lowerBound, upperBound, body);
         }
 
         public virtual BoundExpression RewriteExpression(BoundExpression node)
         {
-            switch (node.Kind){
+            switch (node.Kind)
+            {
                 case BoundNodeKind.ErrorExpression:
                     return RewriteErrorExpression((BoundErrorExpression)node);
                 case BoundNodeKind.UnaryExpression:
@@ -146,10 +152,40 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     return RewriteVariableExpression((BoundVariableExpression)node);
                 case BoundNodeKind.AssignmentExpression:
                     return RewriteAssignmentExpression((BoundAssignmentExpression)node);
+                case BoundNodeKind.CallExpression:
+                    return RewriteCallExpression((BoundCallExpression)node);
 
                 default:
                     throw new Exception($"Unexpected node: {node.Kind}");
             }
+        }
+
+        protected virtual BoundExpression RewriteCallExpression(BoundCallExpression node)
+        {
+            List<BoundExpression> arguments = null;
+            for (int i = 0; i < node.Arguments.Count; i++)
+            {
+                var oldArgument = node.Arguments[i];
+                var newArgument = RewriteExpression(oldArgument);
+                if (newArgument != oldArgument)
+                {
+                    if (arguments == null)
+                    {
+                        arguments = new List<BoundExpression>(node.Arguments.Count);
+
+                        for (int j = 0; j < i; j++)
+                            arguments.Add(node.Arguments[j]);
+                    }
+                }
+
+                if (arguments != null)
+                    arguments.Add(newArgument);
+            }
+
+            if (arguments == null)
+                return node;
+
+            return new BoundCallExpression(node.Function, arguments);
         }
 
         protected virtual BoundExpression RewriteErrorExpression(BoundErrorExpression node)
@@ -162,7 +198,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var operand = RewriteExpression(node.Operand);
             if (operand == node.Operand)
                 return node;
-            
+
             return new BoundUnaryExpression(node.Op, operand);
         }
 
@@ -177,7 +213,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var right = RewriteExpression(node.Right);
             if (left == node.Left && right == node.Right)
                 return node;
-            
+
             return new BoundBinaryExpression(left, node.Op, right);
         }
 
@@ -191,7 +227,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var expression = RewriteExpression(node.Expression);
             if (expression == node.Expression)
                 return node;
-            
+
             return new BoundAssignmentExpression(node.Variable, expression);
         }
     }

@@ -31,6 +31,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         TildeToken,
         HatToken,
         StringToken,
+        CommaToken,
        
         //Expressions
         LiteralExpression,
@@ -39,6 +40,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         UnaryExpression,
         NameExpression,
         AssignmentExpression,
+        CallExpression,
 
         //Nodes
         CompilationUnit,
