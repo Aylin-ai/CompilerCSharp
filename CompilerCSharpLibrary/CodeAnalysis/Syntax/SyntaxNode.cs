@@ -46,6 +46,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             }
         }
 
+        public SyntaxToken GetLastToken(){
+            if (this is SyntaxToken token)
+                return token;
+
+            return GetChildren().Last().GetLastToken();
+        }
+
         public void WriteTo(TextWriter writer){
             PrettyPrint(writer, this);
         }
