@@ -20,12 +20,12 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Statements
 {
     public sealed class BoundGotoStatement : BoundStatement{
-        public BoundGotoStatement(LabelSymbol label){
+        public BoundGotoStatement(BoundLabel label){
             Label = label;
         }
 
         public override BoundNodeKind Kind => BoundNodeKind.GotoStatement;
 
-        public LabelSymbol Label { get; }
+        public BoundLabel Label { get; }
     }
 }

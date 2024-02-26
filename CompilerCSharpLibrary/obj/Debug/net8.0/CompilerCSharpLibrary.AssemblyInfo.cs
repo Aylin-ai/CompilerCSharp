@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CompilerCSharpLibrary")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6ea950b28827be413b7848f712166ed624201464")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+99a2e981cc7b98737c0b155c81fa5fd4cd27fcea")]
 [assembly: System.Reflection.AssemblyProductAttribute("CompilerCSharpLibrary")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CompilerCSharpLibrary")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

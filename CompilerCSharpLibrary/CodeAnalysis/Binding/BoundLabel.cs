@@ -1,7 +1,7 @@
-namespace CompilerCSharpLibrary.CodeAnalysis
+namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
-    public sealed class LabelSymbol{
-        internal LabelSymbol(string name){
+    public sealed class BoundLabel{
+        internal BoundLabel(string name){
             Name = name;
         }
 

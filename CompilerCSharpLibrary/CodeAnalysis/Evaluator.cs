@@ -23,7 +23,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
         }
 
         public object Evaluate(){
-            var labelToIndex = new Dictionary<LabelSymbol, int>();
+            var labelToIndex = new Dictionary<BoundLabel, int>();
 
             for (var i = 0; i < _root.Statements.Count; i++){
                 if (_root.Statements[i] is BoundLabelStatement l){
