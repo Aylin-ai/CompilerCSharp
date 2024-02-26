@@ -30,6 +30,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         PipeToken,
         TildeToken,
         HatToken,
+        StringToken,
        
         //Expressions
         LiteralExpression,

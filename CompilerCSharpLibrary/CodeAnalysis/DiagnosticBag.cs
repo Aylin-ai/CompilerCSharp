@@ -74,9 +74,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Report(span, message);
         }
 
-        internal void ReportCannotAssign(TextSpan span, string name)
+        public void ReportCannotAssign(TextSpan span, string name)
         {
             string message = $"Variable '{name}' is read-only and cannot be assigned to.";
+            Report(span, message);
+        }
+
+        public void ReportUnterminatedString(TextSpan span)
+        {
+            string message = $"Unterminated string literal.";
             Report(span, message);
         }
     }

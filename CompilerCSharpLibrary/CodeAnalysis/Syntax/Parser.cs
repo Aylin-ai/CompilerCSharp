@@ -251,6 +251,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 case SyntaxKind.NumberToken:
                     return ParseNumberLiteral();
 
+                case SyntaxKind.StringToken:
+                    return ParseStringLiteral();
+
                 case SyntaxKind.IdentifierToken:
                 default:
                     return ParseNameExpression();
@@ -261,6 +264,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         {
             SyntaxToken numberToken = MatchToken(SyntaxKind.NumberToken);
             return new LiteralExpressionSyntax(numberToken);
+        }
+
+        private BaseExpressionSyntax ParseStringLiteral()
+        {
+            SyntaxToken stringToken = MatchToken(SyntaxKind.StringToken);
+            return new LiteralExpressionSyntax(stringToken);
         }
 
         private BaseExpressionSyntax ParseParanthesizedExpression()
