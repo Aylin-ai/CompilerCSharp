@@ -11,30 +11,36 @@ namespace CompilerCSharpLibrary.CodeAnalysis
     /*
     Класс, вычисляющий выражение, вводимое в консоли
     */
-    public class Evaluator{
+    public class Evaluator
+    {
         private readonly BoundBlockStatement _root;
         //Словарь всех переменных. Ключ - имя переменной, Значение - значение переменной
         private readonly Dictionary<VariableSymbol, object> _variables;
 
         private object _lastValue;
-        
-        public Evaluator(BoundBlockStatement root, Dictionary<VariableSymbol, object> variables){
+
+        public Evaluator(BoundBlockStatement root, Dictionary<VariableSymbol, object> variables)
+        {
             _root = root;
             _variables = variables;
         }
 
-        public object Evaluate(){
+        public object Evaluate()
+        {
             var labelToIndex = new Dictionary<BoundLabel, int>();
 
-            for (var i = 0; i < _root.Statements.Count; i++){
-                if (_root.Statements[i] is BoundLabelStatement l){
+            for (var i = 0; i < _root.Statements.Count; i++)
+            {
+                if (_root.Statements[i] is BoundLabelStatement l)
+                {
                     labelToIndex.Add(l.Label, i + 1);
                 }
             }
 
             var index = 0;
 
-            while (index < _root.Statements.Count){
+            while (index < _root.Statements.Count)
+            {
 
                 var s = _root.Statements[index];
 
@@ -69,8 +75,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 }
             }
 
-            
-            
+
+
             return _lastValue;
         }
 
@@ -114,11 +120,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
             switch (b.Op.Kind)
             {
-                case BoundBinaryOperatorKind.Concatination:
-                    return (string)left + (string)right;
-                
                 case BoundBinaryOperatorKind.Addition:
-                    return (int)left + (int)right;
+                    if (b.Type == TypeSymbol.Int)
+                        return (int)left + (int)right;
+                    else
+                        return (string)left + (string)right;
                 case BoundBinaryOperatorKind.Substraction:
                     return (int)left - (int)right;
                 case BoundBinaryOperatorKind.Multiplication:

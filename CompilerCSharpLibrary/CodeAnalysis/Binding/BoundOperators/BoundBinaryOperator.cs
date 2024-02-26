@@ -53,7 +53,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
             new BoundBinaryOperator(SyntaxKind.PipeToken, BoundBinaryOperatorKind.BitwiseOr, TypeSymbol.Int),
             new BoundBinaryOperator(SyntaxKind.HatToken, BoundBinaryOperatorKind.BitwiseXor, TypeSymbol.Int),
 
-            new BoundBinaryOperator(SyntaxKind.PlusToken, BoundBinaryOperatorKind.Concatination, TypeSymbol.String),
+            new BoundBinaryOperator(SyntaxKind.PlusToken, BoundBinaryOperatorKind.Addition, TypeSymbol.String),
         };
 
         public static BoundBinaryOperator Bind(SyntaxKind syntaxKind, TypeSymbol leftType, TypeSymbol rightType){
