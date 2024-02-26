@@ -240,7 +240,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
-            if (string.IsNullOrEmpty(name))
+            if (syntax.IdentifierToken.IsMissing)
                 return new BoundErrorExpression();
 
             if (!_scope.TryLookup(name, out var variable))
