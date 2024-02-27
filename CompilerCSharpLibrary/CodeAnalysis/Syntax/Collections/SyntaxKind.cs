@@ -59,7 +59,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         DoWhileStatement,
         ForStatement,
         GlobalStatement,
-
+        BreakStatement,
+        ContinueStatement,
+        
         //Keywords
         TrueKeyword,
         FalseKeyword,
@@ -72,5 +74,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         ToKeyword,
         DoKeyword,
         FunctionKeyword,
+        BreakKeyword,
+        ContinueKeyword,
+
     }
 }

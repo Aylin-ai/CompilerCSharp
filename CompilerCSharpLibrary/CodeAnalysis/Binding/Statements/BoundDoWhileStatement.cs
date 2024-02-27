@@ -17,28 +17,20 @@
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
-using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Statements
 {
-    public sealed class BoundForStatement : BoundLoopStatement
-    {
-        public BoundForStatement(VariableSymbol variable, BoundExpression lowerBound,
-        BoundExpression upperBound, BoundStatement body, BoundLabel breakLabel, BoundLabel continueLabel) 
+    public sealed class BoundDoWhileStatement : BoundLoopStatement{
+        public BoundDoWhileStatement(BoundStatement body, BoundExpression condition, BoundLabel breakLabel, BoundLabel continueLabel) 
         : base(breakLabel, continueLabel)
         {
-            Variable = variable;
-            LowerBound = lowerBound;
-            UpperBound = upperBound;
             Body = body;
+            Condition = condition;
         }
 
-        public VariableSymbol Variable { get; }
-        public BoundExpression LowerBound { get; }
-        public BoundExpression UpperBound { get; }
+        public override BoundNodeKind Kind => BoundNodeKind.DoWhileStatement;
+
         public BoundStatement Body { get; }
-
-        public override BoundNodeKind Kind => BoundNodeKind.ForStatement;
-
+        public BoundExpression Condition { get; }
     }
 }

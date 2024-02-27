@@ -14,31 +14,16 @@
 АСД нужно, чтобы хранить больше информации, в отличие от
 синтаксического дерева, а также чтобы последнее было неизменяемо
 */
-using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
-using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
-using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
-using CompilerCSharpLibrary.CodeAnalysis.Symbols;
-
-namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Statements
+namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base
 {
-    public sealed class BoundForStatement : BoundLoopStatement
-    {
-        public BoundForStatement(VariableSymbol variable, BoundExpression lowerBound,
-        BoundExpression upperBound, BoundStatement body, BoundLabel breakLabel, BoundLabel continueLabel) 
-        : base(breakLabel, continueLabel)
-        {
-            Variable = variable;
-            LowerBound = lowerBound;
-            UpperBound = upperBound;
-            Body = body;
+    public abstract class BoundLoopStatement : BoundStatement{
+        protected BoundLoopStatement(BoundLabel breakLabel, BoundLabel continueLabel){
+            BreakLabel = breakLabel;
+            ContinueLabel = continueLabel;
         }
 
-        public VariableSymbol Variable { get; }
-        public BoundExpression LowerBound { get; }
-        public BoundExpression UpperBound { get; }
-        public BoundStatement Body { get; }
-
-        public override BoundNodeKind Kind => BoundNodeKind.ForStatement;
-
+        public BoundLabel BreakLabel { get; }
+        public BoundLabel ContinueLabel { get; }
     }
+
 }

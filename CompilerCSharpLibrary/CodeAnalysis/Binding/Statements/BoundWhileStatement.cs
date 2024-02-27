@@ -20,8 +20,10 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Statements
 {
-    public sealed class BoundWhileStatement : BoundStatement{
-        public BoundWhileStatement(BoundExpression condition, BoundStatement body){
+    public sealed class BoundWhileStatement : BoundLoopStatement{
+        public BoundWhileStatement(BoundExpression condition, BoundStatement body, BoundLabel breakLabel, BoundLabel continueLabel) 
+        : base(breakLabel, continueLabel)
+        {
             Condition = condition;
             Body = body;
         }
@@ -29,17 +31,5 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Statements
         public BoundStatement Body { get; }
 
         public override BoundNodeKind Kind => BoundNodeKind.WhileStatement;
-    }
-
-    public sealed class BoundDoWhileStatement : BoundStatement{
-        public BoundDoWhileStatement(BoundStatement body, BoundExpression condition){
-            Body = body;
-            Condition = condition;
-        }
-
-        public override BoundNodeKind Kind => BoundNodeKind.DoWhileStatement;
-
-        public BoundStatement Body { get; }
-        public BoundExpression Condition { get; }
     }
 }

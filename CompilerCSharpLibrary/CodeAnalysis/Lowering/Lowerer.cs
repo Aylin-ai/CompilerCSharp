@@ -114,20 +114,21 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 <body>
                 check:
                 gotoTrue <condition> continue
+                break:
             */
 
-            var continueLabel = GenerateLabel();
             var checkLabel = GenerateLabel();
             
             var gotoCheck = new BoundGotoStatement(checkLabel);
-            var continueLabelStatement = new BoundLabelStatement(continueLabel);
+            var continueLabelStatement = new BoundLabelStatement(node.ContinueLabel);
             var checkLabelStatement = new BoundLabelStatement(checkLabel);
-            var gotoTrue = new BoundConditionalGotoStatement(continueLabel, node.Condition, true);
+            var gotoTrue = new BoundConditionalGotoStatement(node.ContinueLabel, node.Condition, true);
+            var breakLabelStatement = new BoundLabelStatement(node.BreakLabel);
 
             var result = new BoundBlockStatement(
                 new List<BoundStatement>(){
                     gotoCheck, continueLabelStatement, node.Body, 
-                    checkLabelStatement, gotoTrue
+                    checkLabelStatement, gotoTrue, breakLabelStatement
                 }
             );
             return RewriteStatement(result);
@@ -145,16 +146,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 continue:
                 <body>
                 gotoTrue <condition> continue
+                break:
             */
-
-            var continueLabel = GenerateLabel();
             
-            var continueLabelStatement = new BoundLabelStatement(continueLabel);
-            var gotoTrue = new BoundConditionalGotoStatement(continueLabel, node.Condition, true);
+            var continueLabelStatement = new BoundLabelStatement(node.ContinueLabel);
+            var gotoTrue = new BoundConditionalGotoStatement(node.ContinueLabel, node.Condition, true);
+            var breakLabelStatement = new BoundLabelStatement(node.BreakLabel);
 
             var result = new BoundBlockStatement(
                 new List<BoundStatement>(){
-                    continueLabelStatement, node.Body, gotoTrue
+                    continueLabelStatement, node.Body, gotoTrue, breakLabelStatement
                 }
             );
             return RewriteStatement(result);
@@ -173,6 +174,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                     let upperBound = <upper>
                     while (<var> <= upperBound){
                         <body>
+                        continue:
                         <var> = <var> + 1
                     }
                 }
@@ -188,6 +190,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 new BoundVariableExpression(upperBoundSymbol)
             );
 
+            var continueLabelStatement = new BoundLabelStatement(node.ContinueLabel);
+
             var increment = new BoundExpressionStatement(
                 new BoundAssignmentExpression(
                     node.Variable,
@@ -201,11 +205,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
 
             var whileBody = new BoundBlockStatement(
                 new List<BoundStatement>(){
-                    node.Body, increment
+                    node.Body, continueLabelStatement, increment
                 }
             );
 
-            var whileStatement = new BoundWhileStatement(condition, whileBody);
+            var whileStatement = new BoundWhileStatement(condition, whileBody, node.BreakLabel, GenerateLabel());
             var result = new BoundBlockStatement(
                 new List<BoundStatement>(){
                     variableDeclaration, upperBoundDeclaration, whileStatement

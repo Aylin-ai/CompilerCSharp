@@ -81,6 +81,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     throw new Exception($"Unexpected node {node.Kind}");
             }
         }
+        
+        //Indent - отступ от начала строки. У Label его нет, так как делаем Indent--
 
         private static void WriteNestedStatement(this IndentedTextWriter writer, BoundStatement node)
         {
