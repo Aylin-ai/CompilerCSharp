@@ -1,3 +1,4 @@
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.IO;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
@@ -34,15 +35,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
         {
             writer.WriteKeyword("function ");
             writer.WriteIdentifier(symbol.Name);
-            writer.WritePunctuation("(");
+            writer.WritePunctuation(SyntaxKind.OpenParenthesisToken);
             for (int i = 0; i < symbol.Parameters.Count; i++)
             {
                 if (i > 0)
-                    writer.WritePunctuation(", ");
+                    writer.WritePunctuation(SyntaxKind.CommaToken);
 
                 symbol.Parameters[i].WriteTo(writer);
             }
-            writer.WritePunctuation(")");
+            writer.WritePunctuation(SyntaxKind.CloseParenthesisToken);
             writer.WriteLine();
         }
 
@@ -55,17 +56,17 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
 
         private static void WriteGlobalVariableTo(GlobalVariableSymbol symbol, TextWriter writer)
         {
-            writer.WriteKeyword(symbol.IsReadOnly ? "let " : "var ");
+            writer.WriteKeyword(symbol.IsReadOnly ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword);
             writer.WriteIdentifier(symbol.Name);
-            writer.WritePunctuation(": ");
+            writer.WritePunctuation(SyntaxKind.ColonToken);
             symbol.Type.WriteTo(writer);
         }
 
         private static void WriteLocalVariableTo(LocalVariableSymbol symbol, TextWriter writer)
         {
-            writer.WriteKeyword(symbol.IsReadOnly ? "let " : "var ");
+            writer.WriteKeyword(symbol.IsReadOnly ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword);
             writer.WriteIdentifier(symbol.Name);
-            writer.WritePunctuation(": ");
+            writer.WritePunctuation(SyntaxKind.ColonToken);
             symbol.Type.WriteTo(writer);
         }
     }

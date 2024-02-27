@@ -1,11 +1,14 @@
 using System.CodeDom.Compiler;
 using CompilerCSharpLibrary.CodeAnalysis.Binding;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 
 namespace CompilerCSharpLibrary.IO
 {
     public static class TextWriterExtensions
     {
-        public static bool IsConsoleOut(this TextWriter writer){
+        public static bool IsConsoleOut(this TextWriter writer)
+        {
             if (writer == Console.Out)
                 return true;
 
@@ -14,7 +17,7 @@ namespace CompilerCSharpLibrary.IO
 
             return false;
         }
-        
+
         public static void SetForeground(this TextWriter writer, ConsoleColor color)
         {
             if (writer.IsConsoleOut())
@@ -27,31 +30,50 @@ namespace CompilerCSharpLibrary.IO
                 Console.ResetColor();
         }
 
-        public static void WriteKeyword(this TextWriter writer, string text){
+        public static void WriteKeyword(this TextWriter writer, SyntaxKind kind)
+        {
+            writer.WriteKeyword(SyntaxFacts.GetText(kind));
+        }
+        public static void WriteKeyword(this TextWriter writer, string text)
+        {
             writer.SetForeground(ConsoleColor.Blue);
             writer.Write(text);
             writer.ResetColor();
         }
 
-        public static void WriteIdentifier(this TextWriter writer, string text){
+        public static void WriteIdentifier(this TextWriter writer, string text)
+        {
             writer.SetForeground(ConsoleColor.DarkYellow);
             writer.Write(text);
             writer.ResetColor();
         }
 
-        public static void WriteNumber(this TextWriter writer, string text){
+        public static void WriteNumber(this TextWriter writer, string text)
+        {
             writer.SetForeground(ConsoleColor.Cyan);
             writer.Write(text);
             writer.ResetColor();
         }
 
-        public static void WriteString(this TextWriter writer, string text){
+        public static void WriteString(this TextWriter writer, string text)
+        {
             writer.SetForeground(ConsoleColor.Magenta);
             writer.Write(text);
             writer.ResetColor();
         }
 
-        public static void WritePunctuation(this TextWriter writer, string text){
+        public static void WriteSpace(this TextWriter writer)
+        {
+            writer.WritePunctuation(" ");
+        }
+
+        public static void WritePunctuation(this TextWriter writer, SyntaxKind kind)
+        {
+            writer.WritePunctuation(SyntaxFacts.GetText(kind));
+        }
+
+        public static void WritePunctuation(this TextWriter writer, string text)
+        {
             writer.SetForeground(ConsoleColor.DarkGray);
             writer.Write(text);
             writer.ResetColor();

@@ -21,16 +21,15 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Statements
 {
     public sealed class BoundDoWhileStatement : BoundLoopStatement{
-        public BoundDoWhileStatement(BoundStatement body, BoundExpression condition, BoundLabel breakLabel, BoundLabel continueLabel) 
-        : base(breakLabel, continueLabel)
+        public BoundDoWhileStatement(BoundStatement body, BoundExpression condition,
+        BoundLabel breakLabel, BoundLabel continueLabel) 
+        : base(body, breakLabel, continueLabel)
         {
-            Body = body;
             Condition = condition;
         }
 
         public override BoundNodeKind Kind => BoundNodeKind.DoWhileStatement;
 
-        public BoundStatement Body { get; }
         public BoundExpression Condition { get; }
     }
 }
