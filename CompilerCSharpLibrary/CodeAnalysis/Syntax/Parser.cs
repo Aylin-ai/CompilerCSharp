@@ -92,7 +92,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         {
             var members = new List<MemberSyntax>();
 
-            while (Current.Kind != SyntaxKind.EndOfFileToken){
+            while (Current.Kind != SyntaxKind.EndOfFileToken)
+            {
                 var startToken = Current;
 
                 var member = ParseMember();
@@ -129,7 +130,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             SyntaxToken closeParenthesisToken = MatchToken(SyntaxKind.CloseParenthesisToken);
             var type = ParseOptionalTypeClause();
             var body = ParseBlockStatement();
-            return new FunctionDeclarationSyntax(functionKeyword, identifier, openParenthesisToken, 
+            return new FunctionDeclarationSyntax(functionKeyword, identifier, openParenthesisToken,
             parameters, closeParenthesisToken, type, body);
         }
 
@@ -137,16 +138,23 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         {
             var nodesAndSeparators = new List<SyntaxNode>();
 
-            while (Current.Kind != SyntaxKind.CloseParenthesisToken &&
+            var parseNextParameter = true;
+
+            while (parseNextParameter &&
+                   Current.Kind != SyntaxKind.CloseParenthesisToken &&
                    Current.Kind != SyntaxKind.EndOfFileToken)
             {
                 var parameter = ParseParameter();
                 nodesAndSeparators.Add(parameter);
 
-                if (Current.Kind != SyntaxKind.CloseParenthesisToken)
+                if (Current.Kind == SyntaxKind.CommaToken)
                 {
                     var comma = MatchToken(SyntaxKind.CommaToken);
                     nodesAndSeparators.Add(comma);
+                }
+                else
+                {
+                    parseNextParameter = false;
                 }
             }
 
@@ -247,7 +255,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         {
             if (Current.Kind != SyntaxKind.ColonToken)
                 return null;
-            
+
             return ParseTypeClause();
         }
 
@@ -426,16 +434,23 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         {
             var nodesAndSeparators = new List<SyntaxNode>();
 
-            while (Current.Kind != SyntaxKind.CloseParenthesisToken &&
+            var parseNextArgument = true;
+
+            while (parseNextArgument &&
+                   Current.Kind != SyntaxKind.CloseParenthesisToken &&
                    Current.Kind != SyntaxKind.EndOfFileToken)
             {
                 var expression = ParseExpression();
                 nodesAndSeparators.Add(expression);
 
-                if (Current.Kind != SyntaxKind.CloseParenthesisToken)
+                if (Current.Kind == SyntaxKind.CommaToken)
                 {
                     var comma = MatchToken(SyntaxKind.CommaToken);
                     nodesAndSeparators.Add(comma);
+                }
+                else
+                {
+                    parseNextArgument = false;
                 }
             }
 
