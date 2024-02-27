@@ -13,8 +13,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
     */
     public class Evaluator
     {
-        private readonly Dictionary<FunctionSymbol, BoundBlockStatement> _functionBodies;
-        private readonly BoundBlockStatement _root;
+        private readonly BoundProgram _program;
+
         //Словарь всех переменных. Ключ - имя переменной, Значение - значение переменной
         private readonly Dictionary<VariableSymbol, object> _globals;
         private readonly Stack<Dictionary<VariableSymbol, object>> _locals = new Stack<Dictionary<VariableSymbol, object>>();
@@ -22,16 +22,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         private object _lastValue;
 
-        public Evaluator(Dictionary<FunctionSymbol, BoundBlockStatement> functionBodies, BoundBlockStatement root, Dictionary<VariableSymbol, object> variables)
+        public Evaluator(BoundProgram program, Dictionary<VariableSymbol, object> variables)
         {
-            _functionBodies = functionBodies;
-            _root = root;
+            _program = program;
             _globals = variables;
+            _locals.Push(new Dictionary<VariableSymbol, object>());
         }
 
         public object Evaluate()
         {
-            return EvaluateStatement(_root);
+            return EvaluateStatement(_program.Statement);
         }
 
         private object EvaluateStatement(BoundBlockStatement body)
@@ -174,7 +174,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
                 _locals.Push(locals);
 
-                var statement = _functionBodies[node.Function];
+                var statement = _program.Functions[node.Function];
                 var result = EvaluateStatement(statement);
                 _locals.Pop();
 
@@ -281,13 +281,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis
         */
         private object EvaluateVariableExpression(BoundVariableExpression v)
         {
-            if (v.Variable.Kind != SymbolKind.GlobalVariable)
+            if (v.Variable.Kind == SymbolKind.GlobalVariable)
+                return _globals[v.Variable];
+            else
             {
                 var locals = _locals.Peek();
                 return locals[v.Variable];
             }
-            else
-                return _globals[v.Variable];
         }
 
         private static object EvaluateLiteralExpression(BoundLiteralExpression n)

@@ -43,14 +43,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         public void EmitTree(TextWriter writer)
         {
-            var statement = GetStatement();
-            statement.WriteTo(writer);
-        }
-
-        private BoundBlockStatement GetStatement()
-        {
-            var result = GlobalScope.Statement;
-            return Lowerer.Lower(result);
+            var program = Binder.BindProgram(GlobalScope);
+            program.Statement.WriteTo(writer);
         }
 
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables){
@@ -63,9 +57,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             if (program.Diagnostics.Any())
                 return new EvaluationResult(program.Diagnostics, null);
 
-            var statement = GetStatement();
-
-            Evaluator evaluator = new Evaluator(program.FunctionBodies, statement, variables);
+            Evaluator evaluator = new Evaluator(program, variables);
             object value = evaluator.Evaluate();
             return new EvaluationResult([], value);
         }

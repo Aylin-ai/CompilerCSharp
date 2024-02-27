@@ -60,66 +60,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             }
         }
 
-        public void WriteTo(TextWriter writer){
-            PrettyPrint(writer, this);
-        }
-
-        /*
-        Функция, выводящая синтаксическое дерево. Выводит данные
-        о токенах. В зависимости от того, последний это элемент в дереве
-        или нет выводит 3 символа, указанных вначале функции
-        */
-        public static void PrettyPrint(TextWriter writer, BoundNode node, string indent = "", bool isLast = true){
-            //├──
-            //│
-            //└──
-
-            string marker = isLast ? "└──" : "├──";
-
-
-            writer.Write(indent);
-            writer.Write(marker);
-
-            var text = GetText(node);
-            writer.Write(text);
-
-            var isFirstProperty = true;
-
-            foreach (var p in node.GetProperties()){
-                if (isFirstProperty)
-                    isFirstProperty = false;
-                else
-                    writer.Write(",");
-
-                writer.Write($" {p.Name} = {p.Value}");
-            }
-
-            writer.WriteLine();
-
-            indent += isLast ? "   " : "│  ";
-
-            BoundNode lastChild = node.GetChildren().LastOrDefault();
-
-            foreach (var child in node.GetChildren()){
-                PrettyPrint(writer, child, indent, child == lastChild);
-            }
-        }
-
-        private static string GetText(BoundNode node)
-        {
-            if (node is BoundBinaryExpression b)
-                return b.Op.Kind.ToString() + "Expression";
-            
-            if (node is BoundUnaryExpression u)
-                return u.Op.Kind.ToString() + "Expression";
-
-            return node.Kind.ToString();
-        }
+        
 
         public override string ToString()
         {
             using (var writer = new StringWriter()){
-                WriteTo(writer);
+                this.WriteTo(writer);
                 return writer.ToString();
             }
         }

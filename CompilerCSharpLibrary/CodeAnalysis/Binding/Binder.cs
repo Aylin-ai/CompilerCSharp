@@ -68,8 +68,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 statements.Add(s);
             }
 
-            var statement = new BoundBlockStatement(statements);
-
             var functions = binder._scope.GetDeclaredFunctions();
             var variables = binder._scope.GetDeclaredVariables();
             var diagnostics = binder.Diagnostics;
@@ -79,7 +77,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 diagnostics.AddRange(previous.Diagnostics);
             }
 
-            return new BoundGlobalScope(previous, diagnostics, functions, variables, statement);
+            return new BoundGlobalScope(previous, diagnostics, functions, variables, statements);
         }
 
         public static BoundProgram BindProgram(BoundGlobalScope globalScope)
@@ -91,6 +89,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             diagnostics.AddRange(globalScope.Diagnostics);
 
             var scope = globalScope;
+
             while (scope != null)
             {
                 foreach (var function in scope.Functions)
@@ -106,9 +105,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 scope = scope.Previous;
             }
 
+            var statement = Lowerer.Lower(new BoundBlockStatement(globalScope.Statements));
 
-
-            return new BoundProgram(globalScope, diagnostics, functionBodies);
+            return new BoundProgram(diagnostics, functionBodies, statement);
         }
 
         private static BoundScope CreateParentScopes(BoundGlobalScope previous)
@@ -328,7 +327,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     return BindCallExpression((CallExpressionSyntax)syntax);
 
                 default:
-                    throw new Exception($"Unexpected syntax {syntax.Kind}");
+                    throw new Exception($"Unexpected syntax {syntax.Kind}");                   
             }
         }
 
@@ -341,7 +340,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         {
             if (syntax.Arguments.Count == 1 && LookupType(syntax.Identifier.Text) is TypeSymbol type)
             {
-                return BindConversion(syntax.Arguments[0], type, allowExplicit: true);
+                return BindConversion(syntax.Arguments[0], type);
             }
             List<BoundExpression> boundArguments = new List<BoundExpression>();
 
@@ -377,13 +376,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         }
 
         //Централизация
-        private BoundExpression BindConversion(BaseExpressionSyntax syntax, TypeSymbol type, bool allowExplicit = false)
+        private BoundExpression BindConversion(BaseExpressionSyntax syntax, TypeSymbol type)
         {
             var expression = BindExpression(syntax);
-            return BindConversion(syntax.Span, expression, type, allowExplicit);
+            return BindConversion(syntax.Span, expression, type);
         }
 
-        private BoundExpression BindConversion(TextSpan diagnosticSpan, BoundExpression expression, TypeSymbol type, bool allowExplicit = false)
+        private BoundExpression BindConversion(TextSpan diagnosticSpan, BoundExpression expression, TypeSymbol type)
         {
             var conversion = Conversion.Classify(expression.Type, type);
 
@@ -395,11 +394,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 }
 
                 return new BoundErrorExpression();
-            }
-
-            if (!allowExplicit && conversion.IsExplicit)
-            {
-                _diagnostics.ReportCannotConvertImplicitly(diagnosticSpan, expression.Type, type);
             }
 
             if (conversion.IsIdentity)

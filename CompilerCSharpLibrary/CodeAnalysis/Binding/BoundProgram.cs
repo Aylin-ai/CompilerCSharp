@@ -6,16 +6,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
     public sealed class BoundProgram
     {
-        public BoundProgram(BoundGlobalScope globalScope, DiagnosticBag diagnostics, 
-        Dictionary<FunctionSymbol, BoundBlockStatement> functionBodies)
+        public BoundProgram(DiagnosticBag diagnostics, 
+        Dictionary<FunctionSymbol, BoundBlockStatement> functions, BoundBlockStatement statement)
         {
-            GlobalScope = globalScope;
             Diagnostics = diagnostics;
-            FunctionBodies = functionBodies;
+            Functions = functions;
+            Statement = statement;
         }
 
-        public BoundGlobalScope GlobalScope { get; }
         public DiagnosticBag Diagnostics { get; }
-        public Dictionary<FunctionSymbol, BoundBlockStatement> FunctionBodies { get; }
+        public Dictionary<FunctionSymbol, BoundBlockStatement> Functions { get; }
+        public BoundBlockStatement Statement { get; }
     }
 }
