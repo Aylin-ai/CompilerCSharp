@@ -9,7 +9,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
     Класс, содержащий список с пойманными ошибками, а также
     методы для их отлавливания и добавления в список
     */
-    public sealed class DiagnosticBag : IEnumerable<Diagnostic>{
+    public sealed class DiagnosticBag : IEnumerable<Diagnostic>
+    {
         private readonly List<Diagnostic> _diagnostics = new List<Diagnostic>();
 
         public IEnumerator<Diagnostic> GetEnumerator() => _diagnostics.GetEnumerator();
@@ -21,7 +22,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             _diagnostics.AddRange(diagnostics._diagnostics);
         }
 
-        private void Report(TextSpan span, string message){
+        private void Report(TextSpan span, string message)
+        {
             Diagnostic diagnostic = new Diagnostic(span, message);
             _diagnostics.Add(diagnostic);
         }
@@ -99,7 +101,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Report(span, message);
         }
 
-        public void ReportWrongArgumentType(TextSpan span, string name, 
+        public void ReportWrongArgumentType(TextSpan span, string name,
         TypeSymbol expectedType, TypeSymbol actualType)
         {
             string message = $"Parameter '{name}' requires a value of type '{expectedType}' but was given a value of type '{actualType}'.";
@@ -123,5 +125,19 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             string message = $"Cannot conver type '{fromType}' to '{toType}'. An explicit conversion exists; are you missing a cast?";
             Report(span, message);
         }
+
+        public void ReportParameterAlreadyDeclared(TextSpan span, string parameterName)
+        {
+            string message = $"A parameter with the name '{parameterName}' is already declared.";
+            Report(span, message);
+        }
+
+        public void XXX_ReportFunctionsAreUnsupported(TextSpan span)
+        {
+            string message = $"Functions with return values are unsupported.";
+            Report(span, message);
+        }
+
+
     }
 }

@@ -6,5 +6,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
         Type,
         Function,
         Parameter,
+        GlobalVariable,
+        LocalVariable,
     }
 }

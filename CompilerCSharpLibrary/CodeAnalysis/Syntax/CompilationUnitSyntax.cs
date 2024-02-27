@@ -1,16 +1,14 @@
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
-using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
-using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
     public sealed class CompilationUnitSyntax : SyntaxNode{
-        public CompilationUnitSyntax(StatementSyntax statement, SyntaxToken endOfFileToken){
-            Statement = statement;
+        public CompilationUnitSyntax(List<MemberSyntax> members, SyntaxToken endOfFileToken){
+            Members = members;
             EndOfFileToken = endOfFileToken;
         }
 
-        public StatementSyntax Statement { get; }
+        public List<MemberSyntax> Members { get; }
         public SyntaxToken EndOfFileToken { get; }
 
         public override SyntaxKind Kind => SyntaxKind.CompilationUnit;

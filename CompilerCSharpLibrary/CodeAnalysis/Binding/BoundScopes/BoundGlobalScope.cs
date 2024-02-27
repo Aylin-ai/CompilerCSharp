@@ -21,16 +21,18 @@ using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes
 {
     public sealed class BoundGlobalScope{
-        public BoundGlobalScope(BoundGlobalScope previous, DiagnosticBag diagnostics, 
+        public BoundGlobalScope(BoundGlobalScope previous, DiagnosticBag diagnostics, List<FunctionSymbol> functions,
         List<VariableSymbol> variables, BoundStatement statement){
             Previous = previous;
             Diagnostics = diagnostics;
+            Functions = functions;
             Variables = variables;
             Statement = statement;
         }
 
         public BoundGlobalScope Previous { get; }
         public DiagnosticBag Diagnostics { get; }
+        public List<FunctionSymbol> Functions { get; }
         public List<VariableSymbol> Variables { get; }
         public BoundStatement Statement { get; }
     }

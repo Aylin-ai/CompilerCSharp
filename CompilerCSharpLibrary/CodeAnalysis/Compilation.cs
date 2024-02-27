@@ -59,9 +59,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 return new EvaluationResult(Syntax.Diagnostics, null);
             }
 
+            var program = Binder.BindProgram(GlobalScope);
+            if (program.Diagnostics.Any())
+                return new EvaluationResult(program.Diagnostics, null);
+
             var statement = GetStatement();
 
-            Evaluator evaluator = new Evaluator(statement, variables);
+            Evaluator evaluator = new Evaluator(program.FunctionBodies, statement, variables);
             object value = evaluator.Evaluate();
             return new EvaluationResult([], value);
         }

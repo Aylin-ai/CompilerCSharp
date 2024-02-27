@@ -45,6 +45,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
 
         //Nodes
         CompilationUnit,
+        FunctionDeclaration,
+        Parameter,
         ElseClause,
         TypeClause,
 
@@ -56,6 +58,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         WhileStatement,
         DoWhileStatement,
         ForStatement,
+        GlobalStatement,
 
         //Keywords
         TrueKeyword,
@@ -68,5 +71,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         ForKeyword,
         ToKeyword,
         DoKeyword,
+        FunctionKeyword,
     }
 }

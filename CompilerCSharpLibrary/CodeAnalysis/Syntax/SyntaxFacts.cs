@@ -73,6 +73,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return SyntaxKind.ToKeyword;
                 case "do":
                     return SyntaxKind.DoKeyword;
+                case "function":
+                    return SyntaxKind.FunctionKeyword;
                 
                 default:
                     return SyntaxKind.IdentifierToken;
@@ -174,6 +176,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return "to";
                 case SyntaxKind.DoKeyword:
                     return "do";
+                case SyntaxKind.FunctionKeyword:
+                    return "function";
                 default:
                     return null;
             }

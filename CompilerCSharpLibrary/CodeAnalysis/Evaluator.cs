@@ -13,26 +13,34 @@ namespace CompilerCSharpLibrary.CodeAnalysis
     */
     public class Evaluator
     {
+        private readonly Dictionary<FunctionSymbol, BoundBlockStatement> _functionBodies;
         private readonly BoundBlockStatement _root;
         //Словарь всех переменных. Ключ - имя переменной, Значение - значение переменной
-        private readonly Dictionary<VariableSymbol, object> _variables;
+        private readonly Dictionary<VariableSymbol, object> _globals;
+        private readonly Stack<Dictionary<VariableSymbol, object>> _locals = new Stack<Dictionary<VariableSymbol, object>>();
         private Random _random;
 
         private object _lastValue;
 
-        public Evaluator(BoundBlockStatement root, Dictionary<VariableSymbol, object> variables)
+        public Evaluator(Dictionary<FunctionSymbol, BoundBlockStatement> functionBodies, BoundBlockStatement root, Dictionary<VariableSymbol, object> variables)
         {
+            _functionBodies = functionBodies;
             _root = root;
-            _variables = variables;
+            _globals = variables;
         }
 
         public object Evaluate()
         {
+            return EvaluateStatement(_root);
+        }
+
+        private object EvaluateStatement(BoundBlockStatement body)
+        {
             var labelToIndex = new Dictionary<BoundLabel, int>();
 
-            for (var i = 0; i < _root.Statements.Count; i++)
+            for (var i = 0; i < body.Statements.Count; i++)
             {
-                if (_root.Statements[i] is BoundLabelStatement l)
+                if (body.Statements[i] is BoundLabelStatement l)
                 {
                     labelToIndex.Add(l.Label, i + 1);
                 }
@@ -40,10 +48,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
             var index = 0;
 
-            while (index < _root.Statements.Count)
+            while (index < body.Statements.Count)
             {
 
-                var s = _root.Statements[index];
+                var s = body.Statements[index];
 
                 switch (s.Kind)
                 {
@@ -84,8 +92,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
         private void EvaluateVariableDeclaration(BoundVariableDeclaration node)
         {
             var value = EvaluateExpression(node.Initializer);
-            _variables[node.Variable] = value;
             _lastValue = value;
+            Assign(node.Variable, value);
         }
 
         private void EvaluateExpressionStatement(BoundExpressionStatement node)
@@ -133,26 +141,45 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         private object EvaluateCallExpression(BoundCallExpression node)
         {
-            if (node.Function == BuiltInFunctions.Input){
+            if (node.Function == BuiltInFunctions.Input)
+            {
                 return Console.ReadLine();
             }
-            else if (node.Function == BuiltInFunctions.Print){
+            else if (node.Function == BuiltInFunctions.Print)
+            {
                 var message = (string)EvaluateExpression(node.Arguments[0]);
                 Console.WriteLine(message);
                 return null;
             }
-            else if (node.Function == BuiltInFunctions.Rnd){
+            else if (node.Function == BuiltInFunctions.Rnd)
+            {
                 int minValue = (int)EvaluateExpression(node.Arguments[0]);
                 int maxValue = (int)EvaluateExpression(node.Arguments[1]);
 
                 if (_random == null)
                     _random = new Random();
-                    
+
                 int randomNumber = _random.Next(minValue, maxValue);
                 return randomNumber;
             }
             else
-                throw new Exception($"Unexpected function {node.Function}");
+            {
+                var locals = new Dictionary<VariableSymbol, object>();
+                for (int i = 0; i < node.Arguments.Count; i++)
+                {
+                    var parameter = node.Function.Parameters[i];
+                    var value = EvaluateExpression(node.Arguments[i]);
+                    locals.Add(parameter, value);
+                }
+
+                _locals.Push(locals);
+
+                var statement = _functionBodies[node.Function];
+                var result = EvaluateStatement(statement);
+                _locals.Pop();
+
+                return result;
+            }
         }
 
         private object EvaluateBinaryExpression(BoundBinaryExpression b)
@@ -242,7 +269,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis
         private object EvaluateAssignmentExpression(BoundAssignmentExpression a)
         {
             var value = EvaluateExpression(a.Expression);
-            _variables[a.Variable] = value;
+
+            Assign(a.Variable, value);
+            
             return value;
         }
 
@@ -252,12 +281,31 @@ namespace CompilerCSharpLibrary.CodeAnalysis
         */
         private object EvaluateVariableExpression(BoundVariableExpression v)
         {
-            return _variables[v.Variable];
+            if (v.Variable.Kind != SymbolKind.GlobalVariable)
+            {
+                var locals = _locals.Peek();
+                return locals[v.Variable];
+            }
+            else
+                return _globals[v.Variable];
         }
 
         private static object EvaluateLiteralExpression(BoundLiteralExpression n)
         {
             return n.Value;
+        }
+
+        private void Assign(VariableSymbol variable, object value)
+        {
+            if (variable.Kind == SymbolKind.GlobalVariable)
+            {
+                _globals[variable] = value;
+            }
+            else
+            {
+                var locals = _locals.Peek();
+                locals[variable] = value;
+            }
         }
     }
 }
