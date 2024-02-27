@@ -179,8 +179,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             }
 
             var type = BindTypeClause(syntax.Type) ?? TypeSymbol.Void;
-            if (type != TypeSymbol.Void)
-                _diagnostics.XXX_ReportFunctionsAreUnsupported(syntax.Type.Span);
 
             var function = new FunctionSymbol(syntax.Identifier.Text, parameters, type, syntax);
             if (!_scope.TryDeclareFunction(function))
@@ -216,9 +214,39 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     return BindBreakStatement((BreakStatementSyntax)syntax);
                 case SyntaxKind.ContinueStatement:
                     return BindContinueStatement((ContinueStatementSyntax)syntax);
+                case SyntaxKind.ReturnStatement:
+                    return BindReturnStatement((ReturnStatementSyntax)syntax);
                 default:
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
             }
+        }
+
+        private BoundStatement BindReturnStatement(ReturnStatementSyntax syntax)
+        {
+            var expression = syntax.Expression == null ? null : BindExpression(syntax.Expression);
+
+            if (_function == null)
+                _diagnostics.ReportInvalidReturn(syntax.ReturnKeyword.Span);
+            else
+            {
+                if (_function.Type == TypeSymbol.Void)
+                {
+                    if (expression != null)
+                    {
+                        _diagnostics.ReportInvalidReturnExpression(syntax.Expression.Span, _function.Name);
+                    }
+                }
+                else
+                {
+                    if (expression == null)
+                        _diagnostics.ReportMissingReturnExpression(syntax.ReturnKeyword.Span, _function.Type);
+                    else
+                        expression = BindConversion(syntax.Expression.Span, expression, _function.Type);
+                }
+            }
+
+
+            return new BoundReturnStatement(expression);
         }
 
         private BoundStatement BindContinueStatement(ContinueStatementSyntax syntax)

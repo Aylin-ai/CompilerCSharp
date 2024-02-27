@@ -61,6 +61,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         GlobalStatement,
         BreakStatement,
         ContinueStatement,
+        ReturnStatement,
         
         //Keywords
         TrueKeyword,
@@ -76,6 +77,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         FunctionKeyword,
         BreakKeyword,
         ContinueKeyword,
-
+        ReturnKeyword,
     }
 }

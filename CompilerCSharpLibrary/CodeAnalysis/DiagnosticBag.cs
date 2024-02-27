@@ -144,6 +144,23 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Report(span, message);
         }
 
+        public void ReportInvalidReturn(TextSpan span)
+        {
+            string message = $"The 'return' keyword can only be used inside of function.";
+            Report(span, message);
+        }
 
+        public void ReportInvalidReturnExpression(TextSpan span, string functionName)
+        {
+            string message = $"Sinsce the function '{functionName}' does not return" + 
+            $" a value the 'return' keyword cannot be followed by an expression.";
+            Report(span, message);
+        }
+
+        public void ReportMissingReturnExpression(TextSpan span, TypeSymbol returnType)
+        {
+            string message = $"An expression of type '{returnType}' expected.";
+            Report(span, message);
+        }
     }
 }

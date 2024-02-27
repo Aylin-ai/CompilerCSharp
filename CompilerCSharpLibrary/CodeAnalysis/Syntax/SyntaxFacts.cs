@@ -79,6 +79,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return SyntaxKind.BreakKeyword;
                 case "continue":
                     return SyntaxKind.ContinueKeyword;
+                case "return":
+                    return SyntaxKind.ReturnKeyword;
                 
                 default:
                     return SyntaxKind.IdentifierToken;
@@ -168,6 +170,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return "var";
                 case SyntaxKind.LetKeyword:
                     return "let";
+                case SyntaxKind.ReturnKeyword:
+                    return "return";
                 case SyntaxKind.IfKeyword:
                     return "if";
                 case SyntaxKind.ElseKeyword:
