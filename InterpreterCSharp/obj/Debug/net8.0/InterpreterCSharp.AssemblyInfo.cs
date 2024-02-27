@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("CompilerCSharpLibrary")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("InterpreterCSharp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7419ea289717899798690d10cfe84938502a45dd")]
-[assembly: System.Reflection.AssemblyProductAttribute("CompilerCSharpLibrary")]
-[assembly: System.Reflection.AssemblyTitleAttribute("CompilerCSharpLibrary")]
+[assembly: System.Reflection.AssemblyProductAttribute("InterpreterCSharp")]
+[assembly: System.Reflection.AssemblyTitleAttribute("InterpreterCSharp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Создано классом WriteCodeFragment MSBuild.

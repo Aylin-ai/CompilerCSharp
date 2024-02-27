@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "6IE7QxoROczQfAGp38pom3xcPd6tAA92cMQYeiN0P3vdWWJwzKSYigucwHzGJZS2MLEbpCoRh3mi5P1K44LydA==",
+  "success": true,
+  "projectFilePath": "/home/aylin/Документы/Учеба/Диплом/CompilerCSharp/InterpreterCSharp/InterpreterCSharp.csproj",
+  "expectedPackageFiles": [
+    "/home/aylin/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.1/microsoft.aspnetcore.app.ref.8.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
