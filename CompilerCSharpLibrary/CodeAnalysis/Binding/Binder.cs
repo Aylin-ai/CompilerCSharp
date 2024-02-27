@@ -410,8 +410,26 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
             if (syntax.Arguments.Count != function.Parameters.Count)
             {
-                _diagnostics.ReportWrongArgumentCount(syntax.Span, function.Name, function.Parameters.Count, syntax.Arguments.Count);
+                TextSpan span;
+                if (syntax.Arguments.Count > function.Parameters.Count)
+                {
+                    SyntaxNode firstExceedingNode;
+                    if (function.Parameters.Count > 0)
+                        firstExceedingNode = syntax.Arguments.GetSeparator(function.Parameters.Count - 1);
+                    else
+                        firstExceedingNode = syntax.Arguments[0];
+                    var lastExceedingArgument = syntax.Arguments[syntax.Arguments.Count - 1];
+                    span = TextSpan.FromBounds(firstExceedingNode.Span.Start, lastExceedingArgument.Span.End);
+                }
+                else
+                {
+                    span = syntax.CloseParenthesisToken.Span;
+                }
+                _diagnostics.ReportWrongArgumentCount(span, function.Name, function.Parameters.Count, syntax.Arguments.Count);
+                return new BoundErrorExpression();
             }
+
+            bool hasErrors = false;
 
             for (int i = 0; i < syntax.Arguments.Count; i++)
             {
@@ -419,10 +437,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 var parameter = function.Parameters[i];
                 if (argument.Type != parameter.Type)
                 {
-                    _diagnostics.ReportWrongArgumentType(syntax.Arguments[i].Span, parameter.Name, parameter.Type, argument.Type);
-                    return new BoundErrorExpression();
+                    if (argument.Type != TypeSymbol.Error)
+                        _diagnostics.ReportWrongArgumentType(syntax.Arguments[i].Span, parameter.Name, parameter.Type, argument.Type);
+                    hasErrors = true;
                 }
             }
+
+            if (hasErrors)
+                return new BoundErrorExpression();
 
             return new BoundCallExpression(function, boundArguments);
         }
