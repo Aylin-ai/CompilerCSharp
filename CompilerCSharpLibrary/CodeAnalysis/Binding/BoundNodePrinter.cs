@@ -54,6 +54,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 case BoundNodeKind.ConditionalGotoStatement:
                     WriteConditionalGotoStatement((BoundConditionalGotoStatement)node, writer);
                     break;
+                case BoundNodeKind.ReturnStatement:
+                    WriteReturnStatement((BoundReturnStatement)node, writer);
+                    break;
                 case BoundNodeKind.UnaryExpression:
                     WriteUnaryExpression((BoundUnaryExpression)node, writer);
                     break;
@@ -82,7 +85,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     throw new Exception($"Unexpected node {node.Kind}");
             }
         }
-        
+
         //Indent - отступ от начала строки. У Label его нет, так как делаем Indent--
 
         private static void WriteNestedStatement(this IndentedTextWriter writer, BoundStatement node)
@@ -230,6 +233,17 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             writer.WriteLine();
         }
 
+        private static void WriteReturnStatement(BoundReturnStatement node, IndentedTextWriter writer)
+        {
+            writer.WriteKeyword(SyntaxKind.ReturnKeyword);
+            if (node.Expression != null)
+            {
+                writer.WriteSpace();
+                node.Expression.WriteTo(writer);
+            }
+            writer.WriteLine();
+        }
+
         private static void WriteExpressionStatement(BoundExpressionStatement node, IndentedTextWriter writer)
         {
             node.Expression.WriteTo(writer);
@@ -309,7 +323,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     isFirst = false;
                 else
                     writer.WritePunctuation(SyntaxKind.CommaToken);
-                    writer.WriteSpace();
+                writer.WriteSpace();
 
                 argument.WriteTo(writer);
             }

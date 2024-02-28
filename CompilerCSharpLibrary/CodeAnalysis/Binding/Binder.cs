@@ -100,6 +100,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     var binder = new Binder(parentScope, function);
                     var body = binder.BindStatement(function.Declaration.Body);
                     var loweredBody = Lowerer.Lower(body);
+
+                    if (function.Type != TypeSymbol.Void && !ControlFlowGraph.AllPathsReturn(loweredBody)){
+                        binder._diagnostics.ReportAllPathMustReturn(function.Declaration.Identifier.Span);
+                    }
+
                     functionBodies.Add(function, loweredBody);
 
                     diagnostics.AddRange(binder.Diagnostics);

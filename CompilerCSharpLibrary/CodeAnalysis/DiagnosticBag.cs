@@ -152,8 +152,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         public void ReportInvalidReturnExpression(TextSpan span, string functionName)
         {
-            string message = $"Sinsce the function '{functionName}' does not return" + 
+            string message = $"Sinsce the function '{functionName}' does not return" +
             $" a value the 'return' keyword cannot be followed by an expression.";
+            Report(span, message);
+        }
+
+        public void ReportAllPathMustReturn(TextSpan span)
+        {
+            string message = $"Not all code paths return a value.";
             Report(span, message);
         }
 

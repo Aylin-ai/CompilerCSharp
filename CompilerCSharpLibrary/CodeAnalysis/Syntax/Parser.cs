@@ -196,14 +196,22 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             }
         }
 
+        /*
+        Проблема такова, что по каким-то причинам метод GetLineIndex()
+        срабатывает так, что у выражения и return оказываются разные строки (код строки 213, 214).
+        Временное решение: добавить -1 к Current.Span.Start (вроде работает)
+        */
         private StatementSyntax ParseReturnStatement()
         {
             // return 12
             // return
 
             var keyword = MatchToken(SyntaxKind.ReturnKeyword);
+            //var openParenthesisToken = MatchToken(SyntaxKind.OpenParenthesisToken);
+            //var expression = ParseExpression();
+            //var closeParenthesisToken = MatchToken(SyntaxKind.CloseParenthesisToken);
             var keywordLine = _text.GetLineIndex(keyword.Span.Start);
-            var currentLine = _text.GetLineIndex(Current.Span.Start);
+            var currentLine = _text.GetLineIndex(Current.Span.Start - 1);
             var isEof = Current.Kind == SyntaxKind.EndOfFileToken;
             var sameLine = !isEof && keywordLine == currentLine;
             var expression = sameLine ? ParseExpression() : null;
