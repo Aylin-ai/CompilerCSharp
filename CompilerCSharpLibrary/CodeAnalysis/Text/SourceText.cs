@@ -6,11 +6,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
     Класс, содержащий информацию о размере текста,
     о месте его старта и конца
     */
-    public sealed class SourceText{
+    public sealed class SourceText
+    {
         private readonly string _text;
-        private SourceText(string text){
+        private SourceText(string text, string fileName)
+        {
             Lines = ParseLines(this, text);
             _text = text;
+            FileName = fileName;
         }
 
         public List<TextLine> Lines { get; }
@@ -18,21 +21,32 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
         public char this[int index] => _text[index];
         public int Length => _text.Length;
 
-        public int GetLineIndex(int position){
+        public string FileName { get; }
+
+        public static SourceText From(string text, string fileName = "")
+        {
+            return new SourceText(text, fileName);
+        }
+
+        public int GetLineIndex(int position)
+        {
             int lower = 0;
             int upper = Lines.Count - 1;
 
-            while (lower <= upper){
+            while (lower <= upper)
+            {
                 int index = lower + (upper - lower) / 2;
                 int start = Lines[index].Start;
 
                 if (start == position)
                     return index;
 
-                if (start > position){
+                if (start > position)
+                {
                     upper = index - 1;
                 }
-                else{
+                else
+                {
                     lower = index + 1;
                 }
             }
@@ -40,14 +54,17 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
             return lower - 1;
         }
 
-        private static List<TextLine> ParseLines(SourceText sourceText, string text){
+        private static List<TextLine> ParseLines(SourceText sourceText, string text)
+        {
             List<TextLine> lines = new List<TextLine>();
             int position = 0;
             int lineStart = 0;
-            while (position < text.Length){
+            while (position < text.Length)
+            {
                 var lineBreakWidth = GetLineBreakWidth(text, position);
-                
-                if (lineBreakWidth == 0){
+
+                if (lineBreakWidth == 0)
+                {
                     position++;
                 }
                 else
@@ -59,7 +76,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
                 }
             }
 
-            if (position >= lineStart){
+            if (position >= lineStart)
+            {
                 AddLine(lines, sourceText, position, lineStart, 0);
             }
             return lines;
@@ -84,10 +102,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
                 return 1;
 
             return 0;
-        }
-
-        public static SourceText From(string text){
-            return new SourceText(text);
         }
 
         public override string ToString() => _text;

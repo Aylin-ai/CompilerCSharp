@@ -4,8 +4,11 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
-    public sealed class ExpressionStatementSyntax : StatementSyntax{
-        public ExpressionStatementSyntax(BaseExpressionSyntax expression){
+    public sealed class ExpressionStatementSyntax : StatementSyntax
+    {
+        public ExpressionStatementSyntax(SyntaxTree syntaxTree, BaseExpressionSyntax expression)
+            : base(syntaxTree)
+        {
             Expression = expression;
         }
 

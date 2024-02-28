@@ -10,7 +10,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
     сам являться деревом, т.к. класса ExpressionSyntax.
     */
     public sealed class UnaryExpressionSyntax : BaseExpressionSyntax{
-        public UnaryExpressionSyntax(SyntaxToken operatorToken, BaseExpressionSyntax operand){
+        public UnaryExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken operatorToken, 
+        BaseExpressionSyntax operand)
+            : base(syntaxTree)
+        {
             OperatorToken = operatorToken;
             Operand = operand;
         }

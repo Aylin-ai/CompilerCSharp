@@ -7,7 +7,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base
     от которого идет реализация конкретных узлов выражения, по типу
     NumberExpression или BinaryExpression
     */
-    public abstract class BaseExpressionSyntax : SyntaxNode{
-
+    public abstract class BaseExpressionSyntax : SyntaxNode
+    {
+        protected BaseExpressionSyntax(SyntaxTree syntaxTree) 
+            : base(syntaxTree)
+        {
+        }
     }
 }

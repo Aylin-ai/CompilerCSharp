@@ -7,8 +7,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
     Класс, представляющий выражение в скобках
     */
     public sealed class ParenthesizedExpressionSyntax : BaseExpressionSyntax{
-        public ParenthesizedExpressionSyntax(SyntaxToken openParenthesisToken, BaseExpressionSyntax expression,
-        SyntaxToken closeParenthesisToken){
+        public ParenthesizedExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken openParenthesisToken, 
+        BaseExpressionSyntax expression, SyntaxToken closeParenthesisToken)
+            : base(syntaxTree)
+        {
             OpenParenthesisToken = openParenthesisToken;
             Expression = expression;
             CloseParenthesisToken = closeParenthesisToken;

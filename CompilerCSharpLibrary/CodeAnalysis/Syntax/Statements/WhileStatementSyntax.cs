@@ -4,9 +4,12 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
-    public sealed class WhileStatementSyntax : StatementSyntax{
-        public WhileStatementSyntax(SyntaxToken whileKeyword, BaseExpressionSyntax condition,
-        StatementSyntax body){
+    public sealed class WhileStatementSyntax : StatementSyntax
+    {
+        public WhileStatementSyntax(SyntaxTree syntaxTree, SyntaxToken whileKeyword,
+        BaseExpressionSyntax condition, StatementSyntax body)
+            : base(syntaxTree)
+        {
             WhileKeyword = whileKeyword;
             Condition = condition;
             Body = body;

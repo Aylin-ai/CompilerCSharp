@@ -3,8 +3,11 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
-    public sealed class GlobalStatementSyntax : MemberSyntax{
-        public GlobalStatementSyntax(StatementSyntax statement){
+    public sealed class GlobalStatementSyntax : MemberSyntax
+    {
+        public GlobalStatementSyntax(SyntaxTree syntaxTree, StatementSyntax statement)
+            : base(syntaxTree)
+        {
             Statement = statement;
         }
 

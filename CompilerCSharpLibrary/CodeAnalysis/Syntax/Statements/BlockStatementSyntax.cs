@@ -3,8 +3,12 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
-    public sealed class BlockStatementSyntax : StatementSyntax{
-        public BlockStatementSyntax(SyntaxToken openBraceToken, List<StatementSyntax> statements, SyntaxToken closeBraceToken){
+    public sealed class BlockStatementSyntax : StatementSyntax
+    {
+        public BlockStatementSyntax(SyntaxTree syntaxTree, SyntaxToken openBraceToken,
+        List<StatementSyntax> statements, SyntaxToken closeBraceToken)
+            : base(syntaxTree)
+        {
             OpenBraceToken = openBraceToken;
             Statements = statements;
             CloseBraceToken = closeBraceToken;

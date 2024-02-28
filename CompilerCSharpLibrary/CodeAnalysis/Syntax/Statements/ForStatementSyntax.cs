@@ -4,10 +4,13 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
-    public sealed class ForStatementSyntax : StatementSyntax{
-        public ForStatementSyntax(SyntaxToken forKeyword, SyntaxToken identifier,
+    public sealed class ForStatementSyntax : StatementSyntax
+    {
+        public ForStatementSyntax(SyntaxTree syntaxTree, SyntaxToken forKeyword, SyntaxToken identifier,
         SyntaxToken equalToken, BaseExpressionSyntax lowerBound, SyntaxToken toKeyword,
-         BaseExpressionSyntax upperBound, StatementSyntax body){
+        BaseExpressionSyntax upperBound, StatementSyntax body)
+            : base(syntaxTree)
+        {
             ForKeyword = forKeyword;
             Identifier = identifier;
             EqualToken = equalToken;

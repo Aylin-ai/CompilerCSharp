@@ -10,7 +10,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
     */
     public sealed class AssignmentExpressionSyntax : BaseExpressionSyntax
     {
-        public AssignmentExpressionSyntax(SyntaxToken identifierToken, SyntaxToken equalsToken, BaseExpressionSyntax expression)
+        public AssignmentExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken identifierToken, SyntaxToken equalsToken, BaseExpressionSyntax expression)
+            : base(syntaxTree)
         {
             IdentifierToken = identifierToken;
             EqualsToken = equalsToken;

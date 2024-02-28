@@ -11,20 +11,36 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     */
     public sealed class SyntaxTree
     {
-        private SyntaxTree(SourceText text)
+        private delegate void ParseHandler(SyntaxTree syntaxTree,
+                                           out CompilationUnitSyntax root,
+                                           out DiagnosticBag diagnostics);
+        private SyntaxTree(SourceText text, ParseHandler handler)
         {
-
-            Parser parser = new Parser(text);
-            var root = parser.ParseCompilationUnit();
-
             Text = text;
-            Diagnostics = parser.Diagnostics;
+
+            handler(this, out var root, out var diagnostics);
+
+            Diagnostics = diagnostics;
             Root = root;
         }
 
         public SourceText Text { get; }
         public DiagnosticBag Diagnostics { get; }
         public CompilationUnitSyntax Root { get; }
+
+        public static SyntaxTree Load(string fileName)
+        {
+            var text = File.ReadAllText(fileName);
+            var sourceText = SourceText.From(text, fileName);
+            return Parse(sourceText);
+        }
+
+        private static void Parse(SyntaxTree syntaxTree, out CompilationUnitSyntax root, out DiagnosticBag diagnostics)
+        {
+            var parser = new Parser(syntaxTree);
+            root = parser.ParseCompilationUnit();
+            diagnostics = parser.Diagnostics;
+        }
 
         //Создает парсер и возвращает построенное дерево
         public static SyntaxTree Parse(string text)
@@ -35,7 +51,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         public static SyntaxTree Parse(SourceText text)
         {
-            return new SyntaxTree(text);
+            return new SyntaxTree(text, Parse);
         }
 
         public static IEnumerable<SyntaxToken> ParseTokens(string text, out DiagnosticBag diagnostics)
@@ -51,21 +67,30 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         public static IEnumerable<SyntaxToken> ParseTokens(SourceText text, out DiagnosticBag diagnostics)
         {
-            IEnumerable<SyntaxToken> LexTokens(Lexer lexer)
+            var tokens = new List<SyntaxToken>();
+
+            void ParseTokens(SyntaxTree st, out CompilationUnitSyntax root, out DiagnosticBag d)
             {
+                root = null;
+
+                var l = new Lexer(st);
                 while (true)
                 {
-                    SyntaxToken token = lexer.Lex();
+                    SyntaxToken token = l.Lex();
                     if (token.Kind == SyntaxKind.EndOfFileToken)
+                    {
+                        root = new CompilationUnitSyntax(st, new List<MemberSyntax>(), token);
                         break;
+                    }
 
-                    yield return token;
+                    tokens.Add(token);
                 }
+
+                d = l.Diagnostics;
             }
-            Lexer l = new Lexer(text);
-            var result = LexTokens(l);
-            diagnostics = l.Diagnostics;
-            return result;
+            var syntaxTree = new SyntaxTree(text, ParseTokens);
+            diagnostics = syntaxTree.Diagnostics;
+            return tokens.ToArray();
         }
     }
 }

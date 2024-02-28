@@ -4,10 +4,13 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
-    public sealed class FunctionDeclarationSyntax : MemberSyntax{
-        public FunctionDeclarationSyntax(SyntaxToken functionKeyword, SyntaxToken identifier,
-        SyntaxToken openParenthesisToken, SeparatedSyntaxList<ParameterSyntax> parameters, 
-        SyntaxToken closeParenthesisToken, TypeClauseSyntax type, BlockStatementSyntax body){
+    public sealed class FunctionDeclarationSyntax : MemberSyntax
+    {
+        public FunctionDeclarationSyntax(SyntaxTree syntaxTree, SyntaxToken functionKeyword, SyntaxToken identifier,
+        SyntaxToken openParenthesisToken, SeparatedSyntaxList<ParameterSyntax> parameters,
+        SyntaxToken closeParenthesisToken, TypeClauseSyntax type, BlockStatementSyntax body)
+            : base(syntaxTree)
+        {
             FunctionKeyword = functionKeyword;
             Identifier = identifier;
             OpenParenthesisToken = openParenthesisToken;

@@ -4,10 +4,12 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
-    public sealed class DoWhileStatementSyntax : StatementSyntax{
-        public DoWhileStatementSyntax(SyntaxToken doKeyword, StatementSyntax body, 
-        SyntaxToken whileKeyword, BaseExpressionSyntax condition
-        ){
+    public sealed class DoWhileStatementSyntax : StatementSyntax
+    {
+        public DoWhileStatementSyntax(SyntaxTree syntaxTree, SyntaxToken doKeyword,
+        StatementSyntax body, SyntaxToken whileKeyword, BaseExpressionSyntax condition)
+            : base(syntaxTree)
+        {
             DoKeyword = doKeyword;
             Body = body;
             WhileKeyword = whileKeyword;

@@ -7,8 +7,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
     public sealed class VariableDeclarationSyntax : StatementSyntax
     {
-        public VariableDeclarationSyntax(SyntaxToken keyword, SyntaxToken identifier, TypeClauseSyntax typeClause,
-        SyntaxToken equalsToken, BaseExpressionSyntax initializer){
+        public VariableDeclarationSyntax(SyntaxTree syntaxTree, SyntaxToken keyword,
+        SyntaxToken identifier, TypeClauseSyntax typeClause,
+        SyntaxToken equalsToken, BaseExpressionSyntax initializer)
+            : base(syntaxTree)
+        {
             Keyword = keyword;
             Identifier = identifier;
             TypeClause = typeClause;

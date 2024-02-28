@@ -4,9 +4,13 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
-    public sealed class IfStatementSyntax : StatementSyntax{
-        public IfStatementSyntax(SyntaxToken ifKeyword, BaseExpressionSyntax condition, 
-        StatementSyntax thenStatement, ElseClauseSyntax elseClause){
+    public sealed class IfStatementSyntax : StatementSyntax
+    {
+        public IfStatementSyntax(SyntaxTree syntaxTree, SyntaxToken ifKeyword,
+        BaseExpressionSyntax condition,
+        StatementSyntax thenStatement, ElseClauseSyntax elseClause)
+            : base(syntaxTree)
+        {
             IfKeyword = ifKeyword;
             Condition = condition;
             ThenStatement = thenStatement;

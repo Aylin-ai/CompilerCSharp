@@ -4,8 +4,12 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
-    public sealed class ReturnStatementSyntax : StatementSyntax{
-        public ReturnStatementSyntax(SyntaxToken returnKeyword, BaseExpressionSyntax expression){
+    public sealed class ReturnStatementSyntax : StatementSyntax
+    {
+        public ReturnStatementSyntax(SyntaxTree syntaxTree, SyntaxToken returnKeyword,
+        BaseExpressionSyntax expression)
+            : base(syntaxTree)
+        {
             ReturnKeyword = returnKeyword;
             Expression = expression;
         }

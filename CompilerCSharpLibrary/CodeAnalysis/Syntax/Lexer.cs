@@ -13,6 +13,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     public class Lexer
     {
         private readonly SourceText _text;
+        private readonly SyntaxTree _syntaxTree;
         private DiagnosticBag _diagnostics = new DiagnosticBag();
         public DiagnosticBag Diagnostics => _diagnostics;
 
@@ -23,9 +24,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         private object _value;
 
 
-        public Lexer(SourceText text)
+        public Lexer(SyntaxTree syntaxTree)
         {
-            _text = text;
+            _syntaxTree = syntaxTree;
+            _text = syntaxTree.Text;
         }
 
         /*
@@ -209,7 +211,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     }
                     else
                     {
-                        _diagnostics.ReportBadCharacter(_position, Current);
+                        var span = new TextSpan(_position, 1);
+                        var location = new TextLocation(_text, span);
+                        _diagnostics.ReportBadCharacter(location, Current);
                         _position++;
                     }
                     break;
@@ -222,7 +226,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             if (text == null)
                 text = _text.ToString(_start, length);
 
-            return new SyntaxToken(_kind, _position, text, _value);
+            return new SyntaxToken(_syntaxTree, _kind, _position, text, _value);
         }
 
         private void ReadString()
@@ -239,7 +243,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     case '\r':
                     case '\n':
                         var span = new TextSpan(_start, 1);
-                        _diagnostics.ReportUnterminatedString(span);
+                        var location = new TextLocation(_text, span);
+                        _diagnostics.ReportUnterminatedString(location);
                         done = true;
                         break;
                     case '"':
@@ -299,7 +304,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
             if (!int.TryParse(text, out int value))
             {
-                _diagnostics.ReportInvalidNumber(new TextSpan(_start, length), text, TypeSymbol.Int);
+                var span = new TextSpan(_start, length);
+                var location = new TextLocation(_text, span);
+                _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Int);
             }
 
             _value = value;

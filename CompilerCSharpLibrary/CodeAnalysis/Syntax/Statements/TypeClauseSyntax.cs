@@ -2,8 +2,11 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
-    public sealed class TypeClauseSyntax : SyntaxNode{
-        public TypeClauseSyntax(SyntaxToken colonToken, SyntaxToken identifier){
+    public sealed class TypeClauseSyntax : SyntaxNode
+    {
+        public TypeClauseSyntax(SyntaxTree syntaxTree, SyntaxToken colonToken, SyntaxToken identifier)
+            : base(syntaxTree)
+        {
             ColonToken = colonToken;
             Identifier = identifier;
         }

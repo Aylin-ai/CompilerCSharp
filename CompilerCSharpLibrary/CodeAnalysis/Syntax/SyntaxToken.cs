@@ -8,7 +8,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     лексема и значение, если есть. У данного токена нет дочерних токенов
     */
     public class SyntaxToken : SyntaxNode{
-        public SyntaxToken(SyntaxKind kind, int position, string text, object value){
+        public SyntaxToken(SyntaxTree syntaxTree, SyntaxKind kind, int position, string text, object value) 
+            : base(syntaxTree)
+        {
             Kind = kind;
             Position = position;
             Text = text;

@@ -8,7 +8,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
     Содержит в себе токен переменной.
     */
     public sealed class NameExpressionSyntax : BaseExpressionSyntax{
-        public NameExpressionSyntax(SyntaxToken identifierToken){
+        public NameExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken identifierToken)
+            : base(syntaxTree)
+        {
             IdentifierToken = identifierToken;
         }
 

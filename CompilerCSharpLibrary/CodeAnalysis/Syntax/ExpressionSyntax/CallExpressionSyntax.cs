@@ -5,8 +5,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
 {
     public sealed class CallExpressionSyntax : BaseExpressionSyntax
     {
-        public CallExpressionSyntax(SyntaxToken identifier, SyntaxToken openParenthesisToken,
-         SeparatedSyntaxList<BaseExpressionSyntax> arguments, SyntaxToken closeParenthesisToken)
+        public CallExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken identifier, 
+        SyntaxToken openParenthesisToken, SeparatedSyntaxList<BaseExpressionSyntax> arguments, 
+        SyntaxToken closeParenthesisToken)
+            : base(syntaxTree)
         {
             Identifier = identifier;
             OpenParenthesisToken = openParenthesisToken;

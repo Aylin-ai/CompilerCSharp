@@ -13,7 +13,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
     сами являться деревьями, т.к. класса ExpressionSyntax.
     */
     public sealed class BinaryExpressionSyntax : BaseExpressionSyntax{
-        public BinaryExpressionSyntax(BaseExpressionSyntax left, SyntaxToken operatorToken, BaseExpressionSyntax right){
+        public BinaryExpressionSyntax(SyntaxTree syntaxTree, BaseExpressionSyntax left, SyntaxToken operatorToken, BaseExpressionSyntax right)
+            : base(syntaxTree)
+        {
             Left = left;
             OperatorToken = operatorToken;
             Right = right;
