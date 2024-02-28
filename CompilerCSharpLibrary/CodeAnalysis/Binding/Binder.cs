@@ -186,7 +186,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var type = BindTypeClause(syntax.Type) ?? TypeSymbol.Void;
 
             var function = new FunctionSymbol(syntax.Identifier.Text, parameters, type, syntax);
-            if (!_scope.TryDeclareFunction(function))
+            if (function.Declaration.Identifier.Text != null && !_scope.TryDeclareFunction(function))
             {
                 _diagnostics.ReportSymbolAlreadyDeclared(syntax.Identifier.Span, function.Name);
             }
