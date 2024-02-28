@@ -6,12 +6,12 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v8.0": {
-      "InterpreterCSharp/1.0.0": {
+      "CompilerCSharp/1.0.0": {
         "dependencies": {
           "CompilerCSharpLibrary": "1.0.0"
         },
         "runtime": {
-          "InterpreterCSharp.dll": {}
+          "CompilerCSharp.dll": {}
         }
       },
       "CompilerCSharpLibrary/1.0.0": {
@@ -22,7 +22,7 @@
     }
   },
   "libraries": {
-    "InterpreterCSharp/1.0.0": {
+    "CompilerCSharp/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

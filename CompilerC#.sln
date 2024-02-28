@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterpreterCSharp", "Interp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompilerCSharpLibrary", "CompilerCSharpLibrary\CompilerCSharpLibrary.csproj", "{6426235F-88AB-4822-9295-67E1D7C39C73}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompilerCSharp", "CompilerCSharp\CompilerCSharp.csproj", "{764F8C03-BED5-44A8-B77F-897D749D4347}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{6426235F-88AB-4822-9295-67E1D7C39C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6426235F-88AB-4822-9295-67E1D7C39C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6426235F-88AB-4822-9295-67E1D7C39C73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{764F8C03-BED5-44A8-B77F-897D749D4347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{764F8C03-BED5-44A8-B77F-897D749D4347}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{764F8C03-BED5-44A8-B77F-897D749D4347}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{764F8C03-BED5-44A8-B77F-897D749D4347}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
