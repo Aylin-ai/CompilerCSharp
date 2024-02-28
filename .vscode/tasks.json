@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/CompilerC#.sln"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "ms",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "run",
+                "--project",
+                "${workspaceFolder}/CompilerCSharp/CompilerCSharp.csproj",
+                "--",
+                "${file}"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
+//Ctrl + Shift + B - сборка проекта
