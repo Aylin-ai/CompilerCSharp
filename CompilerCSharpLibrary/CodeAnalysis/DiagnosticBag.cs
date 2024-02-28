@@ -138,12 +138,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Report(span, message);
         }
 
-        public void XXX_ReportFunctionsAreUnsupported(TextSpan span)
-        {
-            string message = $"Functions with return values are unsupported.";
-            Report(span, message);
-        }
-
         public void ReportInvalidReturn(TextSpan span)
         {
             string message = $"The 'return' keyword can only be used inside of function.";
@@ -165,7 +159,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         public void ReportMissingReturnExpression(TextSpan span, TypeSymbol returnType)
         {
-            string message = $"An expression of type '{returnType}' expected.";
+            string message = $"An expression of type '{returnType}' is expected.";
+            Report(span, message);
+        }
+
+        public void XXX_ReportFunctionsAreUnsupported(TextSpan span)
+        {
+            string message = $"Functions with return values are unsupported.";
             Report(span, message);
         }
     }
