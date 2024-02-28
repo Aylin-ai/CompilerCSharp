@@ -34,9 +34,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes
         public bool TryDeclareVariable(VariableSymbol variable) => TryDeclareSymbol(variable);
         public bool TryDeclareFunction(FunctionSymbol function) => TryDeclareSymbol(function);
 
-        public bool TryLookupVariable(string name, out VariableSymbol variable) => TryLookupSymbol(name, out variable);
-        public bool TryLookupFunction(string name, out FunctionSymbol function) => TryLookupSymbol(name, out function);
-
         public List<VariableSymbol> GetDeclaredVariables() => GetDeclaredSymbols<VariableSymbol>();
         public List<FunctionSymbol> GetDeclaredFunctions() => GetDeclaredSymbols<FunctionSymbol>();
 
@@ -53,26 +50,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes
             return true;
         }
 
-        public bool TryLookupSymbol<TSymbol>(string name, out TSymbol symbol)
-            where TSymbol : Symbol
+        public Symbol TryLookupSymbol(string name)
         {
-            symbol = null;
+            if (_symbols != null && _symbols.TryGetValue(name, out var symbol))
+                return symbol;
 
-            if (_symbols != null && _symbols.TryGetValue(name, out var declaredSymbol))
-            {
-                if (declaredSymbol is TSymbol matchingSymbol)
-                {
-                    symbol = matchingSymbol;
-                    return true;
-                }
-
-                return false;
-            }
-
-            if (Parent == null)
-                return false;
-
-            return Parent.TryLookupSymbol(name, out symbol);
+             return Parent?.TryLookupSymbol(name);
         }
 
         private List<TSymbol> GetDeclaredSymbols<TSymbol>()
@@ -83,8 +66,5 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes
 
             return _symbols.Values.OfType<TSymbol>().ToList();
         }
-
-
-
     }
 }

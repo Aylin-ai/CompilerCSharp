@@ -101,7 +101,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     var body = binder.BindStatement(function.Declaration.Body);
                     var loweredBody = Lowerer.Lower(body);
 
-                    if (function.Type != TypeSymbol.Void && !ControlFlowGraph.AllPathsReturn(loweredBody)){
+                    if (function.Type != TypeSymbol.Void && !ControlFlowGraph.AllPathsReturn(loweredBody))
+                    {
                         binder._diagnostics.ReportAllPathMustReturn(function.Declaration.Identifier.Span);
                     }
 
@@ -278,8 +279,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             return new BoundGotoStatement(breakLabel);
         }
 
-
-
         private BoundStatement BindDoWhileStatement(DoWhileStatementSyntax syntax)
         {
             var body = BindLoopBody(syntax.Body, out var breakLabel, out var continueLabel);
@@ -294,7 +293,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
             _scope = new BoundScope(_scope);
 
-            VariableSymbol variable = BindVariable(syntax.Identifier, isReadOnly: true, TypeSymbol.Int);
+            VariableSymbol variable = BindVariableDeclaration(syntax.Identifier, isReadOnly: true, TypeSymbol.Int);
             var body = BindLoopBody(syntax.Body, out var breakLabel, out var continueLabel);
 
             _scope = _scope.Parent;
@@ -338,7 +337,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var type = BindTypeClause(syntax.TypeClause);
             var initializer = BindExpression(syntax.Initializer);
             var variableType = type ?? initializer.Type;
-            var variable = BindVariable(syntax.Identifier, isReadOnly, variableType);
+            var variable = BindVariableDeclaration(syntax.Identifier, isReadOnly, variableType);
             var convertedInitializer = BindConversion(syntax.Initializer.Span, initializer, variableType);
 
             return new BoundVariableDeclaration(variable, convertedInitializer);
@@ -435,9 +434,18 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 boundArguments.Add(boundArgument);
             }
 
-            if (!_scope.TryLookupFunction(syntax.Identifier.Text, out var function))
+            //if (!_scope.TryLookupFunction(syntax.Identifier.Text, out var function))
+            var symbol = _scope.TryLookupSymbol(syntax.Identifier.Text);
+            if (symbol == null)
             {
                 _diagnostics.ReportUndefinedFunction(syntax.Identifier.Span, syntax.Identifier.Text);
+                return new BoundErrorExpression();
+            }
+
+            var function = symbol as FunctionSymbol;
+            if (function == null)
+            {
+                _diagnostics.ReportNotAFunction(syntax.Identifier.Span, syntax.Identifier.Text);
                 return new BoundErrorExpression();
             }
 
@@ -523,11 +531,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             var name = syntax.IdentifierToken.Text;
             var boundExpression = BindExpression(syntax.Expression);
 
-            if (!_scope.TryLookupVariable(name, out var variable))
-            {
-                _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
+            var variable = BindVariableReference(name, syntax.IdentifierToken.Span);
+            if (variable == null)
                 return boundExpression;
-            }
 
             if (variable.IsReadOnly)
                 _diagnostics.ReportCannotAssign(syntax.EqualsToken.Span, name);
@@ -548,11 +554,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             if (syntax.IdentifierToken.IsMissing)
                 return new BoundErrorExpression();
 
-            if (!_scope.TryLookupVariable(name, out var variable))
-            {
-                _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
+            //if (!_scope.TryLookupVariable(name, out var variable))
+            //{
+            //    _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
+            //    return new BoundErrorExpression();
+            //}
+            var variable = BindVariableReference(name, syntax.IdentifierToken.Span);
+            if (variable == null)
                 return new BoundErrorExpression();
-            }
 
             return new BoundVariableExpression(variable);
         }
@@ -618,7 +627,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             return new BoundLiteralExpression(value);
         }
 
-        public VariableSymbol BindVariable(SyntaxToken identifier, bool isReadOnly, TypeSymbol type)
+        public VariableSymbol BindVariableDeclaration(SyntaxToken identifier, bool isReadOnly, TypeSymbol type)
         {
             var name = identifier.Text ?? "?";
             var declare = identifier.IsMissing;
@@ -631,6 +640,23 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             if (declare && !isDeclared)
                 _diagnostics.ReportSymbolAlreadyDeclared(identifier.Span, name);
             return variable;
+        }
+
+        private VariableSymbol BindVariableReference(string name, TextSpan span)
+        {
+            switch (_scope.TryLookupSymbol(name))
+            {
+                case VariableSymbol variable:
+                    return variable;
+
+                case null:
+                    _diagnostics.ReportUndefinedVariable(span, name);
+                    return null;
+
+                default:
+                    _diagnostics.ReportNotAVariable(span, name);
+                    return null;
+            }
         }
 
         private TypeSymbol LookupType(string name)
