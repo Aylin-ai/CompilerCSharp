@@ -11,6 +11,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis
     */
     public sealed class DiagnosticBag : IEnumerable<Diagnostic>
     {
+        public DiagnosticBag() {}
+        public DiagnosticBag(List<Diagnostic> diagnostics) {
+            _diagnostics = diagnostics;
+        }
         private readonly List<Diagnostic> _diagnostics = new List<Diagnostic>();
 
         public IEnumerator<Diagnostic> GetEnumerator() => _diagnostics.GetEnumerator();

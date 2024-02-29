@@ -17,16 +17,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis
     public sealed class Compilation
     {
         private BoundGlobalScope _globalScope;
-        public Compilation(SyntaxTree syntax) : this(null, syntax) { }
+        public Compilation(params SyntaxTree[] syntaxTrees) : this(null, syntaxTrees) { }
 
-        private Compilation(Compilation previous, SyntaxTree syntax)
+        private Compilation(Compilation previous, params SyntaxTree[] syntaxTrees)
         {
             Previous = previous;
-            Syntax = syntax;
+            SyntaxTrees = syntaxTrees.ToList();
         }
 
         public Compilation Previous { get; }
-        public SyntaxTree Syntax { get; }
+        public List<SyntaxTree> SyntaxTrees { get; }
 
         internal BoundGlobalScope GlobalScope
         {
@@ -34,7 +34,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             {
                 if (_globalScope == null)
                 {
-                    var globalScope = Binder.BindGlobalScope(Previous?.GlobalScope, Syntax.Root);
+                    var globalScope = Binder.BindGlobalScope(Previous?.GlobalScope, SyntaxTrees);
                     Interlocked.CompareExchange(ref _globalScope, globalScope, null);
                 }
 
@@ -49,10 +49,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)
         {
-            Syntax.Diagnostics.AddRange(GlobalScope.Diagnostics);
-            if (Syntax.Diagnostics.Any())
+            var parseDiagnositcs = SyntaxTrees.SelectMany(st => st.Diagnostics);
+            var diagnostics = parseDiagnositcs.Concat(GlobalScope.Diagnostics);
+
+            if (diagnostics.Any())
             {
-                return new EvaluationResult(Syntax.Diagnostics, null);
+                return new EvaluationResult(new DiagnosticBag(diagnostics.ToList()) , null);
             }
 
             var program = Binder.BindProgram(GlobalScope);

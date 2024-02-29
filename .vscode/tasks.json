@@ -20,7 +20,7 @@
                 "--project",
                 "${workspaceFolder}/CompilerCSharp/CompilerCSharp.csproj",
                 "--",
-                "${file}"
+                "${fileDirname}"
             ],
             "presentation": {
                 "echo": true,

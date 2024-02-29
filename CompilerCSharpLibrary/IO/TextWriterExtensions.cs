@@ -81,12 +81,13 @@ namespace CompilerCSharpLibrary.IO
             writer.ResetColor();
         }
 
-        public static void WriteDiagnostics(this TextWriter writer, DiagnosticBag diagnostics, SyntaxTree syntaxTree)
+        public static void WriteDiagnostics(this TextWriter writer, DiagnosticBag diagnostics)
         {
             foreach (var diagnostic in diagnostics.OrderBy(d => d.Location.FileName)
                                                   .ThenBy(d => d.Location.Span.Start)
                                                   .ThenBy(d => d.Location.Span.Length))
             {
+                var text = diagnostic.Location.Text;
                 var fileName = diagnostic.Location.FileName;
                 var startLine = diagnostic.Location.StartLine + 1;
                 var startCharacter = diagnostic.Location.StartCharacter + 1;
@@ -94,8 +95,8 @@ namespace CompilerCSharpLibrary.IO
                 var endCharacter = diagnostic.Location.EndCharacter + 1;
 
                 var span = diagnostic.Location.Span;
-                var lineIndex = syntaxTree.Text.GetLineIndex(span.Start);
-                var line = syntaxTree.Text.Lines[lineIndex];
+                var lineIndex = text.GetLineIndex(span.Start);
+                var line = text.Lines[lineIndex];
                 var lineNumber = lineIndex + 1;
                 var character = span.Start - line.Start + 1;
 
@@ -109,9 +110,9 @@ namespace CompilerCSharpLibrary.IO
                 var prefixSpan = TextSpan.FromBounds(line.Start, span.Start);
                 var suffixSpan = TextSpan.FromBounds(span.End, line.End);
 
-                var prefix = syntaxTree.Text.ToString(prefixSpan);
-                var error = syntaxTree.Text.ToString(span);
-                var suffix = syntaxTree.Text.ToString(suffixSpan);
+                var prefix = text.ToString(prefixSpan);
+                var error = text.ToString(span);
+                var suffix = text.ToString(suffixSpan);
 
                 Console.Write("    ");
                 Console.Write(prefix);
