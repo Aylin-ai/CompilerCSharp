@@ -7,12 +7,12 @@ namespace CompilerCSharp
 {
     internal static class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             if (args.Length == 0)
             {
                 Console.Error.WriteLine("usage: CompilerCSharp <source-paths>");
-                return;
+                return 1;
             }
 
             var paths = GetFilePaths(args);
@@ -23,7 +23,7 @@ namespace CompilerCSharp
             {
                 if (!File.Exists(path))
                 {
-                    Console.WriteLine("error: file '{path}' doesn't exist");
+                    Console.Error.WriteLine("error: file '{path}' doesn't exist");
                     hasErrors = true;
                     continue;
                 }
@@ -32,7 +32,7 @@ namespace CompilerCSharp
             }
 
             if (hasErrors)
-                return;
+                return 1;
 
             var compilation = new Compilation(syntaxTrees.ToArray());
             var result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
@@ -45,7 +45,10 @@ namespace CompilerCSharp
             else
             {
                 Console.Error.WriteDiagnostics(result.Diagnostics);
+                return 1;
             }
+
+            return 0;
         }
 
         private static IEnumerable<string> GetFilePaths(IEnumerable<string> args)
