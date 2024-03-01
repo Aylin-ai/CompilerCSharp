@@ -41,6 +41,16 @@
                     }
                 ]
             }
+        },
+        {
+            "label": "mi",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "run",
+                "--project",
+                "${workspaceFolder}/InterpreterCSharp/InterpreterCSharp.csproj",
+            ],
         }
     ]
 }

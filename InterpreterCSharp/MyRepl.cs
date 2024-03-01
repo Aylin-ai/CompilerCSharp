@@ -95,7 +95,7 @@ namespace InterpreterCSharp
             }
             else
             {
-                Console.Out.WriteDiagnostics(result.Diagnostics, syntaxTree);
+                Console.Out.WriteDiagnostics(result.Diagnostics);
             }
         }
 

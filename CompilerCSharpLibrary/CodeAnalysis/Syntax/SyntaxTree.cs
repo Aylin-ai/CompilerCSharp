@@ -88,6 +88,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
                 d = l.Diagnostics;
             }
+            
             var syntaxTree = new SyntaxTree(text, ParseTokens);
             diagnostics = syntaxTree.Diagnostics;
             return tokens.ToArray();
