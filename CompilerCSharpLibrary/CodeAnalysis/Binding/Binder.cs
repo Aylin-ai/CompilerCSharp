@@ -312,6 +312,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             return new BoundWhileStatement(condition, body, breakLabel, continueLabel);
         }
 
+        /*
+        breakLabel и continueLabel нужны и у каждого цикла только в одном экземпляре
+        (один номер), потому что если перевести код в более низкоуровневый, то все
+        сведется к goto, при котором в пределах одного цикла будет идти возврат
+        только к указанным break и continue
+        */
         private BoundStatement BindLoopBody(StatementSyntax body, out BoundLabel breakLabel, out BoundLabel continueLabel)
         {
             _labelCounter++;

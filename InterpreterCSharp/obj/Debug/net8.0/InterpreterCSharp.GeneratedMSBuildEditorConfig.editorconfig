@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = InterpreterCSharp
-build_property.ProjectDir = /home/aylin/Документы/Учеба/Диплом/CompilerCSharp/InterpreterCSharp/
+build_property.ProjectDir = C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\InterpreterCSharp\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

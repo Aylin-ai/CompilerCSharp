@@ -42,6 +42,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             diagnostics = parser.Diagnostics;
         }
 
+
+        /*
+        Мы получаем построенное синтаксическое дерево
+        с помощью следующих функций, так как они статические,
+        и для них не надо создавать новый объект типа SyntaxTree.
+        */
         //Создает парсер и возвращает построенное дерево
         public static SyntaxTree Parse(string text)
         {
