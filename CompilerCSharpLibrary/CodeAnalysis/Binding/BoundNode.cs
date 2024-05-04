@@ -17,19 +17,19 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             чтобы искал Public свойства в классах
             Порядок расположения свойств в классах важен
             */
-            var properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo[]? properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            foreach (var property in properties){
+            foreach (PropertyInfo? property in properties){
                 //Можно ли преобразовать property.PropertyType в SyntaxNode?
                 if (typeof(BoundNode).IsAssignableFrom(property.PropertyType)){
-                    var child = (BoundNode)property.GetValue(this);
+                    BoundNode? child = (BoundNode)property.GetValue(this);
                     if (child != null)
                         yield return child;
                 }
                 //Можно ли преобразовать property.PropertyType в IEnumerable<SyntaxNode>?
                 else if (typeof(IEnumerable<BoundNode>).IsAssignableFrom(property.PropertyType)){
-                    var children = (IEnumerable<BoundNode>)property.GetValue(this);
-                    foreach (var child in children){
+                    IEnumerable<BoundNode>? children = (IEnumerable<BoundNode>)property.GetValue(this);
+                    foreach (BoundNode? child in children){
                         if (child != null)
                             yield return child;
                     }
@@ -43,9 +43,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             чтобы искал Public свойства в классах
             Порядок расположения свойств в классах важен
             */
-            var properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo[]? properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            foreach (var property in properties){
+            foreach (PropertyInfo? property in properties){
                 if (property.Name == nameof(Kind) ||
                 property.Name == nameof(BoundBinaryExpression.Op))
                     continue;
@@ -54,7 +54,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 typeof(IEnumerable<BoundNode>).IsAssignableFrom(property.PropertyType)){
                     continue;
                 }
-                var value = property.GetValue(this);
+                object? value = property.GetValue(this);
                 if (value != null)
                     yield return (property.Name, value);
             }
@@ -64,7 +64,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
         public override string ToString()
         {
-            using (var writer = new StringWriter()){
+            using (StringWriter? writer = new StringWriter()){
                 this.WriteTo(writer);
                 return writer.ToString();
             }

@@ -36,7 +36,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
 
         //Возвращает нужный оператор из списка на основании переданных параметров
         public static BoundUnaryOperator Bind(SyntaxKind syntaxKind, TypeSymbol operandType){
-            foreach (var op in _operators){
+            foreach (BoundUnaryOperator? op in _operators){
                 if (op.SyntaxKind == syntaxKind && op.OperandType == operandType)
                     return op;
             }

@@ -215,8 +215,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     }
                     else
                     {
-                        var span = new TextSpan(_position, 1);
-                        var location = new TextLocation(_text, span);
+                        TextSpan? span = new TextSpan(_position, 1);
+                        TextLocation location = new TextLocation(_text, span);
                         _diagnostics.ReportBadCharacter(location, Current);
                         _position++;
                     }
@@ -236,9 +236,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         private void ReadString()
         {
             _position++;
-            var sb = new StringBuilder();
+            StringBuilder? sb = new StringBuilder();
 
-            var done = false;
+            bool done = false;
             while (!done)
             {
                 switch (Current)
@@ -246,8 +246,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     case '\0':
                     case '\r':
                     case '\n':
-                        var span = new TextSpan(_start, 1);
-                        var location = new TextLocation(_text, span);
+                        TextSpan? span = new TextSpan(_start, 1);
+                        TextLocation location = new TextLocation(_text, span);
                         _diagnostics.ReportUnterminatedString(location);
                         done = true;
                         break;
@@ -308,8 +308,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
             if (!int.TryParse(text, out int value))
             {
-                var span = new TextSpan(_start, length);
-                var location = new TextLocation(_text, span);
+                TextSpan? span = new TextSpan(_start, length);
+                TextLocation location = new TextLocation(_text, span);
                 _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Int);
             }
 

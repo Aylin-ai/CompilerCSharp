@@ -86,22 +86,22 @@ namespace CompilerCSharpLibrary.IO
 
         public static void WriteDiagnostics(this TextWriter writer, DiagnosticBag diagnostics)
         {
-            foreach (var diagnostic in diagnostics.OrderBy(d => d.Location.FileName)
+            foreach (Diagnostic? diagnostic in diagnostics.OrderBy(d => d.Location.FileName)
                                                   .ThenBy(d => d.Location.Span.Start)
                                                   .ThenBy(d => d.Location.Span.Length))
             {
-                var text = diagnostic.Location.Text;
-                var fileName = diagnostic.Location.FileName;
-                var startLine = diagnostic.Location.StartLine + 1;
-                var startCharacter = diagnostic.Location.StartCharacter + 1;
-                var endLine = diagnostic.Location.EndLine + 1;
-                var endCharacter = diagnostic.Location.EndCharacter + 1;
+                SourceText? text = diagnostic.Location.Text;
+                string? fileName = diagnostic.Location.FileName;
+                int startLine = diagnostic.Location.StartLine + 1;
+                int startCharacter = diagnostic.Location.StartCharacter + 1;
+                int endLine = diagnostic.Location.EndLine + 1;
+                int endCharacter = diagnostic.Location.EndCharacter + 1;
 
-                var span = diagnostic.Location.Span;
-                var lineIndex = text.GetLineIndex(span.Start);
-                var line = text.Lines[lineIndex];
-                var lineNumber = lineIndex + 1;
-                var character = span.Start - line.Start + 1;
+                TextSpan? span = diagnostic.Location.Span;
+                int lineIndex = text.GetLineIndex(span.Start);
+                TextLine? line = text.Lines[lineIndex];
+                int lineNumber = lineIndex + 1;
+                int character = span.Start - line.Start + 1;
 
                 writer.WriteLine();
 
@@ -110,12 +110,12 @@ namespace CompilerCSharpLibrary.IO
                 writer.WriteLine(diagnostic);
                 writer.ResetColor();
 
-                var prefixSpan = TextSpan.FromBounds(line.Start, span.Start);
-                var suffixSpan = TextSpan.FromBounds(span.End, line.End);
+                TextSpan? prefixSpan = TextSpan.FromBounds(line.Start, span.Start);
+                TextSpan? suffixSpan = TextSpan.FromBounds(span.End, line.End);
 
-                var prefix = text.ToString(prefixSpan);
-                var error = text.ToString(span);
-                var suffix = text.ToString(suffixSpan);
+                string? prefix = text.ToString(prefixSpan);
+                string? error = text.ToString(span);
+                string? suffix = text.ToString(suffixSpan);
 
                 writer.Write("    ");
                 writer.Write(prefix);

@@ -15,11 +15,11 @@ namespace CompilerCSharp
                 return 1;
             }
 
-            var paths = GetFilePaths(args);
-            var syntaxTrees = new List<SyntaxTree>();
-            var hasErrors = false;
+            IEnumerable<string>? paths = GetFilePaths(args);
+            List<SyntaxTree>? syntaxTrees = new List<SyntaxTree>();
+            bool hasErrors = false;
 
-            foreach (var path in paths)
+            foreach (string? path in paths)
             {
                 if (!File.Exists(path))
                 {
@@ -27,15 +27,15 @@ namespace CompilerCSharp
                     hasErrors = true;
                     continue;
                 }
-                var syntaxTree = SyntaxTree.Load(path);
+                SyntaxTree? syntaxTree = SyntaxTree.Load(path);
                 syntaxTrees.Add(syntaxTree);
             }
 
             if (hasErrors)
                 return 1;
 
-            var compilation = new Compilation(syntaxTrees.ToArray());
-            var result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
+            Compilation? compilation = new Compilation(syntaxTrees.ToArray());
+            EvaluationResult? result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
 
             if (!result.Diagnostics.Any())
             {
@@ -53,8 +53,8 @@ namespace CompilerCSharp
 
         private static IEnumerable<string> GetFilePaths(IEnumerable<string> args)
         {
-            var result = new SortedSet<string>();
-            foreach (var path in args)
+            SortedSet<string>? result = new SortedSet<string>();
+            foreach (string? path in args)
             {
                 if (Directory.Exists(path))
                 {

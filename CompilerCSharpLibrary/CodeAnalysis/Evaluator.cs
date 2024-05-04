@@ -36,9 +36,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         private object EvaluateStatement(BoundBlockStatement body)
         {
-            var labelToIndex = new Dictionary<BoundLabel, int>();
+            Dictionary<BoundLabel, int>? labelToIndex = new Dictionary<BoundLabel, int>();
 
-            for (var i = 0; i < body.Statements.Count; i++)
+            for (int i = 0; i < body.Statements.Count; i++)
             {
                 if (body.Statements[i] is BoundLabelStatement l)
                 {
@@ -46,12 +46,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 }
             }
 
-            var index = 0;
+            int index = 0;
 
             while (index < body.Statements.Count)
             {
 
-                var s = body.Statements[index];
+                BoundStatement? s = body.Statements[index];
 
                 switch (s.Kind)
                 {
@@ -64,12 +64,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                         index++;
                         break;
                     case BoundNodeKind.GotoStatement:
-                        var gs = (BoundGotoStatement)s;
+                        BoundGotoStatement? gs = (BoundGotoStatement)s;
                         index = labelToIndex[gs.Label];
                         break;
                     case BoundNodeKind.ConditionalGotoStatement:
-                        var cgs = (BoundConditionalGotoStatement)s;
-                        var condition = (bool)EvaluateExpression(cgs.Condition);
+                        BoundConditionalGotoStatement? cgs = (BoundConditionalGotoStatement)s;
+                        bool condition = (bool)EvaluateExpression(cgs.Condition);
                         if (condition == cgs.JumpIfTrue)
                             //Прыжок к нужной строке (индексу)
                             index = labelToIndex[cgs.Label];
@@ -80,7 +80,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                         index++;
                         break;
                     case BoundNodeKind.ReturnStatement:
-                        var rs = (BoundReturnStatement)s;
+                        BoundReturnStatement? rs = (BoundReturnStatement)s;
                         _lastValue = rs.Expression == null ? null : EvaluateExpression(rs.Expression);
                         return _lastValue;
                     default:
@@ -95,7 +95,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         private void EvaluateVariableDeclaration(BoundVariableDeclaration node)
         {
-            var value = EvaluateExpression(node.Initializer);
+            object? value = EvaluateExpression(node.Initializer);
             _lastValue = value;
             Assign(node.Variable, value);
         }
@@ -132,7 +132,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         private object EvaluateConversionExpression(BoundConversionExpression node)
         {
-            var value = EvaluateExpression(node.Expression);
+            object? value = EvaluateExpression(node.Expression);
             if (node.Type == TypeSymbol.Bool)
                 return Convert.ToBoolean(value);
             else if (node.Type == TypeSymbol.Int)
@@ -151,7 +151,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             }
             else if (node.Function == BuiltInFunctions.Print)
             {
-                var message = (string)EvaluateExpression(node.Arguments[0]);
+                string? message = (string)EvaluateExpression(node.Arguments[0]);
                 Console.WriteLine(message);
                 return null;
             }
@@ -168,18 +168,18 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             }
             else
             {
-                var locals = new Dictionary<VariableSymbol, object>();
+                Dictionary<VariableSymbol, object>? locals = new Dictionary<VariableSymbol, object>();
                 for (int i = 0; i < node.Arguments.Count; i++)
                 {
-                    var parameter = node.Function.Parameters[i];
-                    var value = EvaluateExpression(node.Arguments[i]);
+                    ParameterSymbol? parameter = node.Function.Parameters[i];
+                    object? value = EvaluateExpression(node.Arguments[i]);
                     locals.Add(parameter, value);
                 }
 
                 _locals.Push(locals);
 
-                var statement = _program.Functions[node.Function];
-                var result = EvaluateStatement(statement);
+                BoundBlockStatement? statement = _program.Functions[node.Function];
+                object? result = EvaluateStatement(statement);
                 _locals.Pop();
 
                 return result;
@@ -272,7 +272,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
         */
         private object EvaluateAssignmentExpression(BoundAssignmentExpression a)
         {
-            var value = EvaluateExpression(a.Expression);
+            object? value = EvaluateExpression(a.Expression);
 
             Assign(a.Variable, value);
             
@@ -289,7 +289,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 return _globals[v.Variable];
             else
             {
-                var locals = _locals.Peek();
+                Dictionary<VariableSymbol, object>? locals = _locals.Peek();
                 return locals[v.Variable];
             }
         }
@@ -307,7 +307,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             }
             else
             {
-                var locals = _locals.Peek();
+                Dictionary<VariableSymbol, object>? locals = _locals.Peek();
                 locals[variable] = value;
             }
         }

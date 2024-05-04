@@ -4,7 +4,7 @@
     {
         private static void Main()
         {
-            var repl = new MyRepl();
+            MyRepl? repl = new MyRepl();
             repl.Run();
         }
     }

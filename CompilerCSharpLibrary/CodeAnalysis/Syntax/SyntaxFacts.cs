@@ -1,4 +1,3 @@
-using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
@@ -88,16 +87,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         }
 
         public static IEnumerable<SyntaxKind> GetBinaryOperators(){
-            var kinds = (SyntaxKind[]) Enum.GetValues(typeof(SyntaxKind));
-            foreach (var kind in kinds){
+            SyntaxKind[]? kinds = (SyntaxKind[]) Enum.GetValues(typeof(SyntaxKind));
+            foreach (SyntaxKind kind in kinds){
                 if (GetBinaryOperatorPrecedence(kind) > 0)
                     yield return kind;
             }
         }
         
         public static IEnumerable<SyntaxKind> GetUnaryOperators(){
-            var kinds = (SyntaxKind[]) Enum.GetValues(typeof(SyntaxKind));
-            foreach (var kind in kinds){
+            SyntaxKind[]? kinds = (SyntaxKind[]) Enum.GetValues(typeof(SyntaxKind));
+            foreach (SyntaxKind kind in kinds){
                 if (GetUnaryOperatorPrecedence(kind) > 0)
                     yield return kind;
             }

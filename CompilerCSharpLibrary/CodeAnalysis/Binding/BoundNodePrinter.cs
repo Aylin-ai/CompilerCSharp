@@ -90,7 +90,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
         private static void WriteNestedStatement(this IndentedTextWriter writer, BoundStatement node)
         {
-            var needsIndentation = !(node is BoundBlockStatement);
+            bool needsIndentation = !(node is BoundBlockStatement);
 
             if (needsIndentation)
                 writer.Indent++;
@@ -113,7 +113,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
         private static void WriteNestedExpression(this IndentedTextWriter writer, int parentPrecedence, int currentPrecedence, BoundExpression expression)
         {
-            var needsParenthesis = parentPrecedence >= currentPrecedence;
+            bool needsParenthesis = parentPrecedence >= currentPrecedence;
 
             if (needsParenthesis)
                 writer.WritePunctuation(SyntaxKind.OpenParenthesisToken);
@@ -130,7 +130,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             writer.WriteLine();
             writer.Indent++;
 
-            foreach (var s in node.Statements)
+            foreach (BoundStatement? s in node.Statements)
                 s.WriteTo(writer);
 
             writer.Indent--;
@@ -205,7 +205,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
         private static void WriteLabelStatement(BoundLabelStatement node, IndentedTextWriter writer)
         {
-            var unindent = writer.Indent > 0;
+            bool unindent = writer.Indent > 0;
             if (unindent)
                 writer.Indent--;
 
@@ -260,7 +260,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
         private static void WriteLiteralExpression(BoundLiteralExpression node, IndentedTextWriter writer)
         {
-            var value = node.Value.ToString();
+            string? value = node.Value.ToString();
 
             if (node.Type == TypeSymbol.Bool)
             {
@@ -297,7 +297,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
         private static void WriteUnaryExpression(BoundUnaryExpression node, IndentedTextWriter writer)
         {
-            var precedence = SyntaxFacts.GetUnaryOperatorPrecedence(node.Op.SyntaxKind);
+            int precedence = SyntaxFacts.GetUnaryOperatorPrecedence(node.Op.SyntaxKind);
 
             writer.WritePunctuation(node.Op.SyntaxKind);
             writer.WriteNestedExpression(precedence, node.Operand);
@@ -305,7 +305,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
         private static void WriteBinaryExpression(BoundBinaryExpression node, IndentedTextWriter writer)
         {
-            var precedence = SyntaxFacts.GetBinaryOperatorPrecedence(node.Op.SyntaxKind);
+            int precedence = SyntaxFacts.GetBinaryOperatorPrecedence(node.Op.SyntaxKind);
 
             writer.WriteNestedExpression(precedence, node.Left);
             writer.WriteSpace();
@@ -319,8 +319,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             writer.WriteIdentifier(node.Function.Name);
             writer.WritePunctuation(SyntaxKind.OpenParenthesisToken);
 
-            var isFirst = true;
-            foreach (var argument in node.Arguments)
+            bool isFirst = true;
+            foreach (BoundExpression? argument in node.Arguments)
             {
                 if (isFirst)
                     isFirst = false;

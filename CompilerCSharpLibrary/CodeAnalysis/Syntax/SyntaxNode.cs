@@ -23,8 +23,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         {
             get
             {
-                var first = GetChildren().First().Span;
-                var last = GetChildren().Last().Span;
+                TextSpan? first = GetChildren().First().Span;
+                TextSpan? last = GetChildren().Last().Span;
                 return TextSpan.FromBounds(first.Start, last.End);
             }
         }
@@ -38,21 +38,21 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             чтобы искал Public свойства в классах
             Порядок расположения свойств в классах важен
             */
-            var properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo[]? properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            foreach (var property in properties)
+            foreach (PropertyInfo? property in properties)
             {
                 //Можно ли преобразовать property.PropertyType в SyntaxNode?
                 if (typeof(SyntaxNode).IsAssignableFrom(property.PropertyType))
                 {
-                    var child = (SyntaxNode)property.GetValue(this);
+                    SyntaxNode? child = (SyntaxNode)property.GetValue(this);
                     if (child != null)
                         yield return child;
                 }
                 else if (typeof(SeparatedSyntaxList).IsAssignableFrom(property.PropertyType))
                 {
-                    var separatedSyntaxList = (SeparatedSyntaxList)property.GetValue(this);
-                    foreach (var child in separatedSyntaxList.GetWithSeparators())
+                    SeparatedSyntaxList? separatedSyntaxList = (SeparatedSyntaxList)property.GetValue(this);
+                    foreach (SyntaxNode? child in separatedSyntaxList.GetWithSeparators())
                     {
                         yield return child;
                     }
@@ -60,8 +60,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 //Можно ли преобразовать property.PropertyType в IEnumerable<SyntaxNode>?
                 else if (typeof(IEnumerable<SyntaxNode>).IsAssignableFrom(property.PropertyType))
                 {
-                    var children = (IEnumerable<SyntaxNode>)property.GetValue(this);
-                    foreach (var child in children)
+                    IEnumerable<SyntaxNode>? children = (IEnumerable<SyntaxNode>)property.GetValue(this);
+                    foreach (SyntaxNode? child in children)
                     {
                         if (child != null)
                             yield return child;
@@ -111,7 +111,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
             SyntaxNode lastChild = node.GetChildren().LastOrDefault();
 
-            foreach (var child in node.GetChildren())
+            foreach (SyntaxNode? child in node.GetChildren())
             {
                 PrettyPrint(writer, child, indent, child == lastChild);
             }
@@ -119,7 +119,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         public override string ToString()
         {
-            using (var writer = new StringWriter())
+            using (StringWriter? writer = new StringWriter())
             {
                 WriteTo(writer);
                 return writer.ToString();

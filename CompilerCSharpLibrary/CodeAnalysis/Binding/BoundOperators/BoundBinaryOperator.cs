@@ -59,7 +59,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
         };
 
         public static BoundBinaryOperator Bind(SyntaxKind syntaxKind, TypeSymbol leftType, TypeSymbol rightType){
-            foreach (var op in _operators){
+            foreach (BoundBinaryOperator? op in _operators){
                 if (op.SyntaxKind == syntaxKind && op.LeftType == leftType && op.RightType == rightType)
                     return op;
             }

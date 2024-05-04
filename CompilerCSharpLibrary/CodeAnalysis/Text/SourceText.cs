@@ -61,7 +61,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
             int lineStart = 0;
             while (position < text.Length)
             {
-                var lineBreakWidth = GetLineBreakWidth(text, position);
+                int lineBreakWidth = GetLineBreakWidth(text, position);
 
                 if (lineBreakWidth == 0)
                 {
@@ -93,8 +93,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
 
         private static int GetLineBreakWidth(string text, int position)
         {
-            var c = text[position];
-            var l = position + 1 >= text.Length ? '\0' : text[position + 1];
+            char c = text[position];
+            char l = position + 1 >= text.Length ? '\0' : text[position + 1];
 
             if (c == '\r' && l == '\n')
                 return 2;

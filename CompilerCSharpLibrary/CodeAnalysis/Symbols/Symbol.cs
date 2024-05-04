@@ -15,7 +15,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
         }
 
         public override string ToString(){
-            using (var writer = new StringWriter()){
+            using (StringWriter? writer = new StringWriter()){
                 WriteTo(writer);
                 return writer.ToString();
             }

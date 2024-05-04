@@ -22,13 +22,13 @@ namespace InterpreterCSharp
 
         protected override void RenderLine(string line)
         {
-            var tokens = SyntaxTree.ParseTokens(line);
-            foreach (var token in tokens)
+            IEnumerable<SyntaxToken>? tokens = SyntaxTree.ParseTokens(line);
+            foreach (SyntaxToken? token in tokens)
             {
-                var isKeyword = token.Kind.ToString().EndsWith("Keyword");
-                var isNumber = token.Kind == SyntaxKind.NumberToken;
-                var isIdentifier = token.Kind == SyntaxKind.IdentifierToken;
-                var isString = token.Kind == SyntaxKind.StringToken;
+                bool isKeyword = token.Kind.ToString().EndsWith("Keyword");
+                bool isNumber = token.Kind == SyntaxKind.NumberToken;
+                bool isIdentifier = token.Kind == SyntaxKind.IdentifierToken;
+                bool isString = token.Kind == SyntaxKind.StringToken;
 
                 if (isKeyword)
                     Console.ForegroundColor = ConsoleColor.Blue;
@@ -88,7 +88,7 @@ namespace InterpreterCSharp
                 return;
             }
 
-            var text = File.ReadAllText(path);
+            string? text = File.ReadAllText(path);
             EvaluateSubmission(text);
         }
 
@@ -98,8 +98,8 @@ namespace InterpreterCSharp
             if (_previous == null)
                 return;
 
-            var symbols = _previous.GetSymbols().OrderBy(s => s.Kind).ThenBy(s => s.Name);
-            foreach (var symbol in symbols)
+            IOrderedEnumerable<Symbol>? symbols = _previous.GetSymbols().OrderBy(s => s.Kind).ThenBy(s => s.Name);
+            foreach (Symbol? symbol in symbols)
             {
                 symbol.WriteTo(Console.Out);
                 Console.WriteLine();
@@ -112,7 +112,7 @@ namespace InterpreterCSharp
             if (_previous == null)
                 return;
 
-            var symbol = _previous.GetSymbols().OfType<FunctionSymbol>().SingleOrDefault(f => f.Name == functionName);
+            FunctionSymbol? symbol = _previous.GetSymbols().OfType<FunctionSymbol>().SingleOrDefault(f => f.Name == functionName);
             if (symbol == null)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -129,7 +129,7 @@ namespace InterpreterCSharp
             if (string.IsNullOrEmpty(text))
                 return true;
 
-            var lastTwoLinesAreBlank = text.Split(Environment.NewLine)
+            bool lastTwoLinesAreBlank = text.Split(Environment.NewLine)
                                            .Reverse()
                                            .TakeWhile(s => string.IsNullOrEmpty(s))
                                            .Take(2)
@@ -137,7 +137,7 @@ namespace InterpreterCSharp
             if (lastTwoLinesAreBlank)
                 return true;
 
-            var syntaxTree = SyntaxTree.Parse(text);
+            SyntaxTree? syntaxTree = SyntaxTree.Parse(text);
 
             // Use Members because we need to exclude the EndOfFileToken.
             if (syntaxTree.Root.Members.Last().GetLastToken().IsMissing)
@@ -148,9 +148,9 @@ namespace InterpreterCSharp
 
         protected override void EvaluateSubmission(string text)
         {
-            var syntaxTree = SyntaxTree.Parse(text);
+            SyntaxTree? syntaxTree = SyntaxTree.Parse(text);
 
-            var compilation = _previous == null
+            Compilation? compilation = _previous == null
                                 ? new Compilation(syntaxTree)
                                 : _previous.ContinueWith(syntaxTree);
 
@@ -160,7 +160,7 @@ namespace InterpreterCSharp
             if (_showProgram)
                 compilation.EmitTree(Console.Out);
 
-            var result = compilation.Evaluate(_variables);
+            EvaluationResult? result = compilation.Evaluate(_variables);
 
             if (!result.Diagnostics.Any())
             {
@@ -182,18 +182,18 @@ namespace InterpreterCSharp
 
         private static string GetSubmissionsDirectory()
         {
-            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var submissionsDirectory = Path.Combine(localAppData, "Minsk", "Submissions");
+            string? localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string? submissionsDirectory = Path.Combine(localAppData, "Minsk", "Submissions");
             return submissionsDirectory;
         }
 
         private void LoadSubmissions()
         {
-            var submissionsDirectory = GetSubmissionsDirectory();
+            string? submissionsDirectory = GetSubmissionsDirectory();
             if (!Directory.Exists(submissionsDirectory))
                 return;
 
-            var files = Directory.GetFiles(submissionsDirectory).OrderBy(f => f).ToArray();
+            string[]? files = Directory.GetFiles(submissionsDirectory).OrderBy(f => f).ToArray();
             if (files.Length == 0)
                 return;
 
@@ -203,9 +203,9 @@ namespace InterpreterCSharp
 
             _loadingSubmission = true;
 
-            foreach (var file in files)
+            foreach (string? file in files)
             {
-                var text = File.ReadAllText(file);
+                string? text = File.ReadAllText(file);
                 EvaluateSubmission(text);
             }
 
@@ -222,11 +222,11 @@ namespace InterpreterCSharp
             if (_loadingSubmission)
                 return;
 
-            var submissionsDirectory = GetSubmissionsDirectory();
+            string? submissionsDirectory = GetSubmissionsDirectory();
             Directory.CreateDirectory(submissionsDirectory);
-            var count = Directory.GetFiles(submissionsDirectory).Length;
-            var name = $"submission{count:0000}";
-            var fileName = Path.Combine(submissionsDirectory, name);
+            int count = Directory.GetFiles(submissionsDirectory).Length;
+            string? name = $"submission{count:0000}";
+            string? fileName = Path.Combine(submissionsDirectory, name);
             File.WriteAllText(fileName, text);
         }
     }

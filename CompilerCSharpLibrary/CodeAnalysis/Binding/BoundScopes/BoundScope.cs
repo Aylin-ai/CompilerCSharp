@@ -52,7 +52,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes
 
         public Symbol TryLookupSymbol(string name)
         {
-            if (_symbols != null && _symbols.TryGetValue(name, out var symbol))
+            if (_symbols != null && _symbols.TryGetValue(name, out Symbol? symbol))
                 return symbol;
 
              return Parent?.TryLookupSymbol(name);

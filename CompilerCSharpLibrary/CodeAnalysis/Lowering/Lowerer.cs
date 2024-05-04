@@ -14,27 +14,27 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
         }
 
         private BoundLabel GenerateLabel(){
-            var name = $"Label{++_labelCount}";
+            string? name = $"Label{++_labelCount}";
             return new BoundLabel(name);
         }
 
         public static BoundBlockStatement Lower(BoundStatement statement){
-            var lowerer = new Lowerer();
-            var result = lowerer.RewriteStatement(statement);   
+            Lowerer? lowerer = new Lowerer();
+            BoundStatement? result = lowerer.RewriteStatement(statement);   
             return Flatten(result); 
         }
 
         private static BoundBlockStatement Flatten(BoundStatement statement){
-            var statements = new List<BoundStatement>();
-            var stack = new Stack<BoundStatement>();
+            List<BoundStatement>? statements = new List<BoundStatement>();
+            Stack<BoundStatement>? stack = new Stack<BoundStatement>();
             stack.Push(statement);
 
             while (stack.Count > 0){
-                var current = stack.Pop();
+                BoundStatement? current = stack.Pop();
 
                 if (current is BoundBlockStatement block){
                     block.Statements.Reverse();
-                    foreach (var s in block.Statements){
+                    foreach (BoundStatement? s in block.Statements){
                         stack.Push(s);
                     }
                 }
@@ -59,10 +59,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                     <then>
                     end:
                 */
-                var endLabel = GenerateLabel();
-                var gotoFalse = new BoundConditionalGotoStatement(endLabel, node.Condition, false);
-                var endLabelStatement = new BoundLabelStatement(endLabel);
-                var result = new BoundBlockStatement(
+                BoundLabel? endLabel = GenerateLabel();
+                BoundConditionalGotoStatement? gotoFalse = new BoundConditionalGotoStatement(endLabel, node.Condition, false);
+                BoundLabelStatement? endLabelStatement = new BoundLabelStatement(endLabel);
+                BoundBlockStatement? result = new BoundBlockStatement(
                     new List<BoundStatement>(){
                         gotoFalse, node.ThenStatement, endLabelStatement
                     }
@@ -85,13 +85,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                     <else>
                     end:
                 */
-                var elseLabel = GenerateLabel();
-                var endLabel = GenerateLabel();
-                var gotoFalse = new BoundConditionalGotoStatement(elseLabel, node.Condition, false);
-                var gotoEndStatement = new BoundGotoStatement(endLabel);
-                var elseLabelStatement = new BoundLabelStatement(elseLabel);
-                var endLabelStatement = new BoundLabelStatement(endLabel);
-                var result = new BoundBlockStatement(
+                BoundLabel? elseLabel = GenerateLabel();
+                BoundLabel? endLabel = GenerateLabel();
+                BoundConditionalGotoStatement? gotoFalse = new BoundConditionalGotoStatement(elseLabel, node.Condition, false);
+                BoundGotoStatement? gotoEndStatement = new BoundGotoStatement(endLabel);
+                BoundLabelStatement? elseLabelStatement = new BoundLabelStatement(elseLabel);
+                BoundLabelStatement? endLabelStatement = new BoundLabelStatement(endLabel);
+                BoundBlockStatement? result = new BoundBlockStatement(
                     new List<BoundStatement>(){
                         gotoFalse, node.ThenStatement, gotoEndStatement, 
                         elseLabelStatement, node.ElseStatement, endLabelStatement
@@ -117,15 +117,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 break:
             */
 
-            var checkLabel = GenerateLabel();
+            BoundLabel? checkLabel = GenerateLabel();
             
-            var gotoCheck = new BoundGotoStatement(checkLabel);
-            var continueLabelStatement = new BoundLabelStatement(node.ContinueLabel);
-            var checkLabelStatement = new BoundLabelStatement(checkLabel);
-            var gotoTrue = new BoundConditionalGotoStatement(node.ContinueLabel, node.Condition, true);
-            var breakLabelStatement = new BoundLabelStatement(node.BreakLabel);
+            BoundGotoStatement? gotoCheck = new BoundGotoStatement(checkLabel);
+            BoundLabelStatement? continueLabelStatement = new BoundLabelStatement(node.ContinueLabel);
+            BoundLabelStatement? checkLabelStatement = new BoundLabelStatement(checkLabel);
+            BoundConditionalGotoStatement? gotoTrue = new BoundConditionalGotoStatement(node.ContinueLabel, node.Condition, true);
+            BoundLabelStatement? breakLabelStatement = new BoundLabelStatement(node.BreakLabel);
 
-            var result = new BoundBlockStatement(
+            BoundBlockStatement? result = new BoundBlockStatement(
                 new List<BoundStatement>(){
                     gotoCheck, continueLabelStatement, node.Body, 
                     checkLabelStatement, gotoTrue, breakLabelStatement
@@ -149,11 +149,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 break:
             */
             
-            var continueLabelStatement = new BoundLabelStatement(node.ContinueLabel);
-            var gotoTrue = new BoundConditionalGotoStatement(node.ContinueLabel, node.Condition, true);
-            var breakLabelStatement = new BoundLabelStatement(node.BreakLabel);
+            BoundLabelStatement? continueLabelStatement = new BoundLabelStatement(node.ContinueLabel);
+            BoundConditionalGotoStatement? gotoTrue = new BoundConditionalGotoStatement(node.ContinueLabel, node.Condition, true);
+            BoundLabelStatement? breakLabelStatement = new BoundLabelStatement(node.BreakLabel);
 
-            var result = new BoundBlockStatement(
+            BoundBlockStatement? result = new BoundBlockStatement(
                 new List<BoundStatement>(){
                     continueLabelStatement, node.Body, gotoTrue, breakLabelStatement
                 }
@@ -180,19 +180,19 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 }
             */
 
-            var variableDeclaration = new BoundVariableDeclaration(node.Variable, node.LowerBound);
-            var variableExpression = new BoundVariableExpression(node.Variable);
-            var upperBoundSymbol = new LocalVariableSymbol("upperBound", true, TypeSymbol.Int);
-            var upperBoundDeclaration = new BoundVariableDeclaration(upperBoundSymbol, node.UpperBound);
-            var condition = new BoundBinaryExpression(
+            BoundVariableDeclaration? variableDeclaration = new BoundVariableDeclaration(node.Variable, node.LowerBound);
+            BoundVariableExpression? variableExpression = new BoundVariableExpression(node.Variable);
+            LocalVariableSymbol? upperBoundSymbol = new LocalVariableSymbol("upperBound", true, TypeSymbol.Int);
+            BoundVariableDeclaration? upperBoundDeclaration = new BoundVariableDeclaration(upperBoundSymbol, node.UpperBound);
+            BoundBinaryExpression? condition = new BoundBinaryExpression(
                 variableExpression, 
                 BoundBinaryOperator.Bind(SyntaxKind.LessOrEqualsToken, TypeSymbol.Int, TypeSymbol.Int),
                 new BoundVariableExpression(upperBoundSymbol)
             );
 
-            var continueLabelStatement = new BoundLabelStatement(node.ContinueLabel);
+            BoundLabelStatement? continueLabelStatement = new BoundLabelStatement(node.ContinueLabel);
 
-            var increment = new BoundExpressionStatement(
+            BoundExpressionStatement? increment = new BoundExpressionStatement(
                 new BoundAssignmentExpression(
                     node.Variable,
                     new BoundBinaryExpression(
@@ -203,14 +203,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 )
             );
 
-            var whileBody = new BoundBlockStatement(
+            BoundBlockStatement? whileBody = new BoundBlockStatement(
                 new List<BoundStatement>(){
                     node.Body, continueLabelStatement, increment
                 }
             );
 
-            var whileStatement = new BoundWhileStatement(condition, whileBody, node.BreakLabel, GenerateLabel());
-            var result = new BoundBlockStatement(
+            BoundWhileStatement? whileStatement = new BoundWhileStatement(condition, whileBody, node.BreakLabel, GenerateLabel());
+            BoundBlockStatement? result = new BoundBlockStatement(
                 new List<BoundStatement>(){
                     variableDeclaration, upperBoundDeclaration, whileStatement
                 }

@@ -1,5 +1,4 @@
 using CompilerCSharpLibrary.CodeAnalysis.Text;
-using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
@@ -18,7 +17,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         {
             Text = text;
 
-            handler(this, out var root, out var diagnostics);
+            handler(this, out CompilationUnitSyntax? root, out DiagnosticBag? diagnostics);
 
             Diagnostics = diagnostics;
             Root = root;
@@ -30,14 +29,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         public static SyntaxTree Load(string fileName)
         {
-            var text = File.ReadAllText(fileName);
-            var sourceText = SourceText.From(text, fileName);
+            string? text = File.ReadAllText(fileName);
+            SourceText? sourceText = SourceText.From(text, fileName);
             return Parse(sourceText);
         }
 
         private static void Parse(SyntaxTree syntaxTree, out CompilationUnitSyntax root, out DiagnosticBag diagnostics)
         {
-            var parser = new Parser(syntaxTree);
+            Parser? parser = new Parser(syntaxTree);
             root = parser.ParseCompilationUnit();
             diagnostics = parser.Diagnostics;
         }
@@ -51,7 +50,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         //Создает парсер и возвращает построенное дерево
         public static SyntaxTree Parse(string text)
         {
-            var sourceText = SourceText.From(text);
+            SourceText? sourceText = SourceText.From(text);
             return Parse(sourceText);
         }
 
@@ -62,7 +61,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         public static IEnumerable<SyntaxToken> ParseTokens(string text, out DiagnosticBag diagnostics)
         {
-            var sourceText = SourceText.From(text);
+            SourceText? sourceText = SourceText.From(text);
             return ParseTokens(sourceText, out diagnostics);
         }
 
@@ -73,13 +72,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         public static IEnumerable<SyntaxToken> ParseTokens(SourceText text, out DiagnosticBag diagnostics)
         {
-            var tokens = new List<SyntaxToken>();
+            List<SyntaxToken>? tokens = new List<SyntaxToken>();
 
             void ParseTokens(SyntaxTree st, out CompilationUnitSyntax root, out DiagnosticBag d)
             {
                 root = null;
 
-                var l = new Lexer(st);
+                Lexer? l = new Lexer(st);
                 while (true)
                 {
                     SyntaxToken token = l.Lex();
@@ -95,7 +94,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 d = l.Diagnostics;
             }
             
-            var syntaxTree = new SyntaxTree(text, ParseTokens);
+            SyntaxTree? syntaxTree = new SyntaxTree(text, ParseTokens);
             diagnostics = syntaxTree.Diagnostics;
             return tokens.ToArray();
         }
