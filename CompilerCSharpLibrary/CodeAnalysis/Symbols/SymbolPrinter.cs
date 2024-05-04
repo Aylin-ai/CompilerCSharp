@@ -44,7 +44,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
                 symbol.Parameters[i].WriteTo(writer);
             }
             writer.WritePunctuation(SyntaxKind.CloseParenthesisToken);
-            writer.WriteLine();
+            
+            if (symbol.Type != TypeSymbol.Void)
+            {
+                writer.WritePunctuation(SyntaxKind.ColonToken);
+                writer.WriteSpace();
+                symbol.Type.WriteTo(writer);
+            }
         }
 
         private static void WriteParameterTo(ParameterSymbol symbol, TextWriter writer)
@@ -57,16 +63,20 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
         private static void WriteGlobalVariableTo(GlobalVariableSymbol symbol, TextWriter writer)
         {
             writer.WriteKeyword(symbol.IsReadOnly ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword);
+            writer.WriteSpace();
             writer.WriteIdentifier(symbol.Name);
             writer.WritePunctuation(SyntaxKind.ColonToken);
+            writer.WriteSpace();
             symbol.Type.WriteTo(writer);
         }
 
         private static void WriteLocalVariableTo(LocalVariableSymbol symbol, TextWriter writer)
         {
             writer.WriteKeyword(symbol.IsReadOnly ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword);
+            writer.WriteSpace();
             writer.WriteIdentifier(symbol.Name);
             writer.WritePunctuation(SyntaxKind.ColonToken);
+            writer.WriteSpace();
             symbol.Type.WriteTo(writer);
         }
     }

@@ -111,6 +111,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     _kind = SyntaxKind.ColonToken;
                     _position++;
                     break;
+                case ';':
+                    _kind = SyntaxKind.SemiColonToken;
+                    _position++;
+                    break;
                 case '~':
                     _kind = SyntaxKind.TildeToken;
                     _position++;

@@ -33,6 +33,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         StringToken,
         CommaToken,
         ColonToken,
+        SemiColonToken,
        
         //Expressions
         LiteralExpression,

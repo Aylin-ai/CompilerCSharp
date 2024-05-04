@@ -152,6 +152,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return ",";
                 case SyntaxKind.ColonToken:
                     return ":";
+                case SyntaxKind.SemiColonToken:
+                    return ";";
 
                 case SyntaxKind.AmpersandToken:
                     return "&";

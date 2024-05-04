@@ -9,10 +9,16 @@ namespace InterpreterCSharp
 {
     public sealed class MyRepl : Repl
     {
-        private Compilation _previous = null;
-        private bool _showTree = false;
-        private bool _showProgram = false;
-        private Dictionary<VariableSymbol, object> _variables = new Dictionary<VariableSymbol, object>();
+        private static bool _loadingSubmission;
+        private Compilation _previous;
+        private bool _showTree;
+        private bool _showProgram;
+        private readonly Dictionary<VariableSymbol, object> _variables = new Dictionary<VariableSymbol, object>();
+
+        public MyRepl()
+        {
+            LoadSubmissions();
+        }
 
         protected override void RenderLine(string line)
         {
@@ -41,29 +47,103 @@ namespace InterpreterCSharp
             }
         }
 
-        protected override void EvaluateMetaCommand(string input)
+        [MetaCommand("cls", "Clears the screen")]
+        private void EvaluateCls()
         {
-            //Отладочные команды для показа дерева и очистки консоли
-            switch (input)
+            Console.Clear();
+        }
+
+        [MetaCommand("reset", "Clears all previous submissions")]
+        private void EvaluateReset()
+        {
+            _previous = null;
+            _variables.Clear();
+            ClearSubmissions();
+        }
+
+        [MetaCommand("showTree", "Shows the parse tree")]
+        private void EvaluateShowTree()
+        {
+            _showTree = !_showTree;
+            Console.WriteLine(_showTree ? "Showing parse trees." : "Not showing parse trees.");
+        }
+
+        [MetaCommand("showProgram", "Shows the bound tree")]
+        private void EvaluateShowProgram()
+        {
+            _showProgram = !_showProgram;
+            Console.WriteLine(_showProgram ? "Showing bound tree." : "Not showing bound tree.");
+        }
+
+        [MetaCommand("load", "Loads a script file")]
+        private void EvaluateLoad(string path)
+        {
+            path = Path.GetFullPath(path);
+
+            if (!File.Exists(path))
             {
-                case "#showTree":
-                    _showTree = !_showTree;
-                    Console.WriteLine(_showTree ? "Showing parse tree" : "Not showing parse tree");
-                    break;
-                case "#showProgram":
-                    _showProgram = !_showProgram;
-                    Console.WriteLine(_showProgram ? "Showing program" : "Not showing program");
-                    break;
-                case "#clear":
-                    Console.Clear();
-                    break;
-                case "#reset":
-                    _previous = null;
-                    break;
-                default:
-                    base.EvaluateMetaCommand(input);
-                    break;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"error: file does not exist '{path}'");
+                Console.ResetColor();
+                return;
             }
+
+            var text = File.ReadAllText(path);
+            EvaluateSubmission(text);
+        }
+
+        [MetaCommand("ls", "Lists all symbols")]
+        private void EvaluateLs()
+        {
+            if (_previous == null)
+                return;
+
+            var symbols = _previous.GetSymbols().OrderBy(s => s.Kind).ThenBy(s => s.Name);
+            foreach (var symbol in symbols)
+            {
+                symbol.WriteTo(Console.Out);
+                Console.WriteLine();
+            }
+        }
+
+        [MetaCommand("dump", "Shows bound tree of a given function")]
+        private void EvaluateDump(string functionName)
+        {
+            if (_previous == null)
+                return;
+
+            var symbol = _previous.GetSymbols().OfType<FunctionSymbol>().SingleOrDefault(f => f.Name == functionName);
+            if (symbol == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"error: function '{functionName}' does not exist");
+                Console.ResetColor();
+                return;
+            }
+
+            _previous.EmitTree(symbol, Console.Out);
+        }
+
+        protected override bool IsCompleteSubmission(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return true;
+
+            var lastTwoLinesAreBlank = text.Split(Environment.NewLine)
+                                           .Reverse()
+                                           .TakeWhile(s => string.IsNullOrEmpty(s))
+                                           .Take(2)
+                                           .Count() == 2;
+            if (lastTwoLinesAreBlank)
+                return true;
+
+            var syntaxTree = SyntaxTree.Parse(text);
+
+            // Use Members because we need to exclude the EndOfFileToken.
+            if (syntaxTree.Root.Members.Last().GetLastToken().IsMissing)
+                return false;
+
+            return true;
         }
 
         protected override void EvaluateSubmission(string text)
@@ -90,8 +170,9 @@ namespace InterpreterCSharp
                     Console.WriteLine(result.Value);
                     Console.ResetColor();
                 }
-
                 _previous = compilation;
+
+                SaveSubmission(text);
             }
             else
             {
@@ -99,26 +180,54 @@ namespace InterpreterCSharp
             }
         }
 
-        protected override bool IsCompleteSubmission(string text)
+        private static string GetSubmissionsDirectory()
         {
-            if (string.IsNullOrEmpty(text))
-                return true;
+            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var submissionsDirectory = Path.Combine(localAppData, "Minsk", "Submissions");
+            return submissionsDirectory;
+        }
 
-            var lastTwoLinesAreBlank = text.Split(Environment.NewLine)
-                                            .Reverse()
-                                            .TakeWhile(s => string.IsNullOrEmpty(s))
-                                            .Take(2)
-                                            .Count() == 2;
+        private void LoadSubmissions()
+        {
+            var submissionsDirectory = GetSubmissionsDirectory();
+            if (!Directory.Exists(submissionsDirectory))
+                return;
 
-            if (lastTwoLinesAreBlank)
-                return true;
+            var files = Directory.GetFiles(submissionsDirectory).OrderBy(f => f).ToArray();
+            if (files.Length == 0)
+                return;
 
-            var syntaxTree = SyntaxTree.Parse(text);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine($"Loaded {files.Length} submission(s)");
+            Console.ResetColor();
 
-            if (syntaxTree.Root.Members.Last().GetLastToken().IsMissing)
-                return false;
+            _loadingSubmission = true;
 
-            return true;
+            foreach (var file in files)
+            {
+                var text = File.ReadAllText(file);
+                EvaluateSubmission(text);
+            }
+
+            _loadingSubmission = false;
+        }
+
+        private static void ClearSubmissions()
+        {
+            Directory.Delete(GetSubmissionsDirectory(), recursive: true);
+        }
+
+        private static void SaveSubmission(string text)
+        {
+            if (_loadingSubmission)
+                return;
+
+            var submissionsDirectory = GetSubmissionsDirectory();
+            Directory.CreateDirectory(submissionsDirectory);
+            var count = Directory.GetFiles(submissionsDirectory).Length;
+            var name = $"submission{count:0000}";
+            var fileName = Path.Combine(submissionsDirectory, name);
+            File.WriteAllText(fileName, text);
         }
     }
 }

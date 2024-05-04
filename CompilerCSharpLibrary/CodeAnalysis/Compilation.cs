@@ -27,6 +27,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         public Compilation Previous { get; }
         public List<SyntaxTree> SyntaxTrees { get; }
+        public List<FunctionSymbol> Functions => GlobalScope.Functions;
+        public List<VariableSymbol> Variables => GlobalScope.Variables;
+
 
         internal BoundGlobalScope GlobalScope
         {
@@ -39,6 +42,25 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 }
 
                 return _globalScope;
+            }
+        }
+
+        public IEnumerable<Symbol> GetSymbols()
+        {
+            var submission = this;
+            var seenSymbolNames = new HashSet<string>();
+
+            while (submission != null)
+            {
+                foreach (var function in submission.Functions)
+                    if (seenSymbolNames.Add(function.Name))
+                        yield return function;
+
+                foreach (var variable in submission.Variables)
+                    if (seenSymbolNames.Add(variable.Name))
+                        yield return variable;
+
+                submission = submission.Previous;
             }
         }
 
@@ -92,9 +114,21 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                         continue;
 
                     functionBody.Key.WriteTo(writer);
+                    writer.WriteLine();
                     functionBody.Value.WriteTo(writer);
                 }
             }
+        }
+
+        public void EmitTree(FunctionSymbol symbol, TextWriter writer)
+        {
+            var program = Binder.BindProgram(GlobalScope);
+            if (!program.Functions.TryGetValue(symbol, out var body))
+                return;
+
+            symbol.WriteTo(writer);
+            writer.WriteLine();
+            body.WriteTo(writer);
         }
     }
 }

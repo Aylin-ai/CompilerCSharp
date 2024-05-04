@@ -205,18 +205,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         */
         private StatementSyntax ParseReturnStatement()
         {
-            // return 12
-            // return
+            // return 12;
+            // return;
 
             var keyword = MatchToken(SyntaxKind.ReturnKeyword);
-            //var openParenthesisToken = MatchToken(SyntaxKind.OpenParenthesisToken);
-            //var expression = ParseExpression();
-            //var closeParenthesisToken = MatchToken(SyntaxKind.CloseParenthesisToken);
-            var keywordLine = _text.GetLineIndex(keyword.Span.Start);
-            var currentLine = _text.GetLineIndex(Current.Span.Start - 1);
-            var isEof = Current.Kind == SyntaxKind.EndOfFileToken;
-            var sameLine = !isEof && keywordLine == currentLine;
-            var expression = sameLine ? ParseExpression() : null;
+            bool hasExpression = Current.Kind != SyntaxKind.SemiColonToken;
+            BaseExpressionSyntax? expression = null;
+            if (hasExpression){
+                expression = ParseExpression();
+            }
+            MatchToken(SyntaxKind.SemiColonToken);
             return new ReturnStatementSyntax(_syntaxTree, keyword, expression);
         }
 
