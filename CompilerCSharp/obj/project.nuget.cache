@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "/ILi2z7aSYvC9baIMg+cM07HlwqIctFMHJ31nix7kqayMoEVYh00cRVaiPnrqA0T0HiMSjY3EAL/lALJBvWPUg==",
+  "dgSpecHash": "PrNET5Z6Q6ALVRHy/Noch1BradZu6kSMvpoHlqJBM4ii0daR8gG7hqhiGnMx9fL2sdUuglQ3Yqm7UeOrlyYWuA==",
   "success": true,
   "projectFilePath": "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\CompilerCSharp\\CompilerCSharp.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\ajlin\\.nuget\\packages\\mono.cecil\\0.11.5\\mono.cecil.0.11.5.nupkg.sha512",
+    "C:\\Users\\ajlin\\.nuget\\packages\\mono.options\\6.12.0.148\\mono.options.6.12.0.148.nupkg.sha512"
+  ],
   "logs": []
 }

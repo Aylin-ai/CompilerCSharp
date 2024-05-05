@@ -36,3 +36,8 @@ C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSha
 C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\net8.0\CompilerCSharp.pdb
 C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\net8.0\CompilerCSharp.genruntimeconfig.cache
 C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\net8.0\ref\CompilerCSharp.dll
+C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Debug\net8.0\Mono.Cecil.Mdb.dll
+C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Debug\net8.0\Mono.Cecil.Pdb.dll
+C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Debug\net8.0\Mono.Cecil.Rocks.dll
+C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Debug\net8.0\Mono.Cecil.dll
+C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Debug\net8.0\Mono.Options.dll

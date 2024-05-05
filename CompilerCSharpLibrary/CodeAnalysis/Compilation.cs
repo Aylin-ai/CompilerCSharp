@@ -5,6 +5,7 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements;
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 using ReflectionBindingFlags = System.Reflection.BindingFlags;
+using CompilerCSharpLibrary.CodeAnalysis.Emit;
 
 namespace CompilerCSharpLibrary.CodeAnalysis
 {
@@ -152,6 +153,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             if (!program.Functions.TryGetValue(symbol, out BoundBlockStatement? body))
                 return;
             body.WriteTo(writer);
+        }
+
+        public DiagnosticBag Emit(string moduleName, string[] references, string outputPath)
+        {
+            var program = GetProgram();
+
+            if (program.Diagnostics.Any())
+                return program.Diagnostics;
+
+            return Emitter.Emit(program, moduleName, references, outputPath);
         }
     }
 }

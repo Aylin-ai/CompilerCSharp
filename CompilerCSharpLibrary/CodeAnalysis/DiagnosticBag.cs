@@ -2,6 +2,7 @@ using System.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Text;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
+using Mono.Cecil;
 
 namespace CompilerCSharpLibrary.CodeAnalysis
 {
@@ -202,10 +203,41 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Report(location, message);
         }
 
-        internal void ReportOnlyOneFileCanHaveGlobalStatements(TextLocation location)
+        public void ReportOnlyOneFileCanHaveGlobalStatements(TextLocation location)
         {
             string message = $"At most one file can have global statements.";
             Report(location, message);
+        }
+
+        public void ReportInvalidReference(string path)
+        {
+            string message = $"The reference is not a valid .NET assembly: '{path}'.";
+            Report(default, message);
+        }
+
+        public void ReportRequiredTypeNotFound(string typeName, string metadataName)
+        {
+            string message = typeName == null
+                ? $"The required type '{metadataName}' () cannot be resolve among the given references."
+                : $"The required type '{typeName}' ('{metadataName}) cannot be resolve among the given references.";
+            Report(default, message);
+        }
+
+        public void ReportRequiredTypeAmbiguous(string typeName, string metadataName, TypeDefinition[] foundTypes)
+        {
+            var assemblyNames = foundTypes.Select(t => t.Module.Assembly.Name.Name);
+            var assemblyNameList = string.Join(", ", assemblyNames);
+            string message = typeName == null
+                ? $"The required type '{typeName}' was found in multiple references: {assemblyNameList}."
+                : $"The required type '{typeName}' ('{metadataName}') was found in multiple references: {assemblyNameList}.";
+            Report(default, message);
+        }
+
+        public void ReportRequiredMethodNotFound(string typeName, string methodName, string[] parameterTypeNames)
+        {
+            var parameterTypeNameList = string.Join(", ", parameterTypeNames);
+            string message = $"The required method '{typeName}.{methodName}({parameterTypeNameList})' cannot be resolve among the given references.";
+            Report(default, message);
         }
     }
 }

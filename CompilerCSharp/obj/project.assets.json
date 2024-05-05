@@ -2,9 +2,56 @@
   "version": 3,
   "targets": {
     "net8.0": {
+      "Mono.Cecil/0.11.5": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Mono.Cecil.Mdb.dll": {
+            "related": ".pdb"
+          },
+          "lib/netstandard2.0/Mono.Cecil.Pdb.dll": {
+            "related": ".pdb"
+          },
+          "lib/netstandard2.0/Mono.Cecil.Rocks.dll": {
+            "related": ".pdb"
+          },
+          "lib/netstandard2.0/Mono.Cecil.dll": {
+            "related": ".Mdb.pdb;.pdb;.Pdb.pdb;.Rocks.pdb"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Mono.Cecil.Mdb.dll": {
+            "related": ".pdb"
+          },
+          "lib/netstandard2.0/Mono.Cecil.Pdb.dll": {
+            "related": ".pdb"
+          },
+          "lib/netstandard2.0/Mono.Cecil.Rocks.dll": {
+            "related": ".pdb"
+          },
+          "lib/netstandard2.0/Mono.Cecil.dll": {
+            "related": ".Mdb.pdb;.pdb;.Pdb.pdb;.Rocks.pdb"
+          }
+        }
+      },
+      "Mono.Options/6.12.0.148": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Mono.Options.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Mono.Options.dll": {
+            "related": ".pdb"
+          }
+        }
+      },
       "CompilerCSharpLibrary/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Mono.Cecil": "0.11.5"
+        },
         "compile": {
           "bin/placeholder/CompilerCSharpLibrary.dll": {}
         },
@@ -15,6 +62,53 @@
     }
   },
   "libraries": {
+    "Mono.Cecil/0.11.5": {
+      "sha512": "fxfX+0JGTZ8YQeu1MYjbBiK2CYTSzDyEeIixt+yqKKTn7FW8rv7JMY70qevup4ZJfD7Kk/VG/jDzQQTpfch87g==",
+      "type": "package",
+      "path": "mono.cecil/0.11.5",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net40/Mono.Cecil.Mdb.dll",
+        "lib/net40/Mono.Cecil.Mdb.pdb",
+        "lib/net40/Mono.Cecil.Pdb.dll",
+        "lib/net40/Mono.Cecil.Pdb.pdb",
+        "lib/net40/Mono.Cecil.Rocks.dll",
+        "lib/net40/Mono.Cecil.Rocks.pdb",
+        "lib/net40/Mono.Cecil.dll",
+        "lib/net40/Mono.Cecil.pdb",
+        "lib/netstandard2.0/Mono.Cecil.Mdb.dll",
+        "lib/netstandard2.0/Mono.Cecil.Mdb.pdb",
+        "lib/netstandard2.0/Mono.Cecil.Pdb.dll",
+        "lib/netstandard2.0/Mono.Cecil.Pdb.pdb",
+        "lib/netstandard2.0/Mono.Cecil.Rocks.dll",
+        "lib/netstandard2.0/Mono.Cecil.Rocks.pdb",
+        "lib/netstandard2.0/Mono.Cecil.dll",
+        "lib/netstandard2.0/Mono.Cecil.pdb",
+        "mono.cecil.0.11.5.nupkg.sha512",
+        "mono.cecil.nuspec"
+      ]
+    },
+    "Mono.Options/6.12.0.148": {
+      "sha512": "kf6bdXnP4IzqIp4bJ1YKPI3/PAcOV6qm4mznChJ3c92zHQUXTWJSp0+h+Cfcii0O6m/EgW7KA+tbCiB2al0DDA==",
+      "type": "package",
+      "path": "mono.options/6.12.0.148",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "THIRD-PARTY-NOTICES.txt",
+        "lib/net40-client/Mono.Options.dll",
+        "lib/net40-client/Mono.Options.pdb",
+        "lib/net40/Mono.Options.dll",
+        "lib/net40/Mono.Options.pdb",
+        "lib/netstandard1.3/Mono.Options.dll",
+        "lib/netstandard1.3/Mono.Options.pdb",
+        "lib/netstandard2.0/Mono.Options.dll",
+        "lib/netstandard2.0/Mono.Options.pdb",
+        "mono.options.6.12.0.148.nupkg.sha512",
+        "mono.options.nuspec"
+      ]
+    },
     "CompilerCSharpLibrary/1.0.0": {
       "type": "project",
       "path": "../CompilerCSharpLibrary/CompilerCSharpLibrary.csproj",
@@ -23,7 +117,8 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "CompilerCSharpLibrary >= 1.0.0"
+      "CompilerCSharpLibrary >= 1.0.0",
+      "Mono.Options >= 6.12.0.148"
     ]
   },
   "packageFolders": {
@@ -79,6 +174,12 @@
     "frameworks": {
       "net8.0": {
         "targetAlias": "net8.0",
+        "dependencies": {
+          "Mono.Options": {
+            "target": "Package",
+            "version": "[6.12.0.148, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",

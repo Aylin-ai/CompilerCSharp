@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "Fi6LumXH/1XWe/BCewLcgvGrpufyB5Jnozd43Ft0S+YLPJ0tiX27KoBzJbM2X4Lh3JBsZLvUBRghDl5E4IPPEw==",
+  "dgSpecHash": "ZL7nMtIEymwiuQNCD0zdLUUNofndLVJ0P6fmeY+W9pwb3rD2gdZ7zEWxqwseTIb09FXATmsTQuiWMuVYkLasRA==",
   "success": true,
   "projectFilePath": "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\InterpreterCSharp\\InterpreterCSharp.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\ajlin\\.nuget\\packages\\mono.cecil\\0.11.5\\mono.cecil.0.11.5.nupkg.sha512"
+  ],
   "logs": []
 }

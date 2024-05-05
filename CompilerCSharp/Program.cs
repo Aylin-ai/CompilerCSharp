@@ -2,6 +2,7 @@
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using CompilerCSharpLibrary.IO;
+using Mono.Options;
 
 namespace CompilerCSharp
 {
@@ -9,17 +10,59 @@ namespace CompilerCSharp
     {
         static int Main(string[] args)
         {
-            if (args.Length == 0)
+            var outputPath = (string)null;
+            var moduleName = (string)null;
+            var referencePaths = new List<string>();
+            var sourcePaths = new List<string>();
+            var helpRequested = false;
+
+            var options = new OptionSet{
+                "usage: CompilerCSharp <source-paths> [options]",
+                { "r=", "The {path} of an assembly to reference", v => referencePaths.Add(v) },
+                { "o=", "The output {path} of an assembly to create", v => outputPath = v },
+                { "m=", "The {name} of the module", v => moduleName = v },
+                { "<>", v => sourcePaths.Add(v) },
+                { "?|h|help", "Prints help", v => helpRequested = true },
+            };
+
+            options.Parse(args);
+
+            if (helpRequested)
             {
-                Console.Error.WriteLine("usage: CompilerCSharp <source-paths>");
+                options.WriteOptionDescriptions(Console.Out);
+                return 0;
+            }
+
+            if (sourcePaths.Count == 0)
+            {
+                Console.Error.WriteLine("error: need at least one source file");
                 return 1;
             }
 
-            IEnumerable<string>? paths = GetFilePaths(args);
+            if (outputPath == null)
+            {
+                outputPath = Path.ChangeExtension(sourcePaths[0], ".exe");
+            }
+
+            if (moduleName == null)
+                moduleName = Path.GetFileNameWithoutExtension(outputPath);
+
             List<SyntaxTree>? syntaxTrees = new List<SyntaxTree>();
             bool hasErrors = false;
 
-            foreach (string? path in paths)
+            foreach (string? path in sourcePaths)
+            {
+                if (!File.Exists(path))
+                {
+                    Console.Error.WriteLine("error: file '{path}' doesn't exist");
+                    hasErrors = true;
+                    continue;
+                }
+                SyntaxTree? syntaxTree = SyntaxTree.Load(path);
+                syntaxTrees.Add(syntaxTree);
+            }
+
+            foreach (string? path in referencePaths)
             {
                 if (!File.Exists(path))
                 {
@@ -35,38 +78,15 @@ namespace CompilerCSharp
                 return 1;
 
             Compilation? compilation = Compilation.Create(syntaxTrees.ToArray());
-            EvaluationResult? result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
-
-            if (!result.Diagnostics.Any())
+            var diagnostics = compilation.Emit(moduleName, referencePaths.ToArray(), outputPath);
+            
+            if (diagnostics.Any())
             {
-                if (result.Value != null)
-                    Console.Out.WriteLine(result.Value);
-            }
-            else
-            {
-                Console.Error.WriteDiagnostics(result.Diagnostics);
+                Console.Error.WriteDiagnostics(diagnostics);
                 return 1;
             }
 
             return 0;
-        }
-
-        private static IEnumerable<string> GetFilePaths(IEnumerable<string> args)
-        {
-            SortedSet<string>? result = new SortedSet<string>();
-            foreach (string? path in args)
-            {
-                if (Directory.Exists(path))
-                {
-                    result.UnionWith(Directory.EnumerateFiles(path, "*.ms", SearchOption.AllDirectories));
-                }
-                else
-                {
-                    result.Add(path);
-                }
-            }
-
-            return result;
         }
     }
 }

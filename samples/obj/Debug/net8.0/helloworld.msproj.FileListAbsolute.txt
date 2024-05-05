@@ -1,0 +1,3 @@
+C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\samples\obj\Debug\net8.0\helloworld.msproj.CoreCompileInputs.cache
+C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\samples\obj\Debug\net8.0\helloworld.sourcelink.json
+C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\samples\bin\Debug\net8.0\helloworld.exe

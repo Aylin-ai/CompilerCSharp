@@ -22,3 +22,4 @@ C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSha
 C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Debug\net8.0\refint\CompilerCSharpLibrary.dll
 C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Debug\net8.0\CompilerCSharpLibrary.pdb
 C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Debug\net8.0\ref\CompilerCSharpLibrary.dll
+C:\Users\ajlin\Documents\Диплом\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Debug\net8.0\CompilerCSharpLibrary.csproj.AssemblyReference.cache
