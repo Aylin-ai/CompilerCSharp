@@ -29,7 +29,7 @@ namespace InterpreterCSharp
                                                BindingFlags.FlattenHierarchy);
             foreach (MethodInfo? method in methods)
             {
-                MetaCommandAttribute? attribute = (MetaCommandAttribute)method.GetCustomAttribute(typeof(MetaCommandAttribute));
+                MetaCommandAttribute? attribute = method.GetCustomAttribute<MetaCommandAttribute>();
                 if (attribute == null)
                     continue;
 
@@ -481,7 +481,7 @@ namespace InterpreterCSharp
 
             if (args.Count != parameters.Length)
             {
-                string? parameterNames = string.Join(", ", parameters.Select(p => $"<{p.Name}>"));
+                string? parameterNames = string.Join(" ", parameters.Select(p => $"<{p.Name}>"));
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"error: invalid number of arguments");
                 Console.WriteLine($"usage: #{command.Name} {parameterNames}");
@@ -489,7 +489,8 @@ namespace InterpreterCSharp
                 return;
             }
 
-            command.Method.Invoke(this, args.ToArray());
+            Repl? instance = command.Method.IsStatic ? null : this;
+            command.Method.Invoke(instance, args.ToArray());
         }
 
         protected abstract bool IsCompleteSubmission(string text);

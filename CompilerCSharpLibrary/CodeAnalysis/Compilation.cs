@@ -1,10 +1,10 @@
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using CompilerCSharpLibrary.CodeAnalysis.Binding;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes;
-using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
-using CompilerCSharpLibrary.CodeAnalysis.Lowering;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements;
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
+
+using ReflectionBindingFlags = System.Reflection.BindingFlags;
 
 namespace CompilerCSharpLibrary.CodeAnalysis
 {
@@ -52,6 +52,20 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
             while (submission != null)
             {
+                //Добавлено: возвращает встроенные функции
+                const ReflectionBindingFlags bindingFlags = 
+                    ReflectionBindingFlags.Static |
+                    ReflectionBindingFlags.Public |
+                    ReflectionBindingFlags.NonPublic;
+                List<FunctionSymbol?>? builtinFunctions = typeof(BuiltInFunctions)
+                    .GetFields(bindingFlags)
+                    .Where(fi => fi.FieldType == typeof(FunctionSymbol))
+                    .Select(fi => (FunctionSymbol)fi.GetValue(obj: null))
+                    .ToList();
+                foreach (var builtin in builtinFunctions)
+                    if (seenSymbolNames.Add(builtin.Name))
+                        yield return builtin;
+
                 foreach (FunctionSymbol? function in submission.Functions)
                     if (seenSymbolNames.Add(function.Name))
                         yield return function;
@@ -120,14 +134,18 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             }
         }
 
+        /*
+        Выводит имя и параметры функции. Если у функции нет тела, то return. 
+        В ином случае выводит тело функции
+        */
         public void EmitTree(FunctionSymbol symbol, TextWriter writer)
         {
             BoundProgram? program = Binder.BindProgram(GlobalScope);
-            if (!program.Functions.TryGetValue(symbol, out BoundBlockStatement? body))
-                return;
-
+            
             symbol.WriteTo(writer);
             writer.WriteLine();
+            if (!program.Functions.TryGetValue(symbol, out BoundBlockStatement? body))
+                return;
             body.WriteTo(writer);
         }
     }
