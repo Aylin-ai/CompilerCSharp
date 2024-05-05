@@ -86,7 +86,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             return new BoundGlobalScope(previous, diagnostics, functions, variables, statements);
         }
 
-        public static BoundProgram BindProgram(BoundGlobalScope globalScope)
+        public static BoundProgram BindProgram(BoundProgram previous, BoundGlobalScope globalScope)
         {
             BoundScope? parentScope = CreateParentScopes(globalScope);
 
@@ -94,33 +94,26 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             DiagnosticBag? diagnostics = new DiagnosticBag();
             diagnostics.AddRange(globalScope.Diagnostics);
 
-            BoundGlobalScope? scope = globalScope;
-
-            while (scope != null)
+            foreach (FunctionSymbol? function in globalScope.Functions)
             {
-                foreach (FunctionSymbol? function in scope.Functions)
+                //У каждой функции свой Binder, в котором они раскрываются
+                Binder? binder = new Binder(parentScope, function);
+                BoundStatement? body = binder.BindStatement(function.Declaration.Body);
+                BoundBlockStatement? loweredBody = Lowerer.Lower(body);
+
+                if (function.Type != TypeSymbol.Void && !ControlFlowGraph.AllPathsReturn(loweredBody))
                 {
-                    //У каждой функции свой Binder, в котором они раскрываются
-                    Binder? binder = new Binder(parentScope, function);
-                    BoundStatement? body = binder.BindStatement(function.Declaration.Body);
-                    BoundBlockStatement? loweredBody = Lowerer.Lower(body);
-
-                    if (function.Type != TypeSymbol.Void && !ControlFlowGraph.AllPathsReturn(loweredBody))
-                    {
-                        binder._diagnostics.ReportAllPathMustReturn(function.Declaration.Identifier.Location);
-                    }
-
-                    functionBodies.Add(function, loweredBody);
-
-                    diagnostics.AddRange(binder.Diagnostics);
+                    binder._diagnostics.ReportAllPathMustReturn(function.Declaration.Identifier.Location);
                 }
 
-                scope = scope.Previous;
+                functionBodies.Add(function, loweredBody);
+
+                diagnostics.AddRange(binder.Diagnostics);
             }
 
             BoundBlockStatement? statement = Lowerer.Lower(new BoundBlockStatement(globalScope.Statements));
 
-            return new BoundProgram(diagnostics, functionBodies, statement);
+            return new BoundProgram(previous, diagnostics, functionBodies, statement);
         }
 
         private static BoundScope CreateParentScopes(BoundGlobalScope previous)

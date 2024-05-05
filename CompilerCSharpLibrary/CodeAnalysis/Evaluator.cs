@@ -17,6 +17,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         //Словарь всех переменных. Ключ - имя переменной, Значение - значение переменной
         private readonly Dictionary<VariableSymbol, object> _globals;
+        private readonly Dictionary<FunctionSymbol, BoundBlockStatement> _functions = new Dictionary<FunctionSymbol, BoundBlockStatement>();
         private readonly Stack<Dictionary<VariableSymbol, object>> _locals = new Stack<Dictionary<VariableSymbol, object>>();
         private Random _random;
 
@@ -27,6 +28,19 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             _program = program;
             _globals = variables;
             _locals.Push(new Dictionary<VariableSymbol, object>());
+
+            BoundProgram current = program;
+            while (current != null)
+            {
+                foreach (KeyValuePair<FunctionSymbol, BoundBlockStatement> functionWithBody in current.Functions)
+                {
+                    FunctionSymbol? function = functionWithBody.Key;
+                    BoundBlockStatement? body = functionWithBody.Value; 
+
+                    _functions.Add(function, body);
+                }
+                current = current.Previous;
+            }
         }
 
         public object Evaluate()
@@ -178,8 +192,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
                 _locals.Push(locals);
 
-                BoundBlockStatement? statement = _program.Functions[node.Function];
+                BoundBlockStatement? statement = _functions[node.Function];
                 object? result = EvaluateStatement(statement);
+
                 _locals.Pop();
 
                 return result;
