@@ -147,6 +147,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
         private object EvaluateConversionExpression(BoundConversionExpression node)
         {
             object? value = EvaluateExpression(node.Expression);
+            if (node.Type == TypeSymbol.Any)
+                return value;
             if (node.Type == TypeSymbol.Bool)
                 return Convert.ToBoolean(value);
             else if (node.Type == TypeSymbol.Int)

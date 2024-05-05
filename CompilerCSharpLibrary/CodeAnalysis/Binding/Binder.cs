@@ -501,22 +501,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 return new BoundErrorExpression();
             }
 
-            bool hasErrors = false;
-
             for (int i = 0; i < syntax.Arguments.Count; i++)
             {
+                var argumentLocation = syntax.Arguments[i].Location;
                 BoundExpression? argument = boundArguments[i];
                 ParameterSymbol? parameter = function.Parameters[i];
-                if (argument.Type != parameter.Type)
-                {
-                    if (argument.Type != TypeSymbol.Error)
-                        _diagnostics.ReportWrongArgumentType(syntax.Arguments[i].Location, parameter.Name, parameter.Type, argument.Type);
-                    hasErrors = true;
-                }
-            }
 
-            if (hasErrors)
-                return new BoundErrorExpression();
+                var convertedArgument = BindConversion(argumentLocation, argument, parameter.Type);
+                boundArguments[i] = convertedArgument;
+            }
 
             return new BoundCallExpression(function, boundArguments);
         }
@@ -701,6 +694,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     return TypeSymbol.Int;
                 case "string":
                     return TypeSymbol.String;
+                case "any":
+                    return TypeSymbol.Any;
                 default:
                     return null;
             }

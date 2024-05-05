@@ -73,9 +73,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                     .Where(fi => fi.FieldType == typeof(FunctionSymbol))
                     .Select(fi => (FunctionSymbol)fi.GetValue(obj: null))
                     .ToList();
-                foreach (var builtin in builtinFunctions)
-                    if (seenSymbolNames.Add(builtin.Name))
-                        yield return builtin;
 
                 foreach (FunctionSymbol? function in submission.Functions)
                     if (seenSymbolNames.Add(function.Name))
@@ -84,6 +81,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 foreach (VariableSymbol? variable in submission.Variables)
                     if (seenSymbolNames.Add(variable.Name))
                         yield return variable;
+
+                foreach (var builtin in builtinFunctions)
+                    if (seenSymbolNames.Add(builtin.Name))
+                        yield return builtin;
 
                 submission = submission.Previous;
             }

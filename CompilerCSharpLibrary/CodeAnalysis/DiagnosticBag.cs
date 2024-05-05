@@ -116,12 +116,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Report(location, message);
         }
 
-        public void ReportWrongArgumentType(TextLocation location, string name,
-        TypeSymbol expectedType, TypeSymbol actualType)
-        {
-            string message = $"Parameter '{name}' requires a value of type '{expectedType}' but was given a value of type '{actualType}'.";
-            Report(location, message);
-        }
+        // public void ReportWrongArgumentType(TextLocation location, string name,
+        // TypeSymbol expectedType, TypeSymbol actualType)
+        // {
+        //     string message = $"Parameter '{name}' requires a value of type '{expectedType}' but was given a value of type '{actualType}'.";
+        //     Report(location, message);
+        // }
 
         public void ReportExpressionMustHaveValue(TextLocation location)
         {

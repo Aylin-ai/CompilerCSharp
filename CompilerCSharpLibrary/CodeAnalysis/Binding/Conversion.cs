@@ -47,14 +47,23 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             if (from == to)
                 return Identity;
 
+            if (from != TypeSymbol.Void && to == TypeSymbol.Any)
+            {
+                return Implicit;
+            }
+
+            if (from == TypeSymbol.Any && to != TypeSymbol.Void)
+            {
+                return Explicit;
+            }
+
             if (from == TypeSymbol.Int || from == TypeSymbol.Bool)
             {
                 if (to == TypeSymbol.String)
-                {
                     return Explicit;
-                }
             }
-            else if (from == TypeSymbol.String)
+            
+            if (from == TypeSymbol.String)
             {
                 if (to == TypeSymbol.Int || to == TypeSymbol.Bool)
                     return Explicit;
