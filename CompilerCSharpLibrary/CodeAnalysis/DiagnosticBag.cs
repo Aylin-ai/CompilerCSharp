@@ -178,10 +178,18 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Report(location, message);
         }
 
+        internal void ReportInvalidExpressionStatement(TextLocation location)
+        {
+            string message = $"Only assignment and call expressions can be used as a statement.";
+            Report(location, message);
+        }
+
         public void XXX_ReportFunctionsAreUnsupported(TextLocation location)
         {
             string message = $"Functions with return values are unsupported.";
             Report(location, message);
         }
+
+        
     }
 }

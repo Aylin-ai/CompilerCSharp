@@ -86,7 +86,16 @@ namespace CompilerCSharpLibrary.IO
 
         public static void WriteDiagnostics(this TextWriter writer, DiagnosticBag diagnostics)
         {
-            foreach (Diagnostic? diagnostic in diagnostics.OrderBy(d => d.Location.FileName)
+            foreach (Diagnostic? diagnostic in diagnostics.Where(d => d.Location.Text == null))
+            {
+                ConsoleColor messageColor = ConsoleColor.DarkRed;
+                writer.SetForeground(messageColor);
+                writer.WriteLine(diagnostic.Message);
+                writer.ResetColor();
+            }
+
+            foreach (Diagnostic? diagnostic in diagnostics.Where(d => d.Location.Text != null)
+                                                  .OrderBy(d => d.Location.FileName)
                                                   .ThenBy(d => d.Location.Span.Start)
                                                   .ThenBy(d => d.Location.Span.Length))
             {
@@ -100,12 +109,11 @@ namespace CompilerCSharpLibrary.IO
                 TextSpan? span = diagnostic.Location.Span;
                 int lineIndex = text.GetLineIndex(span.Start);
                 TextLine? line = text.Lines[lineIndex];
-                int lineNumber = lineIndex + 1;
-                int character = span.Start - line.Start + 1;
 
                 writer.WriteLine();
 
-                writer.SetForeground(ConsoleColor.DarkRed);
+                ConsoleColor messageColor = ConsoleColor.DarkRed;
+                writer.SetForeground(messageColor);
                 writer.Write($"{fileName}({startLine},{startCharacter},{endLine},{endCharacter}): ");
                 writer.WriteLine(diagnostic);
                 writer.ResetColor();

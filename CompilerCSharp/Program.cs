@@ -34,7 +34,7 @@ namespace CompilerCSharp
             if (hasErrors)
                 return 1;
 
-            Compilation? compilation = new Compilation(syntaxTrees.ToArray());
+            Compilation? compilation = Compilation.Create(syntaxTrees.ToArray());
             EvaluationResult? result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
 
             if (!result.Diagnostics.Any())

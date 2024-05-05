@@ -10,7 +10,7 @@ namespace InterpreterCSharp
     public sealed class MyRepl : Repl
     {
         private bool _loadingSubmission;
-        private static readonly Compilation emptyCompilation = new Compilation();
+        private static readonly Compilation emptyCompilation = Compilation.CreateScript(null);
 
         private Compilation _previous;
         private bool _showTree;
@@ -149,9 +149,7 @@ namespace InterpreterCSharp
         {
             SyntaxTree? syntaxTree = SyntaxTree.Parse(text);
 
-            Compilation? compilation = _previous == null
-                                ? new Compilation(syntaxTree)
-                                : _previous.ContinueWith(syntaxTree);
+            Compilation? compilation = Compilation.CreateScript(_previous, syntaxTree);
 
             if (_showTree)
                 syntaxTree.Root.WriteTo(Console.Out);
@@ -213,7 +211,9 @@ namespace InterpreterCSharp
 
         private static void ClearSubmissions()
         {
-            Directory.Delete(GetSubmissionsDirectory(), recursive: true);
+            string? dir = GetSubmissionsDirectory();
+            if (Directory.Exists(dir))
+                Directory.Delete(dir, recursive: true);
         }
 
         private void SaveSubmission(string text)

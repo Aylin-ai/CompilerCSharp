@@ -2,6 +2,7 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Lowering;
@@ -35,14 +36,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
     public sealed class Binder
     {
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
+        private readonly bool _isScript;
         private readonly FunctionSymbol _function;
         private Stack<(BoundLabel BreakLabel, BoundLabel ContinueLabel)> _loopStack = new Stack<(BoundLabel BreakLabel, BoundLabel ContinueLabel)>();
         private int _labelCounter;
         private BoundScope _scope;
 
-        public Binder(BoundScope parent, FunctionSymbol function)
+        public Binder(bool isScript, BoundScope parent, FunctionSymbol function)
         {
             _scope = new BoundScope(parent);
+            _isScript = isScript;
             _function = function;
 
             if (function != null)
@@ -52,10 +55,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             }
         }
 
-        public static BoundGlobalScope BindGlobalScope(BoundGlobalScope previous, List<SyntaxTree> syntaxTrees)
+        public static BoundGlobalScope BindGlobalScope(bool isScript, BoundGlobalScope previous, List<SyntaxTree> syntaxTrees)
         {
             BoundScope? parentScope = CreateParentScopes(previous);
-            Binder? binder = new Binder(parentScope, function: null);
+            Binder? binder = new Binder(isScript, parentScope, function: null);
 
             IEnumerable<FunctionDeclarationSyntax>? functionDeclarations = syntaxTrees.SelectMany(st => st.Root.Members).OfType<FunctionDeclarationSyntax>();
 
@@ -70,7 +73,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
             foreach (GlobalStatementSyntax? globalStatement in globalStatements)
             {
-                BoundStatement? s = binder.BindStatement(globalStatement.Statement);
+                BoundStatement? s = binder.BindGlobalStatement(globalStatement.Statement);
                 statements.Add(s);
             }
 
@@ -86,7 +89,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             return new BoundGlobalScope(previous, diagnostics, functions, variables, statements);
         }
 
-        public static BoundProgram BindProgram(BoundProgram previous, BoundGlobalScope globalScope)
+        public static BoundProgram BindProgram(bool isScript, BoundProgram previous, BoundGlobalScope globalScope)
         {
             BoundScope? parentScope = CreateParentScopes(globalScope);
 
@@ -97,7 +100,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             foreach (FunctionSymbol? function in globalScope.Functions)
             {
                 //У каждой функции свой Binder, в котором они раскрываются
-                Binder? binder = new Binder(parentScope, function);
+                Binder? binder = new Binder(isScript, parentScope, function);
                 BoundStatement? body = binder.BindStatement(function.Declaration.Body);
                 BoundBlockStatement? loweredBody = Lowerer.Lower(body);
 
@@ -195,7 +198,31 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             return new BoundExpressionStatement(new BoundErrorExpression());
         }
 
-        private BoundStatement BindStatement(StatementSyntax syntax)
+        private BoundStatement BindGlobalStatement(StatementSyntax syntax)
+        {
+            return BindStatement(syntax, isGlobal: true);
+        }
+
+        private BoundStatement BindStatement(StatementSyntax syntax, bool isGlobal = false)
+        {
+            BoundStatement? result = BindStatementInternal(syntax);
+            
+            if (!_isScript || !isGlobal)
+            {
+                if (result is BoundExpressionStatement es)
+                {
+                    bool isAllowedExpression = es.Expression.Kind == BoundNodeKind.ErrorExpression ||
+                                              es.Expression.Kind == BoundNodeKind.AssignmentExpression ||
+                                              es.Expression.Kind == BoundNodeKind.CallExpression;
+                    if (!isAllowedExpression)
+                        _diagnostics.ReportInvalidExpressionStatement(syntax.Location);
+                }
+            }
+
+            return result;
+        }
+
+        private BoundStatement BindStatementInternal(StatementSyntax syntax)
         {
             switch (syntax.Kind)
             {
