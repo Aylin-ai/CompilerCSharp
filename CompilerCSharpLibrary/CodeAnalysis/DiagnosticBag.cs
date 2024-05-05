@@ -153,12 +153,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Report(location, message);
         }
 
-        public void ReportInvalidReturn(TextLocation location)
-        {
-            string message = $"The 'return' keyword can only be used inside of function.";
-            Report(location, message);
-        }
-
         public void ReportInvalidReturnExpression(TextLocation location, string functionName)
         {
             string message = $"Sinsce the function '{functionName}' does not return" +
@@ -178,9 +172,21 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Report(location, message);
         }
 
-        internal void ReportInvalidExpressionStatement(TextLocation location)
+        public void ReportInvalidExpressionStatement(TextLocation location)
         {
             string message = $"Only assignment and call expressions can be used as a statement.";
+            Report(location, message);
+        }
+
+        public void ReportCannotMixMainAndGlobalStatements(TextLocation location)
+        {
+            string message = $"Cannot declare main function when global statements are used.";
+            Report(location, message);
+        }
+
+        public void ReportMainMustHaveCorrectSignature(TextLocation location)
+        {
+            string message = $"Main must not take arguments and not return anything.";
             Report(location, message);
         }
 
@@ -190,6 +196,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Report(location, message);
         }
 
-        
+        internal void ReportOnlyOneFileCanHaveGlobalStatements(TextLocation location)
+        {
+            string message = $"At most one file can have global statements.";
+            Report(location, message);
+        }
     }
 }

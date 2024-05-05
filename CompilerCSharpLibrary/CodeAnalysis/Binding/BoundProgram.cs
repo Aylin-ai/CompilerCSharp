@@ -6,18 +6,23 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
     public sealed class BoundProgram
     {
-        public BoundProgram(BoundProgram previous, DiagnosticBag diagnostics, 
-        Dictionary<FunctionSymbol, BoundBlockStatement> functions, BoundBlockStatement statement)
+        public BoundProgram(BoundProgram previous,
+                            DiagnosticBag diagnostics,
+                            FunctionSymbol mainFunction,
+                            FunctionSymbol scriptFunction,
+                            Dictionary<FunctionSymbol, BoundBlockStatement> functions)
         {
             Previous = previous;
             Diagnostics = diagnostics;
+            MainFunction = mainFunction;
+            ScriptFunction = scriptFunction;
             Functions = functions;
-            Statement = statement;
         }
 
         public BoundProgram Previous { get; }
         public DiagnosticBag Diagnostics { get; }
+        public FunctionSymbol MainFunction { get; }
+        public FunctionSymbol ScriptFunction { get; }
         public Dictionary<FunctionSymbol, BoundBlockStatement> Functions { get; }
-        public BoundBlockStatement Statement { get; }
     }
 }

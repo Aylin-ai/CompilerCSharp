@@ -38,6 +38,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
         public bool IsScript { get; }
         public Compilation Previous { get; }
         public List<SyntaxTree> SyntaxTrees { get; }
+        public FunctionSymbol MainFunction => GlobalScope.MainFunction;
         public List<FunctionSymbol> Functions => GlobalScope.Functions;
         public List<VariableSymbol> Variables => GlobalScope.Variables;
 
@@ -108,6 +109,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
             BoundProgram? program = GetProgram();
 
+            /*
             string? appPath = Environment.GetCommandLineArgs()[0];
             string? appDirectory = Path.GetDirectoryName(appPath);
             string? cfgPath = Path.Combine(appDirectory, "cfg.dot");
@@ -119,6 +121,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             {
                 cfg.WriteTo(streamWriter);
             }
+            */
 
             if (program.Diagnostics.Any())
                 return new EvaluationResult(program.Diagnostics, null);
@@ -130,22 +133,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         public void EmitTree(TextWriter writer)
         {
-            BoundProgram? program = GetProgram();
-
-            if (program.Statement.Statements.Any())
-                program.Statement.WriteTo(writer);
-            else
-            {
-                foreach (KeyValuePair<FunctionSymbol, BoundBlockStatement> functionBody in program.Functions)
-                {
-                    if (!GlobalScope.Functions.Contains(functionBody.Key))
-                        continue;
-
-                    functionBody.Key.WriteTo(writer);
-                    writer.WriteLine();
-                    functionBody.Value.WriteTo(writer);
-                }
-            }
+            if (GlobalScope.MainFunction != null)
+                EmitTree(GlobalScope.MainFunction, writer);
+            else if (GlobalScope.ScriptFunction != null)
+                EmitTree(GlobalScope.ScriptFunction, writer);
         }
 
         /*

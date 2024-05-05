@@ -69,7 +69,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
             IEnumerable<GlobalStatementSyntax>? globalStatements = syntaxTrees.SelectMany(st => st.Root.Members).OfType<GlobalStatementSyntax>();
 
-            List<BoundStatement>? statements = new List<BoundStatement>();
+            List<BoundStatement> statements = new List<BoundStatement>();
 
             foreach (GlobalStatementSyntax? globalStatement in globalStatements)
             {
@@ -77,16 +77,72 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 statements.Add(s);
             }
 
+            // Check global statements
+
+            var firstGlobalStatementPerSyntaxTree = syntaxTrees.Select(st => st.Root.Members.OfType<FunctionDeclarationSyntax>().FirstOrDefault()).Where(g => g != null).ToArray();
+
+            if (firstGlobalStatementPerSyntaxTree.Length > 1)
+            {
+                foreach (FunctionDeclarationSyntax? globalStatement in firstGlobalStatementPerSyntaxTree)
+                    binder.Diagnostics.ReportOnlyOneFileCanHaveGlobalStatements(globalStatement.Location);
+            }
+
+            //Check for main with global statements
+
             List<FunctionSymbol>? functions = binder._scope.GetDeclaredFunctions();
-            List<VariableSymbol>? variables = binder._scope.GetDeclaredVariables();
+
+            FunctionSymbol mainFunction;
+            FunctionSymbol scriptFunction;
+
+            if (isScript)
+            {
+                mainFunction = null;
+                if (globalStatements.Any())
+                {
+                    scriptFunction = new FunctionSymbol("$eval", new List<ParameterSymbol>(), TypeSymbol.Any);
+                }
+                else
+                {
+                    scriptFunction = null;
+                }
+            }
+            else
+            {
+                mainFunction = functions.FirstOrDefault(f => f.Name == "main");
+                scriptFunction = null;
+
+                if (mainFunction != null)
+                {
+                    if (mainFunction.Type != TypeSymbol.Void || mainFunction.Parameters.Any())
+                        binder.Diagnostics.ReportMainMustHaveCorrectSignature(mainFunction.Declaration.Identifier.Location);
+                }
+
+                if (globalStatements.Any())
+                {
+                    if (mainFunction != null)
+                    {
+                        binder.Diagnostics.ReportCannotMixMainAndGlobalStatements(mainFunction.Declaration.Identifier.Location);
+
+                        foreach (FunctionDeclarationSyntax? globalStatement in firstGlobalStatementPerSyntaxTree)
+                            binder.Diagnostics.ReportCannotMixMainAndGlobalStatements(globalStatement.Location);
+                    }
+                    else
+                    {
+                        mainFunction = new FunctionSymbol("main", new List<ParameterSymbol>(), TypeSymbol.Void);
+                    }
+                }
+            }
+
             DiagnosticBag? diagnostics = binder.Diagnostics;
+
+            List<VariableSymbol>? variables = binder._scope.GetDeclaredVariables();
 
             if (previous != null)
             {
                 diagnostics.AddRange(previous.Diagnostics);
             }
 
-            return new BoundGlobalScope(previous, diagnostics, functions, variables, statements);
+            return new BoundGlobalScope(previous, diagnostics, mainFunction, scriptFunction, functions, variables, statements);
         }
 
         public static BoundProgram BindProgram(bool isScript, BoundProgram previous, BoundGlobalScope globalScope)
@@ -114,9 +170,29 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 diagnostics.AddRange(binder.Diagnostics);
             }
 
-            BoundBlockStatement? statement = Lowerer.Lower(new BoundBlockStatement(globalScope.Statements));
+            if (globalScope.MainFunction != null && globalScope.Statements.Any())
+            {
+                BoundBlockStatement? body = Lowerer.Lower(new BoundBlockStatement(globalScope.Statements));
+                functionBodies.Add(globalScope.MainFunction, body);
+            }
+            else if (globalScope.ScriptFunction != null)
+            {
+                var statements = globalScope.Statements;
+                if (statements.Count == 1 && statements[0] is BoundExpressionStatement es && es.Expression.Type != TypeSymbol.Void)
+                {
+                    //Создает return statement в функции eval
+                    statements[0] = new BoundReturnStatement(es.Expression);
+                }
+                else if (statements.Any() && statements.Last().Kind != BoundNodeKind.ReturnStatement)
+                {
+                    var nullValue = new BoundLiteralExpression("");
+                    statements.Add(new BoundReturnStatement(nullValue));
+                }
+                BoundBlockStatement? body = Lowerer.Lower(new BoundBlockStatement(statements));
+                functionBodies.Add(globalScope.ScriptFunction, body);
+            }
 
-            return new BoundProgram(previous, diagnostics, functionBodies, statement);
+            return new BoundProgram(previous, diagnostics, globalScope.MainFunction, globalScope.ScriptFunction, functionBodies);
         }
 
         private static BoundScope CreateParentScopes(BoundGlobalScope previous)
@@ -256,7 +332,19 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             BoundExpression? expression = syntax.Expression == null ? null : BindExpression(syntax.Expression);
 
             if (_function == null)
-                _diagnostics.ReportInvalidReturn(syntax.ReturnKeyword.Location);
+            {
+                if (_isScript)
+                {
+                    //Ignore
+                    if (expression == null)
+                        expression = new BoundLiteralExpression("");
+                }
+                else if (expression != null)
+                {
+                    //Main doesnt support return
+                    _diagnostics.ReportInvalidReturnExpression(syntax.Expression.Location, _function.Name);
+                }
+            }
             else
             {
                 if (_function.Type == TypeSymbol.Void)
