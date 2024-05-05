@@ -160,6 +160,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             Report(location, message);
         }
 
+        public void ReportInvalidReturnWithValueInGlobalStatements(TextLocation location)
+        {
+            var message = "The 'return' keyword cannot be followed by an expression in global statements.";
+            Report(location, message);
+        }
+
         public void ReportAllPathMustReturn(TextLocation location)
         {
             string message = $"Not all code paths return a value.";

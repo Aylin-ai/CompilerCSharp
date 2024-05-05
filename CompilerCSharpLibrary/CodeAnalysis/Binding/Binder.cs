@@ -342,7 +342,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 else if (expression != null)
                 {
                     //Main doesnt support return
-                    _diagnostics.ReportInvalidReturnExpression(syntax.Expression.Location, _function.Name);
+                    _diagnostics.ReportInvalidReturnWithValueInGlobalStatements(syntax.Expression.Location);
                 }
             }
             else

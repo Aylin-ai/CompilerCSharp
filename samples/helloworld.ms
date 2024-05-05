@@ -1,4 +1,5 @@
-function main(){
+function main()
+{
 var name = getName()
 print(name)
 }
