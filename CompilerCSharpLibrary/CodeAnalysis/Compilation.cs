@@ -27,7 +27,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         public static Compilation Create(params SyntaxTree[] syntaxTrees)
         {
-            return new Compilation(isScript: true, previous: null, syntaxTrees);
+            return new Compilation(isScript: false, previous: null, syntaxTrees);
         }
 
         public static Compilation CreateScript(Compilation previous, params SyntaxTree[] syntaxTrees)
