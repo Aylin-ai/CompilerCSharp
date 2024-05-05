@@ -9,7 +9,7 @@ namespace InterpreterCSharp
 {
     public sealed class MyRepl : Repl
     {
-        private static bool _loadingSubmission;
+        private bool _loadingSubmission;
         private static readonly Compilation emptyCompilation = new Compilation();
 
         private Compilation _previous;
@@ -216,7 +216,7 @@ namespace InterpreterCSharp
             Directory.Delete(GetSubmissionsDirectory(), recursive: true);
         }
 
-        private static void SaveSubmission(string text)
+        private void SaveSubmission(string text)
         {
             if (_loadingSubmission)
                 return;
