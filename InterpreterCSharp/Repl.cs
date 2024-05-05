@@ -425,7 +425,7 @@ namespace InterpreterCSharp
             while (position < input.Length)
             {
                 char c = input[position];
-                char l = position + 1>= input.Length ? '\0' : input[position + 1];
+                char l = position + 1 >= input.Length ? '\0' : input[position + 1];
 
                 if (char.IsWhiteSpace(c))
                 {
@@ -497,7 +497,7 @@ namespace InterpreterCSharp
 
         protected abstract void EvaluateSubmission(string text);
 
-        [AttributeUsage(AttributeTargets.Method, AllowMultiple=false)]
+        [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
         protected sealed class MetaCommandAttribute : Attribute
         {
             public MetaCommandAttribute(string name, string description)
@@ -531,10 +531,32 @@ namespace InterpreterCSharp
 
             foreach (MetaCommand? metaCommand in _metaCommands.OrderBy(mc => mc.Name))
             {
-                string? paddedName = metaCommand.Name.PadRight(maxNameLength);
+                ParameterInfo[]? metaParams = metaCommand.Method.GetParameters();
+                if (metaParams.Length == 0)
+                {
+                    string? paddedName = metaCommand.Name.PadRight(maxNameLength);
 
-                Console.Out.WritePunctuation("#");
-                Console.Out.WriteIdentifier(paddedName);
+                    Console.Out.WritePunctuation("#");
+                    Console.Out.WriteIdentifier(paddedName);
+                }
+                else
+                {
+                    Console.Out.WritePunctuation("#");
+                    Console.Out.WriteIdentifier(metaCommand.Name);
+                    foreach (ParameterInfo? pi in metaParams)
+                    {
+                        Console.Out.WriteSpace();
+                        Console.Out.WritePunctuation("<");
+                        Console.Out.WriteIdentifier(pi.Name);
+                        Console.Out.WritePunctuation(">");
+                    }
+                    Console.Out.WriteLine();
+                    Console.Out.WriteSpace();
+                    for (int i = 0; i < maxNameLength; i++)
+                        Console.Out.WriteSpace();
+
+                }
+
                 Console.Out.WriteSpace();
                 Console.Out.WriteSpace();
                 Console.Out.WriteSpace();
