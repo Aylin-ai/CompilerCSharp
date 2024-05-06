@@ -23,6 +23,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
         private readonly Dictionary<TypeSymbol, TypeReference> _knownTypes;
         private readonly MethodReference _consoleWriteLineReference;
         private readonly MethodReference _consoleReadLineReference;
+        private readonly MethodReference _stringConcatReference;
         private readonly Dictionary<VariableSymbol, VariableDefinition> _locals = new Dictionary<VariableSymbol, VariableDefinition>();
 
         private Emitter(string moduleName, string[] references)
@@ -133,7 +134,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
             }
 
             _consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", new[] { "System.String" });
-            _consoleReadLineReference = ResolveMethod("System.Console", "ReadLine", Array.Empty<string>());        
+            _consoleReadLineReference = ResolveMethod("System.Console", "ReadLine", Array.Empty<string>());
+            _stringConcatReference = ResolveMethod("System.String", "Concat", new[] { "System.String", "System.String" });
         }
         
         public static DiagnosticBag Emit(BoundProgram program, string moduleName, string[] references, string outputPath)
@@ -300,7 +302,23 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
 
         private void EmitBinaryExpression(ILProcessor ilProcessor, BoundBinaryExpression node)
         {
-            throw new NotImplementedException();
+            if (node.Op.Kind == BoundBinaryOperatorKind.Addition)
+            {
+                if (node.Left.Type == TypeSymbol.String && node.Right.Type == TypeSymbol.String)
+                {
+                    EmitExpression(ilProcessor, node.Left);
+                    EmitExpression(ilProcessor, node.Right);
+                    ilProcessor.Emit(OpCodes.Call, _stringConcatReference);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private void EmitLiteralExpression(ILProcessor ilProcessor, BoundLiteralExpression node)
