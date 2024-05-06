@@ -22,6 +22,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
         private readonly AssemblyDefinition _assemblyDefinition;
         private readonly Dictionary<TypeSymbol, TypeReference> _knownTypes;
         private readonly MethodReference _consoleWriteLineReference;
+        private readonly MethodReference _consoleReadLineReference;
+        private readonly Dictionary<VariableSymbol, VariableDefinition> _locals = new Dictionary<VariableSymbol, VariableDefinition>();
 
         private Emitter(string moduleName, string[] references)
         {
@@ -130,7 +132,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                 return null;
             }
 
-            _consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", new[] { "System.String" });            
+            _consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", new[] { "System.String" });
+            _consoleReadLineReference = ResolveMethod("System.Console", "ReadLine", Array.Empty<string>());        
         }
         
         public static DiagnosticBag Emit(BoundProgram program, string moduleName, string[] references, string outputPath)
@@ -180,6 +183,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
         private void EmitFunctionBody(FunctionSymbol function, BoundBlockStatement body)
         {
             var method = _methods[function];
+            _locals.Clear();
+
             var ilProcessor = method.Body.GetILProcessor();
 
             foreach (var statement in body.Statements)
@@ -241,7 +246,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
 
         private void EmitVariableDeclaration(ILProcessor ilProcessor, BoundVariableDeclaration node)
         {
-            throw new NotImplementedException();
+            var typeReference = _knownTypes[node.Variable.Type];
+            var variableDefinition = new VariableDefinition(typeReference);
+            _locals.Add(node.Variable, variableDefinition);
+            ilProcessor.Body.Variables.Add(variableDefinition);
+
+            EmitExpression(ilProcessor, node.Initializer);
+            ilProcessor.Emit(OpCodes.Stloc, variableDefinition);
         }
 
         private void EmitExpressionStatement(ILProcessor ilProcessor, BoundExpressionStatement node)
@@ -318,7 +329,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
 
         private void EmitVariableExpression(ILProcessor ilProcessor, BoundVariableExpression node)
         {
-            throw new NotImplementedException();
+            var variableDefinition = _locals[node.Variable];
+            ilProcessor.Emit(OpCodes.Ldloc, variableDefinition);
         }
 
         private void EmitAssignmentExpression(ILProcessor ilProcessor, BoundAssignmentExpression node)
@@ -337,7 +349,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
             }
             else if (node.Function == BuiltInFunctions.Input)
             {
-
+                ilProcessor.Emit(OpCodes.Call, _consoleReadLineReference);
             }
             else if (node.Function == BuiltInFunctions.Rnd)
             {

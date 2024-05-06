@@ -1,1 +1,6 @@
-print("Hello human")
+function main()
+{
+    print("Say your name")
+    let name = input()
+    print(name)
+}
