@@ -137,7 +137,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
             _consoleReadLineReference = ResolveMethod("System.Console", "ReadLine", Array.Empty<string>());
             _stringConcatReference = ResolveMethod("System.String", "Concat", new[] { "System.String", "System.String" });
         }
-        
+
         public static DiagnosticBag Emit(BoundProgram program, string moduleName, string[] references, string outputPath)
         {
             if (program.Diagnostics.Any())
@@ -146,7 +146,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
             var emitter = new Emitter(moduleName, references);
             return emitter.Emit(program, outputPath);
         }
-       
+
         public DiagnosticBag Emit(BoundProgram program, string outputPath)
         {
             if (_diagnostics.Any())
@@ -176,8 +176,17 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
 
         private void EmitFunctionDeclaration(FunctionSymbol function)
         {
-            var voidType = _knownTypes[TypeSymbol.Void];
-            var method = new MethodDefinition(function.Name, MethodAttributes.Static | MethodAttributes.Private, voidType);
+            var functionType = _knownTypes[function.Type];
+            var method = new MethodDefinition(function.Name, MethodAttributes.Static | MethodAttributes.Private, functionType);
+
+            foreach (var parameter in function.Parameters)
+            {
+                var parameterType = _knownTypes[parameter.Type];
+                var parameterAttributes = ParameterAttributes.None;
+                var parameterDefinition = new ParameterDefinition(parameter.Name, parameterAttributes, parameterType);
+                method.Parameters.Add(parameterDefinition);
+            }
+
             _typeDefinition.Methods.Add(method);
             _methods.Add(function, method);
         }
@@ -223,12 +232,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                     break;
                 default:
                     throw new Exception($"Unexpected node kind {node.Kind}");
-            }      
+            }
         }
 
         private void EmitReturnStatement(ILProcessor ilProcessor, BoundReturnStatement node)
         {
-            throw new NotImplementedException();
+            if (node.Expression != null)
+                EmitExpression(ilProcessor, node.Expression);
+
+            ilProcessor.Emit(OpCodes.Ret);
         }
 
         private void EmitConditionalGotoStatement(ILProcessor ilProcessor, BoundConditionalGotoStatement node)
@@ -326,7 +338,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
             if (node.Type == TypeSymbol.Bool)
             {
                 var value = (bool)node.Value;
-                var instruction = value ? OpCodes.Ldc_I4_1: OpCodes.Ldc_I4_0;
+                var instruction = value ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0;
                 ilProcessor.Emit(instruction);
             }
             else if (node.Type == TypeSymbol.Int)
@@ -347,8 +359,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
 
         private void EmitVariableExpression(ILProcessor ilProcessor, BoundVariableExpression node)
         {
-            var variableDefinition = _locals[node.Variable];
-            ilProcessor.Emit(OpCodes.Ldloc, variableDefinition);
+            if (node.Variable is ParameterSymbol parameter)
+            {
+                ilProcessor.Emit(OpCodes.Ldarg, parameter.Ordinal);
+            }
+            else
+            {
+                var variableDefinition = _locals[node.Variable];
+                ilProcessor.Emit(OpCodes.Ldloc, variableDefinition);
+            }
         }
 
         private void EmitAssignmentExpression(ILProcessor ilProcessor, BoundAssignmentExpression node)
@@ -363,7 +382,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
         {
             foreach (var argument in node.Arguments)
                 EmitExpression(ilProcessor, argument);
-            
+
             if (node.Function == BuiltInFunctions.Print)
             {
                 ilProcessor.Emit(OpCodes.Call, _consoleWriteLineReference);
@@ -374,7 +393,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
             }
             else if (node.Function == BuiltInFunctions.Rnd)
             {
-                
+
             }
             else
             {

@@ -9,7 +9,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
         public static readonly FunctionSymbol Print = new FunctionSymbol(
             "print", 
             new List<ParameterSymbol>() {
-                new ParameterSymbol("text", TypeSymbol.String)
+                new ParameterSymbol("text", TypeSymbol.String, 0)
             }, 
             TypeSymbol.Void
         );
@@ -21,8 +21,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
         public static readonly FunctionSymbol Rnd = new FunctionSymbol(
             "rnd", 
             new List<ParameterSymbol>(){
-                new ParameterSymbol("min", TypeSymbol.Int),
-                new ParameterSymbol("max", TypeSymbol.Int)
+                new ParameterSymbol("min", TypeSymbol.Int, 0),
+                new ParameterSymbol("max", TypeSymbol.Int, 1)
             },
             TypeSymbol.String
         );

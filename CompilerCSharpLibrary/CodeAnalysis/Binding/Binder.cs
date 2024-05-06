@@ -258,7 +258,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 }
                 else
                 {
-                    ParameterSymbol? parameter = new ParameterSymbol(parameterName, parameterType);
+                    ParameterSymbol? parameter = new ParameterSymbol(parameterName, parameterType, parameters.Count);
                     parameters.Add(parameter);
                 }
             }
