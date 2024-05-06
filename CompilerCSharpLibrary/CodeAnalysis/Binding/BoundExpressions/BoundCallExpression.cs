@@ -15,6 +15,7 @@
 синтаксического дерева, а также чтобы последнее было неизменяемо
 */
 
+using System.Collections.Generic;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;

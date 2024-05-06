@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Symbols

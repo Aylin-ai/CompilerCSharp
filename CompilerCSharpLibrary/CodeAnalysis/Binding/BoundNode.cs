@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;

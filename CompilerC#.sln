@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
-MinimumVisualStudioVersion = 10.0.40219.1
+MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterpreterCSharp", "InterpreterCSharp\InterpreterCSharp.csproj", "{0AB86FBC-0491-4469-8D96-9A4EDB6C8190}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompilerCSharpLibrary", "CompilerCSharpLibrary\CompilerCSharpLibrary.csproj", "{6426235F-88AB-4822-9295-67E1D7C39C73}"

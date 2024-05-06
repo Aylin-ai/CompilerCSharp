@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using CompilerCSharpLibrary.CodeAnalysis.Binding;
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 using Mono.Cecil;
@@ -6,18 +8,14 @@ using Mono.Cecil.Cil;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Emit
 {
-    public static class Emitter
+    internal static class Emitter
     {
-        private static readonly DiagnosticBag _diagnostics = new DiagnosticBag();
-        private static readonly List<AssemblyDefinition> _assemblies = new List<AssemblyDefinition>();
-        private static readonly Dictionary<TypeSymbol, TypeReference> _knownTypes = new Dictionary<TypeSymbol, TypeReference>();
-
-        internal static DiagnosticBag Emit(BoundProgram program, string moduleName, string[] references, string outputPath)
+        public static DiagnosticBag Emit(BoundProgram program, string moduleName, string[] references, string outputPath)
         {
             if (program.Diagnostics.Any())
                 return program.Diagnostics;
 
-            var assemlies = new List<AssemblyDefinition>();
+            var assemblies = new List<AssemblyDefinition>();
 
             var result = new DiagnosticBag();
 
@@ -26,7 +24,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                 try
                 {
                     var assembly = AssemblyDefinition.ReadAssembly(reference);
-                    assemlies.Add(assembly);
+                    assemblies.Add(assembly);
                 }
                 catch (BadImageFormatException)
                 {
@@ -34,14 +32,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                 }
             }
 
-            //Resolve types
-            //Any    -> System.Object
-            //Bool   -> System.Boolean
-            //Int    -> System.Int32
-            //String -> System.String
-            //Void   -> System.Void
-
-            var builtInTypes = new List<(TypeSymbol type, string MetadataName)>(){
+            var builtInTypes = new List<(TypeSymbol type, string MetadataName)>()
+            {
                 (TypeSymbol.Any, "System.Object"),
                 (TypeSymbol.Bool, "System.Boolean"),
                 (TypeSymbol.Int, "System.Int32"),
@@ -59,9 +51,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                 knownTypes.Add(typeSymbol, typeReference);
             }
 
-            TypeReference ResolveType(string typeName, string metadataName)
+            TypeReference ResolveType(string minskName, string metadataName)
             {
-                var foundTypes = assemlies.SelectMany(a => a.Modules).SelectMany(m => m.Types).Where(t => t.FullName == metadataName).ToArray();
+                var foundTypes = assemblies.SelectMany(a => a.Modules)
+                                           .SelectMany(m => m.Types)
+                                           .Where(t => t.FullName == metadataName)
+                                           .ToArray();
                 if (foundTypes.Length == 1)
                 {
                     var typeReference = assemblyDefinition.MainModule.ImportReference(foundTypes[0]);
@@ -69,19 +64,22 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                 }
                 else if (foundTypes.Length == 0)
                 {
-                    result.ReportRequiredTypeNotFound(typeName, metadataName);
+                    result.ReportRequiredTypeNotFound(minskName, metadataName);
                 }
                 else
                 {
-                    result.ReportRequiredTypeAmbiguous(typeName, metadataName, foundTypes);
+                    result.ReportRequiredTypeAmbiguous(minskName, metadataName, foundTypes);
                 }
 
                 return null;
             }
-            
+
             MethodReference ResolveMethod(string typeName, string methodName, string[] parameterTypeNames)
             {
-                var foundTypes = assemlies.SelectMany(a => a.Modules).SelectMany(m => m.Types).Where(t => t.FullName == typeName).ToArray();
+                var foundTypes = assemblies.SelectMany(a => a.Modules)
+                                           .SelectMany(m => m.Types)
+                                           .Where(t => t.FullName == typeName)
+                                           .ToArray();
                 if (foundTypes.Length == 1)
                 {
                     var foundType = foundTypes[0];
@@ -91,10 +89,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                     {
                         if (method.Parameters.Count != parameterTypeNames.Length)
                             continue;
-                        
+
                         var allParametersMatch = true;
 
-                        for (int i = 0; i < parameterTypeNames.Length; i++)
+                        for (var i = 0; i < parameterTypeNames.Length; i++)
                         {
                             if (method.Parameters[i].ParameterType.FullName != parameterTypeNames[i])
                             {
@@ -124,22 +122,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                 return null;
             }
 
-            var consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", new string[] { "System.String" });
+            var consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", new[] { "System.String" });
 
             if (result.Any())
                 return result;
 
-            /*
-            static class Program {
-                void Main() {
-                    System.Console.WriteLine("Hello world!");
-                }
-            }
-            */
-
             var objectType = knownTypes[TypeSymbol.Any];
-
-            var typeDefinition = new TypeDefinition("", "Program", TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.Public, objectType);
+            var typeDefinition = new TypeDefinition("", "Program", TypeAttributes.Abstract | TypeAttributes.Sealed, objectType);
             assemblyDefinition.MainModule.Types.Add(typeDefinition);
 
             var voidType = knownTypes[TypeSymbol.Void];
@@ -147,7 +136,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
             typeDefinition.Methods.Add(mainMethod);
 
             var ilProcessor = mainMethod.Body.GetILProcessor();
-            ilProcessor.Emit(OpCodes.Ldstr, "Hello world");
+            ilProcessor.Emit(OpCodes.Ldstr, "Hello world from Minsk!");
             ilProcessor.Emit(OpCodes.Call, consoleWriteLineReference);
             ilProcessor.Emit(OpCodes.Ret);
 

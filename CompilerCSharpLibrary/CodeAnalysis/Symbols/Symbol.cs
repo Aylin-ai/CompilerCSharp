@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
 {
     public abstract class Symbol

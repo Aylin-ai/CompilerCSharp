@@ -4,6 +4,10 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 using static CompilerCSharpLibrary.IO.TextWriterExtensions;
+using System.Collections.Generic;
+using System;
+using System.IO;
+using System.Linq;
 
 namespace InterpreterCSharp
 {

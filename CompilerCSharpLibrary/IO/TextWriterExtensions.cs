@@ -1,4 +1,9 @@
+using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using CompilerCSharpLibrary.CodeAnalysis;
 using CompilerCSharpLibrary.CodeAnalysis.Binding;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;

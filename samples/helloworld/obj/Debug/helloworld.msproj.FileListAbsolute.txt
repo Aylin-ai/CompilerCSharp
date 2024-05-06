@@ -1,0 +1,9 @@
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\obj\Debug\helloworld.msproj.CoreCompileInputs.cache
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\obj\Debug\helloworld.sourcelink.json
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\bin\Debug\helloworld.exe
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\bin\Debug\helloworld.deps.json
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\bin\Debug\helloworld.runtimeconfig.json
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\bin\Debug\helloworld.runtimeconfig.dev.json
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\bin\Debug\helloworld.dll
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\obj\Debug\helloworld.dll
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\obj\Debug\helloworld.genruntimeconfig.cache

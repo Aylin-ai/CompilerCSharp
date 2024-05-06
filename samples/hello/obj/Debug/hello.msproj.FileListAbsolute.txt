@@ -1,0 +1,2 @@
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\hello\obj\Debug\hello.msproj.CoreCompileInputs.cache
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\hello\obj\Debug\hello.sourcelink.json

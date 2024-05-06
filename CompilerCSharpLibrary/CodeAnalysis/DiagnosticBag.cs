@@ -3,6 +3,8 @@ using CompilerCSharpLibrary.CodeAnalysis.Text;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 using Mono.Cecil;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace CompilerCSharpLibrary.CodeAnalysis
 {

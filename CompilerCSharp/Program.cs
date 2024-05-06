@@ -1,5 +1,8 @@
-﻿using CompilerCSharpLibrary.CodeAnalysis;
-using CompilerCSharpLibrary.CodeAnalysis.Symbols;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using CompilerCSharpLibrary.CodeAnalysis;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using CompilerCSharpLibrary.IO;
 using Mono.Options;
@@ -70,8 +73,6 @@ namespace CompilerCSharp
                     hasErrors = true;
                     continue;
                 }
-                SyntaxTree? syntaxTree = SyntaxTree.Load(path);
-                syntaxTrees.Add(syntaxTree);
             }
 
             if (hasErrors)

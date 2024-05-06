@@ -14,6 +14,7 @@
 АСД нужно, чтобы хранить больше информации, в отличие от
 синтаксического дерева, а также чтобы последнее было неизменяемо
 */
+using System.Collections.Generic;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 

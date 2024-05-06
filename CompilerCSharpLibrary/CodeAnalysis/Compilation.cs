@@ -6,6 +6,12 @@ using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 using ReflectionBindingFlags = System.Reflection.BindingFlags;
 using CompilerCSharpLibrary.CodeAnalysis.Emit;
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.IO;
+using System.Linq;
+using System.Threading;
 
 namespace CompilerCSharpLibrary.CodeAnalysis
 {
@@ -129,7 +135,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
             Evaluator evaluator = new Evaluator(program, variables);
             object value = evaluator.Evaluate();
-            return new EvaluationResult([], value);
+            return new EvaluationResult(new DiagnosticBag(), value);
         }
 
         public void EmitTree(TextWriter writer)

@@ -1,10 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "vyvgTbJMY5qX5b8O2m4EaT7OlJMyPT3BCeuQJuTqeG7r8wDUvby8YqMbmt7xwmwAve+SNqv5WE+kLqZuVrmGOQ==",
+  "dgSpecHash": "Y/2A/+P9yHkvpYPF9kR0gtUPxZdh1ZDF5P4/nOUJFQSK/+DKKeuaD13N5ZboG2t+KhEk5kdEjbGKqPRFPsabYg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\CompilerCSharpLibrary.csproj",
+  "projectFilePath": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\CompilerCSharpLibrary.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\ajlin\\.nuget\\packages\\mono.cecil\\0.11.5\\mono.cecil.0.11.5.nupkg.sha512"
+    "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.net.compilers.toolset\\3.6.0-4.final\\microsoft.net.compilers.toolset.3.6.0-4.final.nupkg.sha512",
+    "C:\\Users\\ajlin\\.nuget\\packages\\mono.cecil\\0.11.5\\mono.cecil.0.11.5.nupkg.sha512",
+    "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512"
   ],
   "logs": []
 }

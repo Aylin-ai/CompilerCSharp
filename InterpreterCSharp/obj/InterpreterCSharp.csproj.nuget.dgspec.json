@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\InterpreterCSharp\\InterpreterCSharp.csproj": {}
+    "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\InterpreterCSharp\\InterpreterCSharp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\CompilerCSharpLibrary.csproj": {
+    "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\CompilerCSharpLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\CompilerCSharpLibrary.csproj",
+        "projectUniqueName": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\CompilerCSharpLibrary.csproj",
         "projectName": "CompilerCSharpLibrary",
-        "projectPath": "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\CompilerCSharpLibrary.csproj",
+        "projectPath": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\CompilerCSharpLibrary.csproj",
         "packagesPath": "C:\\Users\\ajlin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\obj\\",
+        "outputPath": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -22,7 +22,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net8.0"
+          "netcoreapp3.1"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -30,8 +30,8 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0": {
-            "targetAlias": "net8.0",
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -39,17 +39,16 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
+            "Microsoft.NET.Compilers.ToolSet": {
+              "target": "Package",
+              "version": "[3.6.0-4.final, )"
+            },
             "Mono.Cecil": {
               "target": "Package",
               "version": "[0.11.5, )"
@@ -66,23 +65,37 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\InterpreterCSharp\\InterpreterCSharp.csproj": {
+    "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\InterpreterCSharp\\InterpreterCSharp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\InterpreterCSharp\\InterpreterCSharp.csproj",
+        "projectUniqueName": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\InterpreterCSharp\\InterpreterCSharp.csproj",
         "projectName": "InterpreterCSharp",
-        "projectPath": "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\InterpreterCSharp\\InterpreterCSharp.csproj",
+        "projectPath": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\InterpreterCSharp\\InterpreterCSharp.csproj",
         "packagesPath": "C:\\Users\\ajlin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\InterpreterCSharp\\obj\\",
+        "outputPath": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\InterpreterCSharp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -93,7 +106,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net8.0"
+          "netcoreapp3.1"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -101,11 +114,11 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0": {
-            "targetAlias": "net8.0",
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\CompilerCSharpLibrary.csproj": {
-                "projectPath": "C:\\Users\\ajlin\\Documents\\Диплом\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\CompilerCSharpLibrary.csproj"
+              "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\CompilerCSharpLibrary.csproj": {
+                "projectPath": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\CompilerCSharpLibrary\\CompilerCSharpLibrary.csproj"
               }
             }
           }
@@ -114,16 +127,17 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Microsoft.NET.Compilers.ToolSet": {
+              "target": "Package",
+              "version": "[3.6.0-4.final, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -135,12 +149,30 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[3.1.32, 3.1.32]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
         }
       }
     }

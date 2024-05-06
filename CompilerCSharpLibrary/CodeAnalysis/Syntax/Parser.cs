@@ -4,6 +4,7 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements;
+using System.Collections.Generic;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {

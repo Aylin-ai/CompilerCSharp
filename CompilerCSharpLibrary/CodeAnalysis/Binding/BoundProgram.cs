@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundScopes;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements;
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
