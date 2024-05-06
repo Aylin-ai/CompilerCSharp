@@ -230,7 +230,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             var assemblyNames = foundTypes.Select(t => t.Module.Assembly.Name.Name);
             var assemblyNameList = string.Join(", ", assemblyNames);
             string message = typeName == null
-                ? $"The required type '{typeName}' was found in multiple references: {assemblyNameList}."
+                ? $"The required type '{metadataName}' was found in multiple references: {assemblyNameList}."
                 : $"The required type '{typeName}' ('{metadataName}') was found in multiple references: {assemblyNameList}.";
             Report(default, message);
         }

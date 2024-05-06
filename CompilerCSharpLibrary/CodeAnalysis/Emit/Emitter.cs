@@ -8,16 +8,16 @@ using Mono.Cecil.Cil;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Emit
 {
-    internal static class Emitter
+    internal sealed class Emitter
     {
-        public static DiagnosticBag Emit(BoundProgram program, string moduleName, string[] references, string outputPath)
+        private DiagnosticBag _diagnostics = new DiagnosticBag();
+        private readonly AssemblyDefinition _assemblyDefinition;
+        private readonly Dictionary<TypeSymbol, TypeReference> _knownTypes;
+        private readonly MethodReference _consoleWriteLineReference;
+
+        private Emitter(string moduleName, string[] references)
         {
-            if (program.Diagnostics.Any())
-                return program.Diagnostics;
-
             var assemblies = new List<AssemblyDefinition>();
-
-            var result = new DiagnosticBag();
 
             foreach (var reference in references)
             {
@@ -28,7 +28,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                 }
                 catch (BadImageFormatException)
                 {
-                    result.ReportInvalidReference(reference);
+                    _diagnostics.ReportInvalidReference(reference);
                 }
             }
 
@@ -42,13 +42,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
             };
 
             var assemblyName = new AssemblyNameDefinition(moduleName, new Version(1, 0));
-            var assemblyDefinition = AssemblyDefinition.CreateAssembly(assemblyName, moduleName, ModuleKind.Console);
-            var knownTypes = new Dictionary<TypeSymbol, TypeReference>();
+            _assemblyDefinition = AssemblyDefinition.CreateAssembly(assemblyName, moduleName, ModuleKind.Console);
+            _knownTypes = new Dictionary<TypeSymbol, TypeReference>();
 
             foreach (var (typeSymbol, metadataName) in builtInTypes)
             {
                 var typeReference = ResolveType(typeSymbol.Name, metadataName);
-                knownTypes.Add(typeSymbol, typeReference);
+                _knownTypes.Add(typeSymbol, typeReference);
             }
 
             TypeReference ResolveType(string minskName, string metadataName)
@@ -59,16 +59,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                                            .ToArray();
                 if (foundTypes.Length == 1)
                 {
-                    var typeReference = assemblyDefinition.MainModule.ImportReference(foundTypes[0]);
+                    var typeReference = _assemblyDefinition.MainModule.ImportReference(foundTypes[0]);
                     return typeReference;
                 }
                 else if (foundTypes.Length == 0)
                 {
-                    result.ReportRequiredTypeNotFound(minskName, metadataName);
+                    _diagnostics.ReportRequiredTypeNotFound(minskName, metadataName);
                 }
                 else
                 {
-                    result.ReportRequiredTypeAmbiguous(minskName, metadataName, foundTypes);
+                    _diagnostics.ReportRequiredTypeAmbiguous(minskName, metadataName, foundTypes);
                 }
 
                 return null;
@@ -104,47 +104,59 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                         if (!allParametersMatch)
                             continue;
 
-                        return assemblyDefinition.MainModule.ImportReference(method);
+                        return _assemblyDefinition.MainModule.ImportReference(method);
                     }
 
-                    result.ReportRequiredMethodNotFound(typeName, methodName, parameterTypeNames);
+                    _diagnostics.ReportRequiredMethodNotFound(typeName, methodName, parameterTypeNames);
                     return null;
                 }
                 else if (foundTypes.Length == 0)
                 {
-                    result.ReportRequiredTypeNotFound(null, typeName);
+                    _diagnostics.ReportRequiredTypeNotFound(null, typeName);
                 }
                 else
                 {
-                    result.ReportRequiredTypeAmbiguous(null, typeName, foundTypes);
+                    _diagnostics.ReportRequiredTypeAmbiguous(null, typeName, foundTypes);
                 }
 
                 return null;
             }
 
-            var consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", new[] { "System.String" });
+            _consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", new[] { "System.String" });            
+        }
+        
+        public DiagnosticBag Emit(BoundProgram program, string outputPath)
+        {
+            if (_diagnostics.Any())
+                return _diagnostics;
 
-            if (result.Any())
-                return result;
-
-            var objectType = knownTypes[TypeSymbol.Any];
+            var objectType = _knownTypes[TypeSymbol.Any];
             var typeDefinition = new TypeDefinition("", "Program", TypeAttributes.Abstract | TypeAttributes.Sealed, objectType);
-            assemblyDefinition.MainModule.Types.Add(typeDefinition);
+            _assemblyDefinition.MainModule.Types.Add(typeDefinition);
 
-            var voidType = knownTypes[TypeSymbol.Void];
+            var voidType = _knownTypes[TypeSymbol.Void];
             var mainMethod = new MethodDefinition("Main", MethodAttributes.Static | MethodAttributes.Private, voidType);
             typeDefinition.Methods.Add(mainMethod);
 
             var ilProcessor = mainMethod.Body.GetILProcessor();
             ilProcessor.Emit(OpCodes.Ldstr, "Hello world from Minsk!");
-            ilProcessor.Emit(OpCodes.Call, consoleWriteLineReference);
+            ilProcessor.Emit(OpCodes.Call, _consoleWriteLineReference);
             ilProcessor.Emit(OpCodes.Ret);
 
-            assemblyDefinition.EntryPoint = mainMethod;
+            _assemblyDefinition.EntryPoint = mainMethod;
 
-            assemblyDefinition.Write(outputPath);
+            _assemblyDefinition.Write(outputPath);
 
-            return result;
+            return _diagnostics;
+        }
+        
+        public static DiagnosticBag Emit(BoundProgram program, string moduleName, string[] references, string outputPath)
+        {
+            if (program.Diagnostics.Any())
+                return program.Diagnostics;
+
+            var emitter = new Emitter(moduleName, references);
+            return emitter.Emit(program, outputPath);
         }
     }
 }
