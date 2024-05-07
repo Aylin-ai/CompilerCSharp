@@ -161,7 +161,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 //У каждой функции свой Binder, в котором они раскрываются
                 Binder? binder = new Binder(isScript, parentScope, function);
                 BoundStatement? body = binder.BindStatement(function.Declaration.Body);
-                BoundBlockStatement? loweredBody = Lowerer.Lower(body);
+                BoundBlockStatement? loweredBody = Lowerer.Lower(function, body);
 
                 if (function.Type != TypeSymbol.Void && !ControlFlowGraph.AllPathsReturn(loweredBody))
                 {
@@ -175,7 +175,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
             if (globalScope.MainFunction != null && globalScope.Statements.Any())
             {
-                BoundBlockStatement? body = Lowerer.Lower(new BoundBlockStatement(globalScope.Statements));
+                BoundBlockStatement? body = Lowerer.Lower(globalScope.MainFunction, new BoundBlockStatement(globalScope.Statements));
                 functionBodies.Add(globalScope.MainFunction, body);
             }
             else if (globalScope.ScriptFunction != null)
@@ -191,7 +191,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     var nullValue = new BoundLiteralExpression("");
                     statements.Add(new BoundReturnStatement(nullValue));
                 }
-                BoundBlockStatement? body = Lowerer.Lower(new BoundBlockStatement(statements));
+                BoundBlockStatement? body = Lowerer.Lower(globalScope.ScriptFunction, new BoundBlockStatement(statements));
                 functionBodies.Add(globalScope.ScriptFunction, body);
             }
 

@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using CompilerCSharpLibrary.CodeAnalysis.Binding;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators;
+using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
@@ -19,14 +22,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
             return new BoundLabel(name);
         }
 
-        public static BoundBlockStatement Lower(BoundStatement statement){
+        public static BoundBlockStatement Lower(FunctionSymbol function, BoundStatement statement){
             Lowerer? lowerer = new Lowerer();
             BoundStatement? result = lowerer.RewriteStatement(statement);   
-            return Flatten(result); 
+            return Flatten(function, result); 
         }
 
-        private static BoundBlockStatement Flatten(BoundStatement statement){
-            List<BoundStatement>? statements = new List<BoundStatement>();
+        private static BoundBlockStatement Flatten(FunctionSymbol function, BoundStatement statement){
+            List<BoundStatement>? builder = new List<BoundStatement>();
             Stack<BoundStatement>? stack = new Stack<BoundStatement>();
             stack.Push(statement);
 
@@ -35,16 +38,30 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
 
                 if (current is BoundBlockStatement block){
                     block.Statements.Reverse();
-                    foreach (BoundStatement? s in block.Statements){
+                    foreach (BoundStatement? s in block.Statements)
                         stack.Push(s);
-                    }
                 }
-                else{
-                    statements.Add(current);
+                else
+                {
+                    builder.Add(current);
                 }
             }
 
-            return new BoundBlockStatement(statements);
+            if (function.Type == TypeSymbol.Void)
+            {
+                if (builder.Count == 0 || CanFallTrough(builder.Last()))
+                {
+                    builder.Add(new BoundReturnStatement(null));
+                }
+            }
+
+            return new BoundBlockStatement(builder);
+        }
+
+        private static bool CanFallTrough(BoundStatement boundStatement)
+        {
+            return boundStatement.Kind != BoundNodeKind.ReturnStatement &&
+                   boundStatement.Kind != BoundNodeKind.GotoStatement;
         }
 
         protected override BoundStatement RewriteIfStatement(BoundIfStatement node)

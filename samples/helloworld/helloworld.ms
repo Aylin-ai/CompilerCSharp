@@ -2,6 +2,7 @@ function main()
 {
     let name = readLine("Say my name")
     print("Hello " + name)
+    input()
 }
 
 function readLine(prompt: string): string
