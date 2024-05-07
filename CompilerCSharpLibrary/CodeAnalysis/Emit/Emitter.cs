@@ -8,6 +8,7 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
+using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
@@ -313,7 +314,29 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
 
         private void EmitUnaryExpression(ILProcessor ilProcessor, BoundUnaryExpression node)
         {
-            throw new NotImplementedException();
+            EmitExpression(ilProcessor, node.Operand);
+
+            if (node.Op.Kind == BoundUnaryOperatorKind.Identity)
+            {
+
+            }
+            else if (node.Op.Kind == BoundUnaryOperatorKind.Negation)
+            {
+                ilProcessor.Emit(OpCodes.Neg);
+            }
+            else if (node.Op.Kind == BoundUnaryOperatorKind.OnesComplement)
+            {
+                ilProcessor.Emit(OpCodes.Not);
+            }
+            else if (node.Op.Kind == BoundUnaryOperatorKind.LogicalNegation)
+            {
+                ilProcessor.Emit(OpCodes.Ldc_I4_0);
+                ilProcessor.Emit(OpCodes.Ceq);
+            }
+            else
+            {
+                throw new Exception($"Unexpected unary operator {SyntaxFacts.GetText(node.Op.SyntaxKind)}({node.Operand.Type})");
+            }
         }
 
         private void EmitBinaryExpression(ILProcessor ilProcessor, BoundBinaryExpression node)
