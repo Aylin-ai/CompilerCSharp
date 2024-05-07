@@ -201,10 +201,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
             foreach (var statement in body.Statements)
                 EmitStatement(ilProcessor, statement);
 
-            //Временное решение
-            if (function.Type == TypeSymbol.Void)
-                ilProcessor.Emit(OpCodes.Ret);
-
             method.Body.OptimizeMacros();
         }
 
