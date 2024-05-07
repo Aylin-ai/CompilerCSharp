@@ -1,9 +1,10 @@
 function main()
 {
-    var x = add(55, 12)
-    print(x)
-    print(1 == 1)
-    print(1 == 2)
+    var i = 0
+    if (i == 0)
+        print("i is " + string(i))
+    else
+        print("is is not a zero")
 }
 
 function add(n1: int, n2: int): int
