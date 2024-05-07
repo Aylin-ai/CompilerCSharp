@@ -3,7 +3,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
     //Список типов бинарного оператора
     public enum BoundBinaryOperatorKind{
         Addition,
-        Substraction,
+        Subtraction,
         Multiplication,
         Division,
         LogicalAnd,

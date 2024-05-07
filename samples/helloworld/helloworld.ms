@@ -1,13 +1,12 @@
 function main()
 {
-    let name = readLine("Say my name")
-    print("Hello " + name)
-    input()
+    var x = add(55, 12)
+    print(x)
+    print(1 == 1)
+    print(1 == 2)
 }
 
-function readLine(prompt: string): string
+function add(n1: int, n2: int): int
 {
-    print(prompt)
-    let name = input()
-    return name;
+    return n1 + n2;
 }

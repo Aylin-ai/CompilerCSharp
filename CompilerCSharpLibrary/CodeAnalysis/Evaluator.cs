@@ -222,7 +222,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                         return (int)left + (int)right;
                     else
                         return (string)left + (string)right;
-                case BoundBinaryOperatorKind.Substraction:
+                case BoundBinaryOperatorKind.Subtraction:
                     return (int)left - (int)right;
                 case BoundBinaryOperatorKind.Multiplication:
                     return (int)left * (int)right;
