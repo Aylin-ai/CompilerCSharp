@@ -24,7 +24,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
                 new ParameterSymbol("min", TypeSymbol.Int, 0),
                 new ParameterSymbol("max", TypeSymbol.Int, 1)
             },
-            TypeSymbol.String
+            TypeSymbol.Int
         );
 
         internal static IEnumerable<FunctionSymbol?> GetAll() 
