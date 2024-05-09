@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompilerCSharpLibrary", "Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompilerCSharp", "CompilerCSharp\CompilerCSharp.csproj", "{764F8C03-BED5-44A8-B77F-897D749D4347}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generators", "Generators\Generators.csproj", "{1C670A57-9742-4900-9F34-EDE8E4F5224E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{764F8C03-BED5-44A8-B77F-897D749D4347}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{764F8C03-BED5-44A8-B77F-897D749D4347}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{764F8C03-BED5-44A8-B77F-897D749D4347}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C670A57-9742-4900-9F34-EDE8E4F5224E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C670A57-9742-4900-9F34-EDE8E4F5224E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C670A57-9742-4900-9F34-EDE8E4F5224E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C670A57-9742-4900-9F34-EDE8E4F5224E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

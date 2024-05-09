@@ -1,5 +1,6 @@
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
+using System.Collections.Generic;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
 {
@@ -23,5 +24,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
 
         public SyntaxToken LiteralToken { get; }
         public object Value { get; }
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return LiteralToken;
+        }
     }
 }

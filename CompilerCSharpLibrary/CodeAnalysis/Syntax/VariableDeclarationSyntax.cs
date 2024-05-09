@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements;
@@ -25,5 +26,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         public TypeClauseSyntax TypeClause { get; }
         public SyntaxToken EqualsToken { get; }
         public BaseExpressionSyntax Initializer { get; }
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return Keyword;
+            yield return Identifier;
+            if (TypeClause != null)
+                yield return TypeClause;
+            yield return EqualsToken;
+            yield return Initializer;
+        }
     }
 }

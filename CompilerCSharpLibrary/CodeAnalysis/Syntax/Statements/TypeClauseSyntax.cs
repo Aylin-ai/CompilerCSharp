@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
@@ -15,5 +16,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
         public SyntaxToken Identifier { get; }
 
         public override SyntaxKind Kind => SyntaxKind.TypeClause;
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return ColonToken;
+            yield return Identifier;
+        }
     }
 }

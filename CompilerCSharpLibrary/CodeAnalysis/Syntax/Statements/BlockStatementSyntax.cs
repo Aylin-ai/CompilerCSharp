@@ -20,5 +20,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
         public SyntaxToken CloseBraceToken { get; }
 
         public override SyntaxKind Kind => SyntaxKind.BlockStatement;
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return OpenBraceToken;
+            foreach (var child in Statements)
+                yield return child;
+            yield return CloseBraceToken;
+        }
     }
 }

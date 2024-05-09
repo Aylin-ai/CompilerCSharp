@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements;
@@ -29,5 +30,18 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         public SyntaxToken CloseParenthesisToken { get; }
         public TypeClauseSyntax Type { get; }
         public BlockStatementSyntax Body { get; }
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return FunctionKeyword;
+            yield return Identifier;
+            yield return OpenParenthesisToken;
+            foreach (var child in Parameters.GetWithSeparators())
+                yield return child;
+            yield return CloseParenthesisToken;
+            if (Type != null)
+                yield return Type;
+            yield return Body;
+        }
     }
 }

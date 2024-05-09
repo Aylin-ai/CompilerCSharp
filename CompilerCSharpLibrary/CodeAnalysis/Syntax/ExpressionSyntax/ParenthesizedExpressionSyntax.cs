@@ -1,5 +1,6 @@
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
+using System.Collections.Generic;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
 {
@@ -19,5 +20,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
         public SyntaxToken OpenParenthesisToken { get; }
         public BaseExpressionSyntax Expression { get; }
         public SyntaxToken CloseParenthesisToken { get; }
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return OpenParenthesisToken;
+            yield return Expression;
+            yield return CloseParenthesisToken;
+        }
     }
 }

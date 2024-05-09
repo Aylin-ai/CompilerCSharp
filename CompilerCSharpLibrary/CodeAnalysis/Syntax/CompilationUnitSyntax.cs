@@ -16,5 +16,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         public SyntaxToken EndOfFileToken { get; }
 
         public override SyntaxKind Kind => SyntaxKind.CompilationUnit;
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            foreach (var child in Members)
+                yield return child;
+            yield return EndOfFileToken;
+        }
     }
 }

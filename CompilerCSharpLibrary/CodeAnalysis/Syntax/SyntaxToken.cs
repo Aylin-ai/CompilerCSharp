@@ -1,5 +1,7 @@
 using CompilerCSharpLibrary.CodeAnalysis.Text;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
+using System.Collections.Generic;
+using System;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
@@ -23,6 +25,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         public string Text { get; }
         public object Value { get; }
         public override TextSpan Span => new TextSpan(Position, Text?.Length ?? 0);
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            return Array.Empty<SyntaxNode>();
+        }
 
         //Токен isMissing если он был вставлен парсером и не появился в результате
         public bool IsMissing => Text == null;

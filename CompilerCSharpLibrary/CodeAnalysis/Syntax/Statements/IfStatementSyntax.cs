@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
@@ -23,5 +24,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
         public ElseClauseSyntax ElseClause { get; }
 
         public override SyntaxKind Kind => SyntaxKind.IfStatement;
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return IfKeyword;
+            yield return Condition;
+            yield return ThenStatement;
+            if (ElseClause != null)
+                yield return ElseClause;
+        }
     }
 }

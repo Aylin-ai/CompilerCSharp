@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
@@ -14,5 +15,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         public StatementSyntax Statement { get; }
 
         public override SyntaxKind Kind => SyntaxKind.GlobalStatement;
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return Statement;
+        }
     }
 }

@@ -8,4 +8,10 @@
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReferences Include="..\Generators\Generators.csproj"
+                       OutputItemType="Analyzer"
+                       ReferencesOutputAssembly="false" />
+  </ItemGroup>
+
 </Project>
