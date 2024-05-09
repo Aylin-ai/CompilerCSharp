@@ -9,7 +9,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
         public static readonly FunctionSymbol Print = new FunctionSymbol(
             "print", 
             new List<ParameterSymbol>() {
-                new ParameterSymbol("text", TypeSymbol.String, 0)
+                new ParameterSymbol("text", TypeSymbol.Any, 0)
             }, 
             TypeSymbol.Void
         );
