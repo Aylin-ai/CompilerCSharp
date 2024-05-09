@@ -68,20 +68,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis
         {
             Compilation? submission = this;
             HashSet<string>? seenSymbolNames = new HashSet<string>();
+            var builtinFunctions = BuiltInFunctions.GetAll().ToList();
 
             while (submission != null)
             {
-                //Добавлено: возвращает встроенные функции
-                const ReflectionBindingFlags bindingFlags =
-                    ReflectionBindingFlags.Static |
-                    ReflectionBindingFlags.Public |
-                    ReflectionBindingFlags.NonPublic;
-                List<FunctionSymbol?>? builtinFunctions = typeof(BuiltInFunctions)
-                    .GetFields(bindingFlags)
-                    .Where(fi => fi.FieldType == typeof(FunctionSymbol))
-                    .Select(fi => (FunctionSymbol)fi.GetValue(obj: null))
-                    .ToList();
-
                 foreach (FunctionSymbol? function in submission.Functions)
                     if (seenSymbolNames.Add(function.Name))
                         yield return function;
