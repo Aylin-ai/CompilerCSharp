@@ -1,8 +1,10 @@
+using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions;
+
 namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
 {
     public sealed class GlobalVariableSymbol : VariableSymbol
     {
-        public GlobalVariableSymbol(string name, bool isReadOnly, TypeSymbol type) : base(name, isReadOnly, type)
+        public GlobalVariableSymbol(string name, bool isReadOnly, TypeSymbol type, BoundConstant constant) : base(name, isReadOnly, type, constant)
         {
         }
 

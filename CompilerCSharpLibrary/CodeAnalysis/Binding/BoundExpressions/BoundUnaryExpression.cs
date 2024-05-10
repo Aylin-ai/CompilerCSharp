@@ -15,10 +15,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
         public BoundUnaryExpression(BoundUnaryOperator op, BoundExpression operand){
             Op = op;
             Operand = operand;
+            ConstantValue = ConstantFolding.ComputeConstant(op, operand);
         }
 
         public BoundUnaryOperator Op { get; }
         public BoundExpression Operand { get; }
+        public override BoundConstant ConstantValue { get; }
 
         public override TypeSymbol Type => Op.Type;
 

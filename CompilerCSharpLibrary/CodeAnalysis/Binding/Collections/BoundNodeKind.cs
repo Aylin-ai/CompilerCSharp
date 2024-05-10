@@ -6,6 +6,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
     public enum BoundNodeKind{
         //Statements
         BlockStatement,
+        NopStatement,
         ExpressionStatement,
         VariableDeclaration,
         IfStatement,

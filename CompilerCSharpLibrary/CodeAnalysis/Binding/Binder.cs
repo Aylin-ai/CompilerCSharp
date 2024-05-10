@@ -458,7 +458,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             TypeSymbol? type = BindTypeClause(syntax.TypeClause);
             BoundExpression? initializer = BindExpression(syntax.Initializer);
             TypeSymbol? variableType = type ?? initializer.Type;
-            VariableSymbol? variable = BindVariableDeclaration(syntax.Identifier, isReadOnly, variableType);
+            VariableSymbol? variable = BindVariableDeclaration(syntax.Identifier, isReadOnly, variableType, initializer.ConstantValue);
             BoundExpression? convertedInitializer = BindConversion(syntax.Initializer.Location, initializer, variableType);
 
             return new BoundVariableDeclaration(variable, convertedInitializer);
@@ -742,14 +742,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             return new BoundLiteralExpression(value);
         }
 
-        public VariableSymbol BindVariableDeclaration(SyntaxToken identifier, bool isReadOnly, TypeSymbol type)
+        public VariableSymbol BindVariableDeclaration(SyntaxToken identifier, bool isReadOnly, TypeSymbol type, BoundConstant constant = null)
         {
             string? name = identifier.Text ?? "?";
             bool declare = identifier.IsMissing;
             //Если мы внутри функции (function != null), то локальная переменная. Иначе - глобальная.
             VariableSymbol? variable = _function == null
-            ? (VariableSymbol)new GlobalVariableSymbol(name, isReadOnly, type)
-            : new LocalVariableSymbol(name, isReadOnly, type);
+            ? (VariableSymbol) new GlobalVariableSymbol(name, isReadOnly, type, constant)
+                                : new LocalVariableSymbol(name, isReadOnly, type, constant);
 
             bool isDeclared = _scope.TryDeclareVariable(variable);
             if (declare && !isDeclared)

@@ -29,6 +29,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 case BoundNodeKind.BlockStatement:
                     WriteBlockStatement((BoundBlockStatement)node, writer);
                     break;
+                case BoundNodeKind.NopStatement:
+                    WriteNopStatement((BoundNopStatement)node, writer);
+                    break;
                 case BoundNodeKind.ExpressionStatement:
                     WriteExpressionStatement((BoundExpressionStatement)node, writer);
                     break;
@@ -137,6 +140,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
             writer.Indent--;
             writer.WritePunctuation(SyntaxKind.CloseBraceToken);
+            writer.WriteLine();
+        }
+
+        private static void WriteNopStatement(BoundNopStatement node, IndentedTextWriter writer)
+        {
+            writer.WriteKeyword("nop");
             writer.WriteLine();
         }
 

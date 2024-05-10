@@ -25,7 +25,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
         public static BoundBlockStatement Lower(FunctionSymbol function, BoundStatement statement){
             Lowerer? lowerer = new Lowerer();
             BoundStatement? result = lowerer.RewriteStatement(statement);   
-            return Flatten(function, result); 
+            return RemoveDeadCode(Flatten(function, result));
         }
 
         private static BoundBlockStatement Flatten(FunctionSymbol function, BoundStatement statement){
@@ -53,6 +53,22 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 {
                     builder.Add(new BoundReturnStatement(null));
                 }
+            }
+
+            return new BoundBlockStatement(builder);
+        }
+
+        private static BoundBlockStatement RemoveDeadCode(BoundBlockStatement node)
+        {
+            var controlFlow = ControlFlowGraph.Create(node);
+            var reachableStatements = new HashSet<BoundStatement>(
+                controlFlow.Blocks.SelectMany(b => b.Statements));
+
+            var builder = node.Statements;
+            for (int i = builder.Count - 1; i >= 0 ; i--)
+            {
+                if (!reachableStatements.Contains(builder[i]))
+                    builder.RemoveAt(i);
             }
 
             return new BoundBlockStatement(builder);
@@ -200,7 +216,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
 
             BoundVariableDeclaration? variableDeclaration = new BoundVariableDeclaration(node.Variable, node.LowerBound);
             BoundVariableExpression? variableExpression = new BoundVariableExpression(node.Variable);
-            LocalVariableSymbol? upperBoundSymbol = new LocalVariableSymbol("upperBound", true, TypeSymbol.Int);
+            LocalVariableSymbol? upperBoundSymbol = new LocalVariableSymbol("upperBound", true, TypeSymbol.Int, node.UpperBound.ConstantValue);
             BoundVariableDeclaration? upperBoundDeclaration = new BoundVariableDeclaration(upperBoundSymbol, node.UpperBound);
             BoundBinaryExpression? condition = new BoundBinaryExpression(
                 variableExpression, 
@@ -235,6 +251,21 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
             );
 
             return RewriteStatement(result);
+        }
+
+        protected override BoundStatement RewriteConditionalGotoStatement(BoundConditionalGotoStatement node)
+        {
+            if (node.Condition.ConstantValue != null)
+            {
+                var condition = (bool)node.Condition.ConstantValue.Value;
+                condition = node.JumpIfTrue ? condition : !condition;
+                if (condition)
+                    return RewriteStatement(new BoundGotoStatement(node.Label));
+                else
+                    return RewriteStatement(new BoundNopStatement());
+            }
+
+            return base.RewriteConditionalGotoStatement(node);
         }
     }
 }

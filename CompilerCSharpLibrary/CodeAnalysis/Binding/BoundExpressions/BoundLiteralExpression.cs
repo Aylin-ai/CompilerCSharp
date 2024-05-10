@@ -12,8 +12,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
     */
     public sealed class BoundLiteralExpression : BoundExpression{
         public BoundLiteralExpression(object value){
-            Value = value;
-
             if (value is bool)
                 Type = TypeSymbol.Bool;
             else if (value is int)
@@ -22,9 +20,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
                 Type = TypeSymbol.String;
             else
                 throw new Exception($"Unexpected literal '{value}' of type '{value.GetType()}'");
+
+            ConstantValue = new BoundConstant(value);
         }
 
-        public object Value { get; }
+        public object Value => ConstantValue.Value;
+        public override BoundConstant ConstantValue { get; }
 
         public override TypeSymbol Type { get; }
 

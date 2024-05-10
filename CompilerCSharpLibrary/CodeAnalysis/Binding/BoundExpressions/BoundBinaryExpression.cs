@@ -16,6 +16,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
             Left = left;
             Op = op;
             Right = right;
+            ConstantValue = ConstantFolding.ComputeConstant(left, op, right);
         }
 
         public override TypeSymbol Type => Op.Type;
@@ -25,5 +26,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
         public BoundExpression Left { get; }
         public BoundBinaryOperator Op { get; }
         public BoundExpression Right { get; }
+        public override BoundConstant ConstantValue { get; }
     }
 }

@@ -16,6 +16,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             {
                 case BoundNodeKind.BlockStatement:
                     return RewriteBlockStatement((BoundBlockStatement)node);
+                case BoundNodeKind.NopStatement:
+                    return RewriteNopStatement((BoundNopStatement)node);
                 case BoundNodeKind.ExpressionStatement:
                     return RewriteExpressionStatement((BoundExpressionStatement)node);
                 case BoundNodeKind.VariableDeclaration:
@@ -107,6 +109,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 return node;
 
             return new BoundBlockStatement(statements);
+        }
+
+        protected virtual BoundStatement RewriteNopStatement(BoundNopStatement node)
+        {
+            return node;
         }
 
         protected virtual BoundStatement RewriteExpressionStatement(BoundExpressionStatement node)

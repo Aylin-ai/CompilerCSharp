@@ -9,5 +9,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base
     */
     public abstract class BoundExpression : BoundNode{
         public abstract TypeSymbol Type { get; }
+        public virtual BoundConstant ConstantValue => null;
     }
 }
