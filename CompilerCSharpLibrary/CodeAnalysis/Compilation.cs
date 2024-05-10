@@ -153,6 +153,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         public DiagnosticBag Emit(string moduleName, string[] references, string outputPath)
         {
+            var parseDiagnostics = SyntaxTrees.SelectMany(st => st.Diagnostics);
+
+            var diagnostics = parseDiagnostics.Concat(GlobalScope.Diagnostics);
+            if (diagnostics.Any())
+                return new DiagnosticBag(diagnostics.ToList());
+
             var program = GetProgram();
 
             if (program.Diagnostics.Any())
