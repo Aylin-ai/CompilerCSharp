@@ -5,6 +5,7 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
     public static class SyntaxFacts{
+        
         //Получает приоритет бинарного оператора
         public static int GetBinaryOperatorPrecedence(this SyntaxKind kind){
             switch (kind){
@@ -37,6 +38,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return 0;
             }
         }
+        
         //Получает приоритет унарного оператора
         public static int GetUnaryOperatorPrecedence(this SyntaxKind kind){
             switch (kind){
@@ -50,6 +52,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return 0;
             }
         }
+        
+        public static bool IsComment(this SyntaxKind kind)
+        {
+            return kind == SyntaxKind.SingleLineCommentTrivia ||
+                   kind == SyntaxKind.MultiLineCommentTriva;
+        }
+
         //Получает тип ключевого слова
         public static SyntaxKind GetKeywordKind(string text)
         {
@@ -197,5 +206,31 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return null;
             }
         }
+    
+        public static bool IsTrivia(this SyntaxKind kind)
+        {
+            switch (kind)
+            {
+                case SyntaxKind.BadTokenTrivia:
+                case SyntaxKind.WhiteSpaceTrivia:
+                case SyntaxKind.SingleLineCommentTrivia:
+                case SyntaxKind.MultiLineCommentTriva:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsKeyword(this SyntaxKind kind)
+        {
+            return kind.ToString().EndsWith("Keyword");
+        }
+
+        public static bool IsToken(this SyntaxKind kind)
+        {
+            return !kind.IsTrivia() &&
+                   (kind.IsKeyword() || kind.ToString().EndsWith("Token"));
+        }
+        
     }
 }

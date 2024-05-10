@@ -34,11 +34,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             {
                 token = lexer.Lex();
 
-                if (token.Kind != SyntaxKind.WhiteSpaceToken &&
-                    token.Kind != SyntaxKind.BadToken)
-                {
+                if (!token.Kind.IsTrivia())
                     tokens.Add(token);
-                }
 
             } while (token.Kind != SyntaxKind.EndOfFileToken);
 
@@ -77,7 +74,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 return NextToken();
 
             _diagnostics.ReportUnexpectedToken(Current.Location, Current.Kind, kind);
-            return new SyntaxToken(_syntaxTree, kind, Current.Position, null, null);
+            return new SyntaxToken(_syntaxTree, kind, Current.Position, null, null, new List<SyntaxTrivia>(), new List<SyntaxTrivia>());
         }
 
         /*

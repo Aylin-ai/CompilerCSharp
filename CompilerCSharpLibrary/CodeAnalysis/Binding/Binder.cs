@@ -165,7 +165,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
                 if (function.Type != TypeSymbol.Void && !ControlFlowGraph.AllPathsReturn(loweredBody))
                 {
-                    binder._diagnostics.ReportAllPathMustReturn(function.Declaration.Identifier.Location);
+                    binder._diagnostics.ReportAllPathsMustReturn(function.Declaration.Identifier.Location);
                 }
 
                 functionBodies.Add(function, loweredBody);

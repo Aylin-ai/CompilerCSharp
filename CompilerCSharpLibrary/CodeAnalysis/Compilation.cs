@@ -101,7 +101,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
             if (diagnostics.Any())
             {
-                return new EvaluationResult(new DiagnosticBag(diagnostics.ToList()), null);
+                var diagnostic = new DiagnosticBag();
+                diagnostic.AddRange(diagnostics);
+                return new EvaluationResult(diagnostic, null);
             }
 
             BoundProgram? program = GetProgram();
@@ -157,7 +159,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
             var diagnostics = parseDiagnostics.Concat(GlobalScope.Diagnostics);
             if (diagnostics.Any())
-                return new DiagnosticBag(diagnostics.ToList());
+            {
+                var diagnostic = new DiagnosticBag();
+                diagnostic.AddRange(diagnostics);
+                return diagnostic;
+            }
 
             var program = GetProgram();
 

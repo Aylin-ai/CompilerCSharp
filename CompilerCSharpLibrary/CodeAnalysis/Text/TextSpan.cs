@@ -5,7 +5,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
     Класс, содержащий информацию о размере текста,
     о месте его старта и конца
     */
-    public class TextSpan
+    public struct TextSpan
     {
         public TextSpan(int start, int length)
         {
@@ -19,8 +19,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
 
         public static TextSpan FromBounds(int start, int end)
         {
-            int length = end - start;
+            var length = end - start;
             return new TextSpan(start, length);
+        }
+
+        public bool OverlapsWith(TextSpan span)
+        {
+            return Start < span.End &&
+                   End > span.Start;
         }
 
         public override string ToString() => $"{Start}..{End}";

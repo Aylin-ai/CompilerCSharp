@@ -26,24 +26,62 @@ namespace InterpreterCSharp
             LoadSubmissions();
         }
 
-        protected override void RenderLine(string line)
+        private sealed class RenderState
         {
-            IEnumerable<SyntaxToken>? tokens = SyntaxTree.ParseTokens(line);
-            foreach (SyntaxToken? token in tokens)
+            public RenderState(SourceText text, List<SyntaxToken> tokens)
             {
-                bool isKeyword = token.Kind.ToString().EndsWith("Keyword");
-                bool isNumber = token.Kind == SyntaxKind.NumberToken;
-                bool isIdentifier = token.Kind == SyntaxKind.IdentifierToken;
-                bool isString = token.Kind == SyntaxKind.StringToken;
+                Text = text;
+                Tokens = tokens;
+            }
+
+            public SourceText Text { get; }
+            public List<SyntaxToken> Tokens { get; }
+        }
+
+        protected override object RenderLine(IReadOnlyList<string> lines, int lineIndex, object state)
+        {
+            RenderState renderState;
+
+            if (state == null)
+            {
+                var text = string.Join(Environment.NewLine, lines);
+                var sourceText = SourceText.From(text);
+                var tokens = SyntaxTree.ParseTokens(sourceText);
+                renderState = new RenderState(sourceText, tokens);
+            }
+            else
+            {
+                renderState = (RenderState) state;
+            }
+
+            var lineSpan = renderState.Text.Lines[lineIndex].Span;
+
+             foreach (var token in renderState.Tokens)
+            {
+                if (!lineSpan.OverlapsWith(token.Span))
+                    continue;
+
+                var tokenStart = Math.Max(token.Span.Start, lineSpan.Start);
+                var tokenEnd = Math.Min(token.Span.End, lineSpan.End);
+                var tokenSpan = TextSpan.FromBounds(tokenStart, tokenEnd);
+                var tokenText = renderState.Text.ToString(tokenSpan);
+
+                var isKeyword = token.Kind.IsKeyword();
+                var isIdentifier = token.Kind == SyntaxKind.IdentifierToken;
+                var isNumber = token.Kind == SyntaxKind.NumberToken;
+                var isString = token.Kind == SyntaxKind.StringToken;
+                var isComment = token.Kind.IsComment();
 
                 if (isKeyword)
                     Console.ForegroundColor = ConsoleColor.Blue;
-                else if (isNumber)
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                 else if (isIdentifier)
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
+                else if (isNumber)
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                 else if (isString)
                     Console.ForegroundColor = ConsoleColor.Magenta;
+                else if (isComment)
+                    Console.ForegroundColor = ConsoleColor.Green;
                 else
                     Console.ForegroundColor = ConsoleColor.DarkGray;
 
@@ -51,6 +89,14 @@ namespace InterpreterCSharp
 
                 Console.ResetColor();
             }
+
+            return renderState;
+        }
+
+        [MetaCommand("exit", "Exits the REPL")]
+        private void EvaluateExit()
+        {
+            Environment.Exit(0);
         }
 
         [MetaCommand("cls", "Clears the screen")]
@@ -143,7 +189,8 @@ namespace InterpreterCSharp
             SyntaxTree? syntaxTree = SyntaxTree.Parse(text);
 
             // Use Members because we need to exclude the EndOfFileToken.
-            if (syntaxTree.Root.Members.Last().GetLastToken().IsMissing)
+            var lastMember = syntaxTree.Root.Members.LastOrDefault();
+            if (lastMember == null || lastMember.GetLastToken().IsMissing)
                 return false;
 
             return true;
