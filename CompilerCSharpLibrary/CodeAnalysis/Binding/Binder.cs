@@ -45,7 +45,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         private int _labelCounter;
         private BoundScope _scope;
 
-        public Binder(bool isScript, BoundScope parent, FunctionSymbol function)
+        private Binder(bool isScript, BoundScope parent, FunctionSymbol function)
         {
             _scope = new BoundScope(parent);
             _isScript = isScript;
@@ -62,6 +62,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         {
             BoundScope? parentScope = CreateParentScopes(previous);
             Binder? binder = new Binder(isScript, parentScope, function: null);
+
+            binder.Diagnostics.AddRange(syntaxTrees.SelectMany(st => st.Diagnostics));
+            if (binder.Diagnostics.Any())
+                return new BoundGlobalScope(previous, binder.Diagnostics, null, null, new List<FunctionSymbol>(), new List<VariableSymbol>(), new List<BoundStatement>());
 
             IEnumerable<FunctionDeclarationSyntax>? functionDeclarations = syntaxTrees.SelectMany(st => st.Root.Members).OfType<FunctionDeclarationSyntax>();
 
@@ -151,6 +155,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         public static BoundProgram BindProgram(bool isScript, BoundProgram previous, BoundGlobalScope globalScope)
         {
             BoundScope? parentScope = CreateParentScopes(globalScope);
+
+            if (globalScope.Diagnostics.Any())
+                return new BoundProgram(previous, globalScope.Diagnostics, null, null, new Dictionary<FunctionSymbol, BoundBlockStatement>());
 
             Dictionary<FunctionSymbol, BoundBlockStatement>? functionBodies = new Dictionary<FunctionSymbol, BoundBlockStatement>();
             DiagnosticBag? diagnostics = new DiagnosticBag();

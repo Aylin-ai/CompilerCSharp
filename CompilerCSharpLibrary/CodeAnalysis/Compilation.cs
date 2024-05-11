@@ -96,15 +96,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)
         {
-            IEnumerable<Diagnostic>? parseDiagnositcs = SyntaxTrees.SelectMany(st => st.Diagnostics);
-            IEnumerable<Diagnostic>? diagnostics = parseDiagnositcs.Concat(GlobalScope.Diagnostics);
-
-            if (diagnostics.Any())
-            {
-                var diagnostic = new DiagnosticBag();
-                diagnostic.AddRange(diagnostics);
-                return new EvaluationResult(diagnostic, null);
-            }
+            if (GlobalScope.Diagnostics.Any())
+                return new EvaluationResult(GlobalScope.Diagnostics, null);
 
             BoundProgram? program = GetProgram();
 
