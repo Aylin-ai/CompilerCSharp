@@ -175,7 +175,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
 
         public static DiagnosticBag Emit(BoundProgram program, string moduleName, string[] references, string outputPath)
         {
-            if (program.Diagnostics.Any())
+            if (program.ErrorDiagnostics.Any())
                 return program.Diagnostics;
 
             var emitter = new Emitter(moduleName, references);

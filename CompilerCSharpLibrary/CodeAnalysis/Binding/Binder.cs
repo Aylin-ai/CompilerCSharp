@@ -426,6 +426,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)
         {
             BoundExpression? condition = BindExpression(syntax.Condition);
+
+            if (condition.ConstantValue != null)
+            {
+                if (!(bool)condition.ConstantValue.Value)
+                {
+                    _diagnostics.ReportUnreachableCode(syntax.Body);
+                }
+            }
+
             BoundStatement body = BindLoopBody(syntax.Body, out BoundLabel? breakLabel, out BoundLabel? continueLabel);
             return new BoundWhileStatement(condition, body, breakLabel, continueLabel);
         }
@@ -453,6 +462,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         private BoundStatement BindIfStatement(IfStatementSyntax syntax)
         {
             BoundExpression? condition = BindExpression(syntax.Condition, TypeSymbol.Bool);
+
+            if (condition.ConstantValue != null)
+            {
+                if ((bool)condition.ConstantValue.Value == false)
+                    _diagnostics.ReportUnreachableCode(syntax.ThenStatement);
+                else if (syntax.ElseClause != null)
+                    _diagnostics.ReportUnreachableCode(syntax.ElseClause.ElseStatement);
+            }
+
             BoundStatement? thenStatement = BindStatement(syntax.ThenStatement);
             BoundStatement? elseStatement = syntax.ElseClause == null ? null : BindStatement(syntax.ElseClause.ElseStatement);
             return new BoundIfStatement(condition, thenStatement, elseStatement);

@@ -210,7 +210,7 @@ namespace InterpreterCSharp
 
             EvaluationResult? result = compilation.Evaluate(_variables);
 
-            if (!result.Diagnostics.Any())
+            if (!result.ErrorDiagnostics.Any())
             {
                 if (result.Value != null)
                 {

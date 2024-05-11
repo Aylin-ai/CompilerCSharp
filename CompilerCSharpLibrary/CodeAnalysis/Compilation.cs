@@ -115,12 +115,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             }
             */
 
-            if (program.Diagnostics.Any())
+            if (program.ErrorDiagnostics.Any())
                 return new EvaluationResult(program.Diagnostics, null);
 
             Evaluator evaluator = new Evaluator(program, variables);
             object value = evaluator.Evaluate();
-            return new EvaluationResult(new DiagnosticBag(), value);
+
+            DiagnosticBag diagnostics = new DiagnosticBag();
+            diagnostics.AddRange(program.WarningDiagnostics);
+
+            return new EvaluationResult(diagnostics, value);
         }
 
         public void EmitTree(TextWriter writer)
@@ -151,7 +155,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             var parseDiagnostics = SyntaxTrees.SelectMany(st => st.Diagnostics);
 
             var diagnostics = parseDiagnostics.Concat(GlobalScope.Diagnostics);
-            if (diagnostics.Any())
+            var errorDiagnostics = diagnostics.Where(d => d.IsError);
+            if (errorDiagnostics.Any())
             {
                 var diagnostic = new DiagnosticBag();
                 diagnostic.AddRange(diagnostics);
