@@ -455,7 +455,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         private void ReadIdentifierOrKeyword()
         {
-            while (char.IsLetter(Current) || char.IsDigit(Current))
+             while (char.IsLetterOrDigit(Current) || Current == '_')
             {
                 _position++;
             }
@@ -463,16 +463,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             int length = _position - _start;
             string text = _text.ToString(_start, length);
             _kind = SyntaxFacts.GetKeywordKind(text);
-        }
-
-        private void ReadWhiteSpaceToken()
-        {
-            while (char.IsWhiteSpace(Current))
-            {
-                _position++;
-            }
-
-            _kind = SyntaxKind.WhiteSpaceTrivia;
         }
 
         private void ReadNumberToken()
