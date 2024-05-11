@@ -56,7 +56,7 @@ namespace InterpreterCSharp
 
             var lineSpan = renderState.Text.Lines[lineIndex].Span;
 
-             foreach (var token in renderState.Tokens)
+            foreach (var token in renderState.Tokens)
             {
                 if (!lineSpan.OverlapsWith(token.Span))
                     continue;
@@ -81,11 +81,11 @@ namespace InterpreterCSharp
                 else if (isString)
                     Console.ForegroundColor = ConsoleColor.Magenta;
                 else if (isComment)
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Red;
                 else
                     Console.ForegroundColor = ConsoleColor.DarkGray;
 
-                Console.Write(token.Text);
+                Console.Write(tokenText);
 
                 Console.ResetColor();
             }
