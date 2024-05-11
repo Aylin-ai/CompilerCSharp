@@ -95,7 +95,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             while (!done)
             {
                 _start = _position;
-                _kind = SyntaxKind.BadTokenTrivia;
+                _kind = SyntaxKind.BadToken;
                 _value = null;
 
                 switch (Current)
@@ -243,7 +243,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         private void ReadToken()
         {
             _start = _position;
-            _kind = SyntaxKind.BadTokenTrivia;
+            _kind = SyntaxKind.BadToken;
             _value = null;
 
             switch (Current)

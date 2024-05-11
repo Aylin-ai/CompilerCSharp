@@ -2,12 +2,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
 {
     //Виды токенов
     public enum SyntaxKind{
-        //Tokens
-        BadTokenTrivia,
+        BadToken,
+
+        //Trivia
         WhiteSpaceTrivia,
         SingleLineCommentTrivia,
         LineBreakTrivia,
         MultiLineCommentTriva,
+        SkippedTextTrivia,
+
+        //Tokens
         NumberToken,
         PlusToken,
         MinusToken,

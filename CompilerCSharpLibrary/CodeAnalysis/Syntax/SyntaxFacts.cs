@@ -211,7 +211,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         {
             switch (kind)
             {
-                case SyntaxKind.BadTokenTrivia:
+                case SyntaxKind.SkippedTextTrivia:
+                case SyntaxKind.LineBreakTrivia:
                 case SyntaxKind.WhiteSpaceTrivia:
                 case SyntaxKind.SingleLineCommentTrivia:
                 case SyntaxKind.MultiLineCommentTriva:
