@@ -1,0 +1,12 @@
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Release\netcoreapp3.1\app.publish\CompilerCSharp.exe
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Release\netcoreapp3.1\app.publish\CompilerCSharp.dll
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Release\netcoreapp3.1\app.publish\CompilerCSharp.deps.json
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Release\netcoreapp3.1\app.publish\CompilerCSharp.runtimeconfig.json
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Release\netcoreapp3.1\app.publish\CompilerCSharp.pdb
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Release\netcoreapp3.1\app.publish\Mono.Cecil.Mdb.dll
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Release\netcoreapp3.1\app.publish\Mono.Cecil.Pdb.dll
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Release\netcoreapp3.1\app.publish\Mono.Cecil.Rocks.dll
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Release\netcoreapp3.1\app.publish\Mono.Cecil.dll
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Release\netcoreapp3.1\app.publish\Mono.Options.dll
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Release\netcoreapp3.1\app.publish\CompilerCSharpLibrary.dll
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\bin\Release\netcoreapp3.1\app.publish\CompilerCSharpLibrary.pdb

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "p5AbjnwsOWlFtwvMg6dUpexpLFAKj5iOF0Qo6Tm9rML1863CYA/oO/J9x+7uT5vqLucAeqSrdahWvgO+u2Krsw==",
+  "dgSpecHash": "BvHi3qisVxG9HU84KC9akzzb0hNKpj7h9jHIiu38LhfUBXC69uJlBgpBEqNrycBh3inexJEEWmERxF6KzbMcwQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\samples\\hello\\hello.msproj",
+  "projectFilePath": "C:\\Users\\ajlin\\Desktop\\samples\\hello\\hello.msproj",
   "expectedPackageFiles": [
     "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
     "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512",

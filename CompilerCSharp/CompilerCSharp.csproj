@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <IsTool>true</IsTool>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <IsPackable>false</IsPackable>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>

@@ -5,6 +5,6 @@ C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibr
 C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Debug\CompilerCSharpLibrary.AssemblyInfoInputs.cache
 C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Debug\CompilerCSharpLibrary.AssemblyInfo.cs
 C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Debug\CompilerCSharpLibrary.csproj.CoreCompileInputs.cache
-C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Debug\CompilerCSharpLibrary.sourcelink.json
 C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Debug\CompilerCSharpLibrary.dll
 C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Debug\CompilerCSharpLibrary.pdb
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Debug\CompilerCSharpLibrary.sourcelink.json

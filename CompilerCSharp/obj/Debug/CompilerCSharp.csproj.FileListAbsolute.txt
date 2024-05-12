@@ -15,8 +15,8 @@ C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj
 C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\CompilerCSharp.AssemblyInfoInputs.cache
 C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\CompilerCSharp.AssemblyInfo.cs
 C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\CompilerCSharp.csproj.CoreCompileInputs.cache
-C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\CompilerCSharp.sourcelink.json
-C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\Compiler.D90DDA20.Up2Date
 C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\CompilerCSharp.dll
 C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\CompilerCSharp.pdb
 C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\CompilerCSharp.genruntimeconfig.cache
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\CompilerCSharp.sourcelink.json
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharp\obj\Debug\Compiler.D90DDA20.Up2Date

@@ -1,13 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "4F2aOzMvPsVcv8ZPuAKMtoZmgOlEjL/H9QseIToyRE+sJPKP20euWs4Md9+eVURy1vJozJn/3mr57Iwm4HHckw==",
+  "dgSpecHash": "cVOo7tkASaYzIu896ecfaB3Ucf6yk+VWPoAm6t+POpeD3k0xihB4qfBr/oB7QIIBkDJOIT5FnO3WqYt5706hig==",
   "success": true,
   "projectFilePath": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\samples\\helloworld\\helloworld.msproj",
   "expectedPackageFiles": [
     "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
     "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512",
-    "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
-    "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.32\\microsoft.netcore.app.host.win-x64.3.1.32.nupkg.sha512"
+    "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\3.1.32\\microsoft.netcore.app.runtime.win-x64.3.1.32.nupkg.sha512",
+    "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\3.1.32\\microsoft.windowsdesktop.app.runtime.win-x64.3.1.32.nupkg.sha512",
+    "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\3.1.32\\microsoft.aspnetcore.app.runtime.win-x64.3.1.32.nupkg.sha512",
+    "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.32\\microsoft.netcore.app.host.win-x64.3.1.32.nupkg.sha512",
+    "C:\\Users\\ajlin\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512"
   ],
   "logs": []
 }

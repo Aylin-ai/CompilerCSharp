@@ -1,0 +1,9 @@
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\bin\Release\CompilerCSharpLibrary.deps.json
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\bin\Release\CompilerCSharpLibrary.dll
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\bin\Release\CompilerCSharpLibrary.pdb
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Release\CompilerCSharpLibrary.csproj.AssemblyReference.cache
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Release\CompilerCSharpLibrary.AssemblyInfoInputs.cache
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Release\CompilerCSharpLibrary.AssemblyInfo.cs
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Release\CompilerCSharpLibrary.csproj.CoreCompileInputs.cache
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Release\CompilerCSharpLibrary.dll
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\CompilerCSharpLibrary\obj\Release\CompilerCSharpLibrary.pdb

@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\samples\\hello\\hello.msproj",
+      "projectUniqueName": "C:\\Users\\ajlin\\Desktop\\samples\\hello\\hello.msproj",
       "projectName": "hello",
-      "projectPath": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\samples\\hello\\hello.msproj",
+      "projectPath": "C:\\Users\\ajlin\\Desktop\\samples\\hello\\hello.msproj",
       "packagesPath": "C:\\Users\\ajlin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ajlin\\Documents\\Diplom\\CompilerCSharp\\CompilerCSharp\\samples\\hello\\obj\\",
+      "outputPath": "C:\\Users\\ajlin\\Desktop\\samples\\hello\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -1,0 +1,4 @@
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\bin\Debug\publish\helloworld.exe
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\bin\Debug\publish\helloworld.dll
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\bin\Debug\publish\helloworld.deps.json
+C:\Users\ajlin\Documents\Diplom\CompilerCSharp\CompilerCSharp\samples\helloworld\bin\Debug\publish\helloworld.runtimeconfig.json

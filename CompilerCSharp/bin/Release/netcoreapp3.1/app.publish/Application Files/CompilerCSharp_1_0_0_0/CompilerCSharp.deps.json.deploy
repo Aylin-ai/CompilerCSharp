@@ -1,0 +1,92 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "CompilerCSharp/1.0.0": {
+        "dependencies": {
+          "CompilerCSharpLibrary": "1.0.0",
+          "Microsoft.Net.Compilers.Toolset": "3.6.0-4.final",
+          "Mono.Options": "6.12.0.148"
+        },
+        "runtime": {
+          "CompilerCSharp.dll": {}
+        }
+      },
+      "Microsoft.Net.Compilers.Toolset/3.6.0-4.final": {},
+      "Mono.Cecil/0.11.5": {
+        "runtime": {
+          "lib/netstandard2.0/Mono.Cecil.Mdb.dll": {
+            "assemblyVersion": "0.11.5.0",
+            "fileVersion": "0.11.5.0"
+          },
+          "lib/netstandard2.0/Mono.Cecil.Pdb.dll": {
+            "assemblyVersion": "0.11.5.0",
+            "fileVersion": "0.11.5.0"
+          },
+          "lib/netstandard2.0/Mono.Cecil.Rocks.dll": {
+            "assemblyVersion": "0.11.5.0",
+            "fileVersion": "0.11.5.0"
+          },
+          "lib/netstandard2.0/Mono.Cecil.dll": {
+            "assemblyVersion": "0.11.5.0",
+            "fileVersion": "0.11.5.0"
+          }
+        }
+      },
+      "Mono.Options/6.12.0.148": {
+        "runtime": {
+          "lib/netstandard2.0/Mono.Options.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.12.0.0"
+          }
+        }
+      },
+      "CompilerCSharpLibrary/1.0.0": {
+        "dependencies": {
+          "Microsoft.Net.Compilers.Toolset": "3.6.0-4.final",
+          "Mono.Cecil": "0.11.5"
+        },
+        "runtime": {
+          "CompilerCSharpLibrary.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CompilerCSharp/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Net.Compilers.Toolset/3.6.0-4.final": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pNP0qEbHmtiJ0fPCQaQokqJmlVt8+MnM8if5GNgzFaPIoOTGONJITCoKgxaJG7cFzdOJ0vNJgKCyjv3YZ4NYvg==",
+      "path": "microsoft.net.compilers.toolset/3.6.0-4.final",
+      "hashPath": "microsoft.net.compilers.toolset.3.6.0-4.final.nupkg.sha512"
+    },
+    "Mono.Cecil/0.11.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fxfX+0JGTZ8YQeu1MYjbBiK2CYTSzDyEeIixt+yqKKTn7FW8rv7JMY70qevup4ZJfD7Kk/VG/jDzQQTpfch87g==",
+      "path": "mono.cecil/0.11.5",
+      "hashPath": "mono.cecil.0.11.5.nupkg.sha512"
+    },
+    "Mono.Options/6.12.0.148": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kf6bdXnP4IzqIp4bJ1YKPI3/PAcOV6qm4mznChJ3c92zHQUXTWJSp0+h+Cfcii0O6m/EgW7KA+tbCiB2al0DDA==",
+      "path": "mono.options/6.12.0.148",
+      "hashPath": "mono.options.6.12.0.148.nupkg.sha512"
+    },
+    "CompilerCSharpLibrary/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
