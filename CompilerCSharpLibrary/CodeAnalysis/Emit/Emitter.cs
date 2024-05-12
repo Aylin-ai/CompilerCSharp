@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using CompilerCSharpLibrary.CodeAnalysis.Binding;
@@ -171,6 +172,17 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
             _randomReference = ResolveType(null, "System.Random");
             _randomCtorReference = ResolveMethod("System.Random", ".ctor", Array.Empty<string>());
             _randomNextReference = ResolveMethod("System.Random", "Next", new [] { "System.Int32", "System.Int32" });
+
+            var objectType = _knownTypes[TypeSymbol.Any];
+            if (objectType != null)
+            {
+                _typeDefinition = new TypeDefinition("", "Program", TypeAttributes.Abstract | TypeAttributes.Sealed, objectType);
+                _assemblyDefinition.MainModule.Types.Add(_typeDefinition);
+            }
+            else
+            {
+                _typeDefinition = null!;
+            }
         }
 
         public static DiagnosticBag Emit(BoundProgram program, string moduleName, string[] references, string outputPath)
@@ -606,6 +618,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
 
         private void EmitConstantExpression(ILProcessor ilProcessor, BoundExpression node)
         {
+            Debug.Assert(node.ConstantValue != null);
+            
             if (node.Type == TypeSymbol.Bool)
             {
                 var value = (bool)node.ConstantValue.Value;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using CompilerCSharpLibrary.CodeAnalysis.Binding;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions;
 using CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base;
@@ -16,14 +17,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis
     public class Evaluator
     {
         private readonly BoundProgram _program;
-
-        //Словарь всех переменных. Ключ - имя переменной, Значение - значение переменной
         private readonly Dictionary<VariableSymbol, object> _globals;
         private readonly Dictionary<FunctionSymbol, BoundBlockStatement> _functions = new Dictionary<FunctionSymbol, BoundBlockStatement>();
         private readonly Stack<Dictionary<VariableSymbol, object>> _locals = new Stack<Dictionary<VariableSymbol, object>>();
-        private Random _random;
+        private Random? _random;
 
-        private object _lastValue;
+        private object? _lastValue;
 
         public Evaluator(BoundProgram program, Dictionary<VariableSymbol, object> variables)
         {
@@ -31,21 +30,21 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             _globals = variables;
             _locals.Push(new Dictionary<VariableSymbol, object>());
 
-            BoundProgram current = program;
+            var current = program;
             while (current != null)
             {
-                foreach (KeyValuePair<FunctionSymbol, BoundBlockStatement> functionWithBody in current.Functions)
+                foreach (var kv in current.Functions)
                 {
-                    FunctionSymbol? function = functionWithBody.Key;
-                    BoundBlockStatement? body = functionWithBody.Value; 
-
+                    var function = kv.Key;
+                    var body = kv.Value;
                     _functions.Add(function, body);
                 }
+
                 current = current.Previous;
             }
         }
 
-        public object Evaluate()
+        public object? Evaluate()
         {
             var function = _program.MainFunction ?? _program.ScriptFunction;
             if (function == null)
@@ -55,24 +54,21 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             return EvaluateStatement(body);
         }
 
-        private object EvaluateStatement(BoundBlockStatement body)
+        private object? EvaluateStatement(BoundBlockStatement body)
         {
-            Dictionary<BoundLabel, int>? labelToIndex = new Dictionary<BoundLabel, int>();
+            var labelToIndex = new Dictionary<BoundLabel, int>();
 
-            for (int i = 0; i < body.Statements.Count; i++)
+            for (var i = 0; i < body.Statements.Count; i++)
             {
                 if (body.Statements[i] is BoundLabelStatement l)
-                {
                     labelToIndex.Add(l.Label, i + 1);
-                }
             }
 
-            int index = 0;
+            var index = 0;
 
             while (index < body.Statements.Count)
             {
-
-                BoundStatement? s = body.Statements[index];
+                var s = body.Statements[index];
 
                 switch (s.Kind)
                 {
@@ -88,14 +84,13 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                         index++;
                         break;
                     case BoundNodeKind.GotoStatement:
-                        BoundGotoStatement? gs = (BoundGotoStatement)s;
+                        var gs = (BoundGotoStatement)s;
                         index = labelToIndex[gs.Label];
                         break;
                     case BoundNodeKind.ConditionalGotoStatement:
-                        BoundConditionalGotoStatement? cgs = (BoundConditionalGotoStatement)s;
-                        bool condition = (bool)EvaluateExpression(cgs.Condition);
+                        var cgs = (BoundConditionalGotoStatement)s;
+                        var condition = (bool)EvaluateExpression(cgs.Condition)!;
                         if (condition == cgs.JumpIfTrue)
-                            //Прыжок к нужной строке (индексу)
                             index = labelToIndex[cgs.Label];
                         else
                             index++;
@@ -104,7 +99,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                         index++;
                         break;
                     case BoundNodeKind.ReturnStatement:
-                        BoundReturnStatement? rs = (BoundReturnStatement)s;
+                        var rs = (BoundReturnStatement)s;
                         _lastValue = rs.Expression == null ? null : EvaluateExpression(rs.Expression);
                         return _lastValue;
                     default:
@@ -112,14 +107,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 }
             }
 
-
-
             return _lastValue;
         }
 
         private void EvaluateVariableDeclaration(BoundVariableDeclaration node)
         {
-            object? value = EvaluateExpression(node.Initializer);
+            var value = EvaluateExpression(node.Initializer);
+            Debug.Assert(value != null);
+
             _lastValue = value;
             Assign(node.Variable, value);
         }
@@ -129,8 +124,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             _lastValue = EvaluateExpression(node.Expression);
         }
 
-        //Вычисляет выражение, используя построенное АСД
-        private object EvaluateExpression(BoundExpression node)
+        private object? EvaluateExpression(BoundExpression node)
         {
             if (node.ConstantValue != null)
                 return EvaluateConstantExpression(node);
@@ -152,72 +146,64 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 default:
                     throw new Exception($"Unexpected node {node.Kind}");
             }
-
         }
 
-        private object EvaluateConversionExpression(BoundConversionExpression node)
+        private static object EvaluateConstantExpression(BoundExpression n)
         {
-            object? value = EvaluateExpression(node.Expression);
-            if (node.Type == TypeSymbol.Any)
-                return value;
-            if (node.Type == TypeSymbol.Bool)
-                return Convert.ToBoolean(value);
-            else if (node.Type == TypeSymbol.Int)
-                return Convert.ToInt32(value);
-            else if (node.Type == TypeSymbol.String)
-                return Convert.ToString(value);
-            else
-                throw new Exception($"Unexpected type {node.Type}");
+            Debug.Assert(n.ConstantValue != null);
+
+            return n.ConstantValue.Value;
         }
 
-        private object EvaluateCallExpression(BoundCallExpression node)
+        private object EvaluateVariableExpression(BoundVariableExpression v)
         {
-            if (node.Function == BuiltInFunctions.Input)
+            if (v.Variable.Kind == SymbolKind.GlobalVariable)
             {
-                return Console.ReadLine();
-            }
-            else if (node.Function == BuiltInFunctions.Print)
-            {
-                var value = EvaluateExpression(node.Arguments[0]);
-                Console.WriteLine(value);
-                return null;
-            }
-            else if (node.Function == BuiltInFunctions.Rnd)
-            {
-                int minValue = (int)EvaluateExpression(node.Arguments[0]);
-                int maxValue = (int)EvaluateExpression(node.Arguments[1]);
-
-                if (_random == null)
-                    _random = new Random();
-
-                int randomNumber = _random.Next(minValue, maxValue);
-                return randomNumber;
+                return _globals[v.Variable];
             }
             else
             {
-                Dictionary<VariableSymbol, object>? locals = new Dictionary<VariableSymbol, object>();
-                for (int i = 0; i < node.Arguments.Count; i++)
-                {
-                    ParameterSymbol? parameter = node.Function.Parameters[i];
-                    object? value = EvaluateExpression(node.Arguments[i]);
-                    locals.Add(parameter, value);
-                }
+                var locals = _locals.Peek();
+                return locals[v.Variable];
+            }
+        }
 
-                _locals.Push(locals);
+        private object EvaluateAssignmentExpression(BoundAssignmentExpression a)
+        {
+            var value = EvaluateExpression(a.Expression);
+            Debug.Assert(value != null);
 
-                BoundBlockStatement? statement = _functions[node.Function];
-                object? result = EvaluateStatement(statement);
+            Assign(a.Variable, value);
+            return value;
+        }
 
-                _locals.Pop();
+        private object EvaluateUnaryExpression(BoundUnaryExpression u)
+        {
+            var operand = EvaluateExpression(u.Operand);
 
-                return result;
+            Debug.Assert(operand != null);
+
+            switch (u.Op.Kind)
+            {
+                case BoundUnaryOperatorKind.Identity:
+                    return (int)operand;
+                case BoundUnaryOperatorKind.Negation:
+                    return -(int)operand;
+                case BoundUnaryOperatorKind.LogicalNegation:
+                    return !(bool)operand;
+                case BoundUnaryOperatorKind.OnesComplement:
+                    return ~(int)operand;
+                default:
+                    throw new Exception($"Unexpected unary operator {u.Op}");
             }
         }
 
         private object EvaluateBinaryExpression(BoundBinaryExpression b)
         {
-            object left = EvaluateExpression(b.Left);
-            object right = EvaluateExpression(b.Right);
+            var left = EvaluateExpression(b.Left);
+            var right = EvaluateExpression(b.Right);
+
+            Debug.Assert(left != null && right != null);
 
             switch (b.Op.Kind)
             {
@@ -232,7 +218,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                     return (int)left * (int)right;
                 case BoundBinaryOperatorKind.Division:
                     return (int)left / (int)right;
-
                 case BoundBinaryOperatorKind.BitwiseAnd:
                     if (b.Type == TypeSymbol.Int)
                         return (int)left & (int)right;
@@ -248,83 +233,82 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                         return (int)left ^ (int)right;
                     else
                         return (bool)left ^ (bool)right;
-
                 case BoundBinaryOperatorKind.LogicalAnd:
                     return (bool)left && (bool)right;
                 case BoundBinaryOperatorKind.LogicalOr:
                     return (bool)left || (bool)right;
-
                 case BoundBinaryOperatorKind.Equals:
                     return Equals(left, right);
                 case BoundBinaryOperatorKind.NotEquals:
                     return !Equals(left, right);
-
-                case BoundBinaryOperatorKind.Greater:
-                    return (int)left > (int)right;
-                case BoundBinaryOperatorKind.GreaterOrEquals:
-                    return (int)left >= (int)right;
                 case BoundBinaryOperatorKind.Less:
                     return (int)left < (int)right;
                 case BoundBinaryOperatorKind.LessOrEquals:
                     return (int)left <= (int)right;
-
+                case BoundBinaryOperatorKind.Greater:
+                    return (int)left > (int)right;
+                case BoundBinaryOperatorKind.GreaterOrEquals:
+                    return (int)left >= (int)right;
                 default:
-                    throw new Exception($"Unexpected binary operator {b.Op.Kind}");
+                    throw new Exception($"Unexpected binary operator {b.Op}");
             }
         }
 
-        private object EvaluateUnaryExpression(BoundUnaryExpression u)
+        private object? EvaluateCallExpression(BoundCallExpression node)
         {
-            object operand = EvaluateExpression(u.Operand);
-
-            switch (u.Op.Kind)
+            if (node.Function == BuiltInFunctions.Input)
             {
-                case BoundUnaryOperatorKind.Identity:
-                    return (int)operand;
-                case BoundUnaryOperatorKind.Negation:
-                    return -(int)operand;
-                case BoundUnaryOperatorKind.LogicalNegation:
-                    return !(bool)operand;
-                case BoundUnaryOperatorKind.OnesComplement:
-                    return ~(int)operand;
-
-                default:
-                    throw new Exception($"Unexpected unary operator {u.Op.Kind}");
+                return Console.ReadLine();
             }
-        }
+            else if (node.Function == BuiltInFunctions.Print)
+            {
+                var value = EvaluateExpression(node.Arguments[0]);
+                Console.WriteLine(value);
+                return null;
+            }
+            else if (node.Function == BuiltInFunctions.Rnd)
+            {
+                var max = (int)EvaluateExpression(node.Arguments[0])!;
+                if (_random == null)
+                    _random = new Random();
 
-        /*
-        Если происходит приравнивание переменной какого-то
-        выражения, то получает результат выражения, приравнивает
-        этот результат к переменной и возвращает результат выражения
-        */
-        private object EvaluateAssignmentExpression(BoundAssignmentExpression a)
-        {
-            object? value = EvaluateExpression(a.Expression);
-
-            Assign(a.Variable, value);
-            
-            return value;
-        }
-
-        /*
-        Если node типа BoundVariableExpression,
-        то возвращает значение переменной из списка всех переменных
-        */
-        private object EvaluateVariableExpression(BoundVariableExpression v)
-        {
-            if (v.Variable.Kind == SymbolKind.GlobalVariable)
-                return _globals[v.Variable];
+                return _random.Next(max);
+            }
             else
             {
-                Dictionary<VariableSymbol, object>? locals = _locals.Peek();
-                return locals[v.Variable];
+                var locals = new Dictionary<VariableSymbol, object>();
+                for (int i = 0; i < node.Arguments.Count; i++)
+                {
+                    var parameter = node.Function.Parameters[i];
+                    var value = EvaluateExpression(node.Arguments[i]);
+                    Debug.Assert(value != null);
+                    locals.Add(parameter, value);
+                }
+
+                _locals.Push(locals);
+
+                var statement = _functions[node.Function];
+                var result = EvaluateStatement(statement);
+
+                _locals.Pop();
+
+                return result;
             }
         }
 
-        private static object EvaluateConstantExpression(BoundExpression n)
+        private object? EvaluateConversionExpression(BoundConversionExpression node)
         {
-            return n.ConstantValue.Value;
+            var value = EvaluateExpression(node.Expression);
+            if (node.Type == TypeSymbol.Any)
+                return value;
+            else if (node.Type == TypeSymbol.Bool)
+                return Convert.ToBoolean(value);
+            else if (node.Type == TypeSymbol.Int)
+                return Convert.ToInt32(value);
+            else if (node.Type == TypeSymbol.String)
+                return Convert.ToString(value);
+            else
+                throw new Exception($"Unexpected type {node.Type}");
         }
 
         private void Assign(VariableSymbol variable, object value)
@@ -335,7 +319,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
             }
             else
             {
-                Dictionary<VariableSymbol, object>? locals = _locals.Peek();
+                var locals = _locals.Peek();
                 locals[variable] = value;
             }
         }
