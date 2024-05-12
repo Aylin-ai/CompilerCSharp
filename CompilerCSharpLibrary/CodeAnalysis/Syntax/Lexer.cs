@@ -13,18 +13,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     */
     public class Lexer
     {
-        private readonly SourceText _text;
+        private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
         private readonly SyntaxTree _syntaxTree;
-        private DiagnosticBag _diagnostics = new DiagnosticBag();
-        public DiagnosticBag Diagnostics => _diagnostics;
-
+        private readonly SourceText _text;
         private int _position;
 
         private int _start;
         private SyntaxKind _kind;
-        private object _value;
+        private object? _value;
         private List<SyntaxTrivia> _triviaList = new List<SyntaxTrivia>();
-
 
         public Lexer(SyntaxTree syntaxTree)
         {
@@ -32,16 +29,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             _text = syntaxTree.Text;
         }
 
-        /*
-        Возращает текущий символ или последний символ в тексте, 
-        в зависимости от значения _position
-        */
+        public DiagnosticBag Diagnostics => _diagnostics;
+
         private char Current => Peek(0);
+
         private char Lookahead => Peek(1);
 
         private char Peek(int offset)
         {
-            int index = _position + offset;
+            var index = _position + offset;
 
             if (index >= _text.Length)
                 return '\0';
@@ -49,19 +45,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             return _text[index];
         }
 
-        /*
-        Функция, возвращающая токен. Если _position в конце или за концом текста,
-        то возвращает токен EndOfFileToken.
-        Если повстречалась цифра, то отмечает это место первого появления.
-        После проходит вперед по символам до тех пор, пока не перестанут появляться
-        цифры. После вычисляет длину лексемы, вычитая из текущей позиции отмеченную нами.
-        После этого пытается перевести данную лексему в значение типа int. После этого
-        создает токен и возвращает его.
-        Такая же логика и с пробельными символами.
-        И в случае спец. символов, указанных в функции возвращает их токены, вместе
-        с этим переходя на символ вперед.
-        В противном случае возвращает токен типа BadToken.
-        */
         public SyntaxToken Lex()
         {
             ReadTrivia(leading: true);
@@ -237,7 +220,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 }
             }
 
-            _kind = SyntaxKind.MultiLineCommentTriva;
+            _kind = SyntaxKind.MultiLineCommentTrivia;
         }
 
         private void ReadToken()
@@ -257,12 +240,22 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     {
                         _kind = SyntaxKind.PlusToken;
                     }
+                    else
+                    {
+                        _kind = SyntaxKind.PlusEqualsToken;
+                        _position++;
+                    }
                     break;
                 case '-':
                     _position++;
                     if (Current != '=')
                     {
                         _kind = SyntaxKind.MinusToken;
+                    }
+                    else
+                    {
+                        _kind = SyntaxKind.MinusEqualsToken;
+                        _position++;
                     }
                     break;
                 case '*':
@@ -271,12 +264,22 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     {
                         _kind = SyntaxKind.StarToken;
                     }
+                    else
+                    {
+                        _kind = SyntaxKind.StarEqualsToken;
+                        _position++;
+                    }
                     break;
                 case '/':
                     _position++;
                     if (Current != '=')
                     {
                         _kind = SyntaxKind.SlashToken;
+                    }
+                    else
+                    {
+                        _kind = SyntaxKind.SlashEqualsToken;
+                        _position++;
                     }
                     break;
                 case '(':
@@ -313,12 +316,22 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     {
                         _kind = SyntaxKind.HatToken;
                     }
+                    else
+                    {
+                        _kind = SyntaxKind.HatEqualsToken;
+                        _position++;
+                    }
                     break;
                 case '&':
                     _position++;
                     if (Current == '&')
                     {
                         _kind = SyntaxKind.AmpersandAmpersandToken;
+                        _position++;
+                    }
+                    else if (Current == '=')
+                    {
+                        _kind = SyntaxKind.AmpersandEqualsToken;
                         _position++;
                     }
                     else
@@ -331,6 +344,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     if (Current == '|')
                     {
                         _kind = SyntaxKind.PipePipeToken;
+                        _position++;
+                    }
+                    else if (Current == '=')
+                    {
+                        _kind = SyntaxKind.PipeEqualsToken;
                         _position++;
                     }
                     else
@@ -391,7 +409,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     break;
                 case '0': case '1': case '2': case '3': case '4':
                 case '5': case '6': case '7': case '8': case '9':
-                    ReadNumberToken();
+                    ReadNumber();
                     break;
                 case '_':
                     ReadIdentifierOrKeyword();
@@ -414,10 +432,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         private void ReadString()
         {
+            // Skip the current quote
             _position++;
-            StringBuilder? sb = new StringBuilder();
 
-            bool done = false;
+            var sb = new StringBuilder();
+            var done = false;
+
             while (!done)
             {
                 switch (Current)
@@ -425,8 +445,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     case '\0':
                     case '\r':
                     case '\n':
-                        TextSpan span = new TextSpan(_start, 1);
-                        TextLocation location = new TextLocation(_text, span);
+                        var span = new TextSpan(_start, 1);
+                        var location = new TextLocation(_text, span);
                         _diagnostics.ReportUnterminatedString(location);
                         done = true;
                         break;
@@ -453,37 +473,32 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             _value = sb.ToString();
         }
 
-        private void ReadIdentifierOrKeyword()
-        {
-             while (char.IsLetterOrDigit(Current) || Current == '_')
-            {
-                _position++;
-            }
-
-            int length = _position - _start;
-            string text = _text.ToString(_start, length);
-            _kind = SyntaxFacts.GetKeywordKind(text);
-        }
-
-        private void ReadNumberToken()
+        private void ReadNumber()
         {
             while (char.IsDigit(Current))
-            {
                 _position++;
-            }
 
-            int length = _position - _start;
-            string text = _text.ToString(_start, length);
-
-            if (!int.TryParse(text, out int value))
+            var length = _position - _start;
+            var text = _text.ToString(_start, length);
+            if (!int.TryParse(text, out var value))
             {
-                TextSpan span = new TextSpan(_start, length);
-                TextLocation location = new TextLocation(_text, span);
+                var span = new TextSpan(_start, length);
+                var location = new TextLocation(_text, span);
                 _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Int);
             }
 
             _value = value;
             _kind = SyntaxKind.NumberToken;
+        }
+
+        private void ReadIdentifierOrKeyword()
+        {
+            while (char.IsLetterOrDigit(Current) || Current == '_')
+                _position++;
+
+            var length = _position - _start;
+            var text = _text.ToString(_start, length);
+            _kind = SyntaxFacts.GetKeywordKind(text);
         }
     }
 }

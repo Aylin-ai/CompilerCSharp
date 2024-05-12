@@ -1,13 +1,12 @@
 function main()
 {
-    for i = 1 to 10
+    var a = 0
+    for i = 1 to 5
     {
-        //Print
-        /* djslkfjlsk
-        sjklfjdslkf
-        js;lkdfjslkf
-        */
-        let x = rnd(1, 20)
-        print(x)
+        a += i
+        print("Example " + string(i))
+        for j = 1 to 5
+            print(rnd(i, i + rnd(j, j + 10)))
     }
+    print(a)
 }

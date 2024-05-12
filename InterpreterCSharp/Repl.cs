@@ -11,7 +11,6 @@ namespace InterpreterCSharp
 {
     public abstract class Repl
     {
-        //TODO: Разобраться в работе этого кода
         private readonly List<MetaCommand> _metaCommands = new List<MetaCommand>();
         private readonly List<string> _submissionHistory = new List<string>();
         private int _submissionHistoryIndex;
@@ -25,18 +24,18 @@ namespace InterpreterCSharp
 
         private void InitializeMetaCommands()
         {
-            MethodInfo[]? methods = GetType().GetMethods(BindingFlags.Public |
+            var methods = GetType().GetMethods(BindingFlags.Public |
                                                BindingFlags.NonPublic |
                                                BindingFlags.Static |
                                                BindingFlags.Instance |
                                                BindingFlags.FlattenHierarchy);
-            foreach (MethodInfo? method in methods)
+            foreach (var method in methods)
             {
-                MetaCommandAttribute? attribute = method.GetCustomAttribute<MetaCommandAttribute>();
+                var attribute = method.GetCustomAttribute<MetaCommandAttribute>();
                 if (attribute == null)
                     continue;
 
-                MetaCommand? metaCommand = new MetaCommand(attribute.Name, attribute.Description, method);
+                var metaCommand = new MetaCommand(attribute.Name, attribute.Description, method);
                 _metaCommands.Add(metaCommand);
             }
         }
@@ -45,7 +44,7 @@ namespace InterpreterCSharp
         {
             while (true)
             {
-                string? text = EditSubmission();
+                var text = EditSubmission();
                 if (string.IsNullOrEmpty(text))
                     continue;
 
@@ -59,7 +58,7 @@ namespace InterpreterCSharp
             }
         }
 
-        private delegate object LineRenderHandler(IReadOnlyList<string> lines, int lineIndex, object state);
+        private delegate object? LineRenderHandler(IReadOnlyList<string> lines, int lineIndex, object? state);
 
         private sealed class SubmissionView
         {
@@ -74,12 +73,12 @@ namespace InterpreterCSharp
             {
                 _lineRenderer = lineRenderer;
                 _submissionDocument = submissionDocument;
-                _submissionDocument.CollectionChanged += OnSubmissionDocumentChanged;
+                _submissionDocument.CollectionChanged += SubmissionDocumentChanged;
                 _cursorTop = Console.CursorTop;
                 Render();
             }
 
-            private void OnSubmissionDocumentChanged(object sender, NotifyCollectionChangedEventArgs e)
+            private void SubmissionDocumentChanged(object sender, NotifyCollectionChangedEventArgs e)
             {
                 Render();
             }
@@ -88,10 +87,10 @@ namespace InterpreterCSharp
             {
                 Console.CursorVisible = false;
 
-                int lineCount = 0;
-                var state = (object)null;
+                var lineCount = 0;
+                var state = (object?)null;
 
-                foreach (string? line in _submissionDocument)
+                foreach (var line in _submissionDocument)
                 {
                     if (_cursorTop + lineCount >= Console.WindowHeight)
                     {
@@ -115,11 +114,11 @@ namespace InterpreterCSharp
                     lineCount++;
                 }
 
-                int numberOfBlankLines = _renderedLineCount - lineCount;
+                var numberOfBlankLines = _renderedLineCount - lineCount;
                 if (numberOfBlankLines > 0)
                 {
-                    string? blankLine = new string(' ', Console.WindowWidth);
-                    for (int i = 0; i < numberOfBlankLines; i++)
+                    var blankLine = new string(' ', Console.WindowWidth);
+                    for (var i = 0; i < numberOfBlankLines; i++)
                     {
                         Console.SetCursorPosition(0, _cursorTop + lineCount + i);
                         Console.WriteLine(blankLine);
@@ -171,12 +170,12 @@ namespace InterpreterCSharp
         {
             _done = false;
 
-            ObservableCollection<string>? document = new ObservableCollection<string>() { "" };
-            SubmissionView? view = new SubmissionView(RenderLine, document);
+            var document = new ObservableCollection<string>() { "" };
+            var view = new SubmissionView(RenderLine, document);
 
             while (!_done)
             {
-                ConsoleKeyInfo key = Console.ReadKey(true);
+                var key = Console.ReadKey(true);
                 HandleKey(key, document, view);
             }
 
@@ -250,7 +249,6 @@ namespace InterpreterCSharp
 
         private void HandleEscape(ObservableCollection<string> document, SubmissionView view)
         {
-            document[view.CurrentLine] = string.Empty;
             document.Clear();
             document.Add(string.Empty);
             view.CurrentLine = 0;
@@ -259,8 +257,8 @@ namespace InterpreterCSharp
 
         private void HandleEnter(ObservableCollection<string> document, SubmissionView view)
         {
-            string? submissionText = string.Join(Environment.NewLine, document);
-            if (submissionText.StartsWith('#') || IsCompleteSubmission(submissionText))
+            var submissionText = string.Join(Environment.NewLine, document);
+            if (submissionText.StartsWith("#") || IsCompleteSubmission(submissionText))
             {
                 _done = true;
                 return;
@@ -276,10 +274,10 @@ namespace InterpreterCSharp
 
         private static void InsertLine(ObservableCollection<string> document, SubmissionView view)
         {
-            string? remainder = document[view.CurrentLine].Substring(view.CurrentCharacter);
+            var remainder = document[view.CurrentLine].Substring(view.CurrentCharacter);
             document[view.CurrentLine] = document[view.CurrentLine].Substring(0, view.CurrentCharacter);
 
-            int lineIndex = view.CurrentLine + 1;
+            var lineIndex = view.CurrentLine + 1;
             document.Insert(lineIndex, remainder);
             view.CurrentCharacter = 0;
             view.CurrentLine = lineIndex;
@@ -293,7 +291,7 @@ namespace InterpreterCSharp
 
         private void HandleRightArrow(ObservableCollection<string> document, SubmissionView view)
         {
-            string? line = document[view.CurrentLine];
+            var line = document[view.CurrentLine];
             if (view.CurrentCharacter <= line.Length - 1)
                 view.CurrentCharacter++;
         }
@@ -312,14 +310,14 @@ namespace InterpreterCSharp
 
         private void HandleBackspace(ObservableCollection<string> document, SubmissionView view)
         {
-            int start = view.CurrentCharacter;
+            var start = view.CurrentCharacter;
             if (start == 0)
             {
                 if (view.CurrentLine == 0)
                     return;
 
-                string? currentLine = document[view.CurrentLine];
-                string? previousLine = document[view.CurrentLine - 1];
+                var currentLine = document[view.CurrentLine];
+                var previousLine = document[view.CurrentLine - 1];
                 document.RemoveAt(view.CurrentLine);
                 view.CurrentLine--;
                 document[view.CurrentLine] = previousLine + currentLine;
@@ -327,10 +325,10 @@ namespace InterpreterCSharp
             }
             else
             {
-                int lineIndex = view.CurrentLine;
-                string? line = document[lineIndex];
-                string? before = line.Substring(0, start - 1);
-                string? after = line.Substring(start);
+                var lineIndex = view.CurrentLine;
+                var line = document[lineIndex];
+                var before = line.Substring(0, start - 1);
+                var after = line.Substring(start);
                 document[lineIndex] = before + after;
                 view.CurrentCharacter--;
             }
@@ -338,21 +336,24 @@ namespace InterpreterCSharp
 
         private void HandleDelete(ObservableCollection<string> document, SubmissionView view)
         {
-            int lineIndex = view.CurrentLine;
-            string? line = document[lineIndex];
-            int start = view.CurrentCharacter;
-            if (start >= line.Length){
+            var lineIndex = view.CurrentLine;
+            var line = document[lineIndex];
+            var start = view.CurrentCharacter;
+            if (start >= line.Length)
+            {
                 if (view.CurrentLine == document.Count - 1)
+                {
                     return;
+                }
 
-                string? nextLine = document[view.CurrentLine + 1];
+                var nextLine = document[view.CurrentLine + 1];
                 document[view.CurrentLine] += nextLine;
                 document.RemoveAt(view.CurrentLine + 1);
                 return;
             }
 
-            string? before = line.Substring(0, start);
-            string? after = line.Substring(start + 1);
+            var before = line.Substring(0, start);
+            var after = line.Substring(start + 1);
             document[lineIndex] = before + after;
         }
 
@@ -369,9 +370,9 @@ namespace InterpreterCSharp
         private void HandleTab(ObservableCollection<string> document, SubmissionView view)
         {
             const int TabWidth = 4;
-            int start = view.CurrentCharacter;
-            int remainingSpaces = TabWidth - start % TabWidth;
-            string? line = document[view.CurrentLine];
+            var start = view.CurrentCharacter;
+            var remainingSpaces = TabWidth - start % TabWidth;
+            var line = document[view.CurrentLine];
             document[view.CurrentLine] = line.Insert(start, new string(' ', remainingSpaces));
             view.CurrentCharacter += remainingSpaces;
         }
@@ -396,12 +397,12 @@ namespace InterpreterCSharp
         {
             if (_submissionHistory.Count == 0)
                 return;
-            
+
             document.Clear();
 
-            string? historyItem = _submissionHistory[_submissionHistoryIndex];
-            string[]? lines = historyItem.Split(Environment.NewLine);
-            foreach (string? line in lines)
+            var historyItem = _submissionHistory[_submissionHistoryIndex];
+            var lines = historyItem.Split(Environment.NewLine);
+            foreach (var line in lines)
                 document.Add(line);
 
             view.CurrentLine = document.Count - 1;
@@ -410,10 +411,8 @@ namespace InterpreterCSharp
 
         private void HandleTyping(ObservableCollection<string> document, SubmissionView view, string text)
         {
-            if (text == "\u007f")
-                return;
-            int lineIndex = view.CurrentLine;
-            int start = view.CurrentCharacter;
+            var lineIndex = view.CurrentLine;
+            var start = view.CurrentCharacter;
             document[lineIndex] = document[lineIndex].Insert(start, text);
             view.CurrentCharacter += text.Length;
         }
@@ -423,7 +422,7 @@ namespace InterpreterCSharp
             _submissionHistory.Clear();
         }
 
-        protected virtual object RenderLine(IReadOnlyList<string> lines, int lineIndex, object state)
+        protected virtual object? RenderLine(IReadOnlyList<string> lines, int lineIndex, object? state)
         {
             Console.Write(lines[lineIndex]);
             return state;
@@ -433,14 +432,14 @@ namespace InterpreterCSharp
         {
             // Parse arguments
 
-            List<string>? args = new List<string>();
-            bool inQuotes = false;
-            int position = 1;
-            StringBuilder? sb = new StringBuilder();
+            var args = new List<string>();
+            var inQuotes = false;
+            var position = 1;
+            var sb = new StringBuilder();
             while (position < input.Length)
             {
-                char c = input[position];
-                char l = position + 1 >= input.Length ? '\0' : input[position + 1];
+                var c = input[position];
+                var l = position + 1 >= input.Length ? '\0' : input[position + 1];
 
                 if (char.IsWhiteSpace(c))
                 {
@@ -473,17 +472,17 @@ namespace InterpreterCSharp
 
             void CommitPendingArgument()
             {
-                string? arg = sb.ToString();
+                var arg = sb.ToString();
                 if (!string.IsNullOrWhiteSpace(arg))
                     args.Add(arg);
                 sb.Clear();
             }
 
-            string? commandName = args.FirstOrDefault();
+            var commandName = args.FirstOrDefault();
             if (args.Count > 0)
                 args.RemoveAt(0);
 
-            MetaCommand? command = _metaCommands.SingleOrDefault(mc => mc.Name == commandName);
+            var command = _metaCommands.SingleOrDefault(mc => mc.Name == commandName);
             if (command == null)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -492,11 +491,11 @@ namespace InterpreterCSharp
                 return;
             }
 
-            ParameterInfo[]? parameters = command.Method.GetParameters();
+            var parameters = command.Method.GetParameters();
 
             if (args.Count != parameters.Length)
             {
-                string? parameterNames = string.Join(" ", parameters.Select(p => $"<{p.Name}>"));
+                var parameterNames = string.Join(" ", parameters.Select(p => $"<{p.Name}>"));
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"error: invalid number of arguments");
                 Console.WriteLine($"usage: #{command.Name} {parameterNames}");
@@ -504,7 +503,7 @@ namespace InterpreterCSharp
                 return;
             }
 
-            Repl? instance = command.Method.IsStatic ? null : this;
+            var instance = command.Method.IsStatic ? null : this;
             command.Method.Invoke(instance, args.ToArray());
         }
 
@@ -542,14 +541,14 @@ namespace InterpreterCSharp
         [MetaCommand("help", "Shows help")]
         protected void EvaluateHelp()
         {
-            int maxNameLength = _metaCommands.Max(mc => mc.Name.Length);
+            var maxNameLength = _metaCommands.Max(mc => mc.Name.Length);
 
-            foreach (MetaCommand? metaCommand in _metaCommands.OrderBy(mc => mc.Name))
+            foreach (var metaCommand in _metaCommands.OrderBy(mc => mc.Name))
             {
-                ParameterInfo[]? metaParams = metaCommand.Method.GetParameters();
+                var metaParams = metaCommand.Method.GetParameters();
                 if (metaParams.Length == 0)
                 {
-                    string? paddedName = metaCommand.Name.PadRight(maxNameLength);
+                    var paddedName = metaCommand.Name.PadRight(maxNameLength);
 
                     Console.Out.WritePunctuation("#");
                     Console.Out.WriteIdentifier(paddedName);
@@ -558,20 +557,19 @@ namespace InterpreterCSharp
                 {
                     Console.Out.WritePunctuation("#");
                     Console.Out.WriteIdentifier(metaCommand.Name);
-                    foreach (ParameterInfo? pi in metaParams)
+                    foreach (var pi in metaParams)
                     {
                         Console.Out.WriteSpace();
                         Console.Out.WritePunctuation("<");
-                        Console.Out.WriteIdentifier(pi.Name);
+                        Console.Out.WriteIdentifier(pi.Name!);
                         Console.Out.WritePunctuation(">");
                     }
                     Console.Out.WriteLine();
                     Console.Out.WriteSpace();
-                    for (int i = 0; i < maxNameLength; i++)
+                    for (int _ = 0; _ < maxNameLength; _++)
                         Console.Out.WriteSpace();
 
                 }
-
                 Console.Out.WriteSpace();
                 Console.Out.WriteSpace();
                 Console.Out.WriteSpace();

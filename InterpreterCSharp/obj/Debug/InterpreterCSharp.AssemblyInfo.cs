@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InterpreterCSharp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1b299c38836e52b92e0252efde68c5897b687943")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2a9a2fcbc3048c89a2088ae79314932807b58c9")]
 [assembly: System.Reflection.AssemblyProductAttribute("InterpreterCSharp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InterpreterCSharp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

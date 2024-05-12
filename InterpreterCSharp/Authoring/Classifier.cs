@@ -4,7 +4,7 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Text;
 
-namespace InterpreterCSharp.Authoring
+namespace CompilerCSharpLibrary.CodeAnalysis.Authoring
 {
     public static class Classifier
     {

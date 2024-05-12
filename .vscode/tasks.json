@@ -49,8 +49,9 @@
             "args": [
                 "run",
                 "--project",
-                "${workspaceFolder}/InterpreterCSharp/InterpreterCSharp.csproj",
+                "${workspaceFolder}/InterpreterCSharp/InterpreterCSharp.csproj"
             ],
+            "problemMatcher": []
         }
     ]
 }

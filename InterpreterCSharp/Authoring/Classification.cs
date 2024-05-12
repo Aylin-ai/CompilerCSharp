@@ -1,4 +1,4 @@
-namespace InterpreterCSharp.Authoring
+namespace CompilerCSharpLibrary.CodeAnalysis.Authoring
 {
     public enum Classification
     {

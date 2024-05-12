@@ -1,7 +1,5 @@
-using CompilerCSharpLibrary.CodeAnalysis.Text;
 using CompilerCSharpLibrary.CodeAnalysis;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
-using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 using static CompilerCSharpLibrary.IO.TextWriterExtensions;
 
@@ -9,7 +7,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Linq;
-using InterpreterCSharp.Authoring;
+using CompilerCSharpLibrary.CodeAnalysis.Authoring;
 
 namespace InterpreterCSharp
 {
@@ -17,8 +15,7 @@ namespace InterpreterCSharp
     {
         private bool _loadingSubmission;
         private static readonly Compilation emptyCompilation = Compilation.CreateScript(null);
-
-        private Compilation _previous;
+        private Compilation? _previous;
         private bool _showTree;
         private bool _showProgram;
         private readonly Dictionary<VariableSymbol, object> _variables = new Dictionary<VariableSymbol, object>();
@@ -28,7 +25,7 @@ namespace InterpreterCSharp
             LoadSubmissions();
         }
 
-        protected override object RenderLine(IReadOnlyList<string> lines, int lineIndex, object state)
+        protected override object? RenderLine(IReadOnlyList<string> lines, int lineIndex, object? state)
         {
             SyntaxTree syntaxTree;
 
@@ -126,16 +123,16 @@ namespace InterpreterCSharp
                 return;
             }
 
-            string? text = File.ReadAllText(path);
+            var text = File.ReadAllText(path);
             EvaluateSubmission(text);
         }
 
         [MetaCommand("ls", "Lists all symbols")]
         private void EvaluateLs()
         {
-            Compilation? compilation = _previous ?? emptyCompilation;
-            IOrderedEnumerable<Symbol>? symbols = compilation.GetSymbols().OrderBy(s => s.Kind).ThenBy(s => s.Name);
-            foreach (Symbol? symbol in symbols)
+            var compilation = _previous ?? emptyCompilation;
+            var symbols = compilation.GetSymbols().OrderBy(s => s.Kind).ThenBy(s => s.Name);
+            foreach (var symbol in symbols)
             {
                 symbol.WriteTo(Console.Out);
                 Console.WriteLine();
@@ -145,9 +142,8 @@ namespace InterpreterCSharp
         [MetaCommand("dump", "Shows bound tree of a given function")]
         private void EvaluateDump(string functionName)
         {
-            Compilation? compilation = _previous ?? emptyCompilation;
-            FunctionSymbol? symbol = compilation.GetSymbols().OfType<FunctionSymbol>().SingleOrDefault(f => f.Name == functionName);
-
+            var compilation = _previous ?? emptyCompilation;
+            var symbol = compilation.GetSymbols().OfType<FunctionSymbol>().SingleOrDefault(f => f.Name == functionName);
             if (symbol == null)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -164,7 +160,7 @@ namespace InterpreterCSharp
             if (string.IsNullOrEmpty(text))
                 return true;
 
-            bool lastTwoLinesAreBlank = text.Split(Environment.NewLine)
+            var lastTwoLinesAreBlank = text.Split(Environment.NewLine)
                                            .Reverse()
                                            .TakeWhile(s => string.IsNullOrEmpty(s))
                                            .Take(2)
@@ -172,7 +168,7 @@ namespace InterpreterCSharp
             if (lastTwoLinesAreBlank)
                 return true;
 
-            SyntaxTree? syntaxTree = SyntaxTree.Parse(text);
+            var syntaxTree = SyntaxTree.Parse(text);
 
             // Use Members because we need to exclude the EndOfFileToken.
             var lastMember = syntaxTree.Root.Members.LastOrDefault();
@@ -184,9 +180,8 @@ namespace InterpreterCSharp
 
         protected override void EvaluateSubmission(string text)
         {
-            SyntaxTree? syntaxTree = SyntaxTree.Parse(text);
-
-            Compilation? compilation = Compilation.CreateScript(_previous, syntaxTree);
+            var syntaxTree = SyntaxTree.Parse(text);
+            var compilation = Compilation.CreateScript(_previous, syntaxTree);
 
             if (_showTree)
                 syntaxTree.Root.WriteTo(Console.Out);
@@ -194,9 +189,10 @@ namespace InterpreterCSharp
             if (_showProgram)
                 compilation.EmitTree(Console.Out);
 
-            EvaluationResult? result = compilation.Evaluate(_variables);
+            var result = compilation.Evaluate(_variables);
+            Console.Out.WriteDiagnostics(result.Diagnostics);
 
-            if (!result.ErrorDiagnostics.Any())
+            if (!result.Diagnostics.HasErrors())
             {
                 if (result.Value != null)
                 {
@@ -208,26 +204,22 @@ namespace InterpreterCSharp
 
                 SaveSubmission(text);
             }
-            else
-            {
-                Console.Out.WriteDiagnostics(result.Diagnostics);
-            }
         }
 
         private static string GetSubmissionsDirectory()
         {
-            string? localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string? submissionsDirectory = Path.Combine(localAppData, "Minsk", "Submissions");
+            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var submissionsDirectory = Path.Combine(localAppData, "Minsk", "Submissions");
             return submissionsDirectory;
         }
 
         private void LoadSubmissions()
         {
-            string? submissionsDirectory = GetSubmissionsDirectory();
+            var submissionsDirectory = GetSubmissionsDirectory();
             if (!Directory.Exists(submissionsDirectory))
                 return;
 
-            string[]? files = Directory.GetFiles(submissionsDirectory).OrderBy(f => f).ToArray();
+            var files = Directory.GetFiles(submissionsDirectory).OrderBy(f => f).ToArray();
             if (files.Length == 0)
                 return;
 
@@ -237,9 +229,9 @@ namespace InterpreterCSharp
 
             _loadingSubmission = true;
 
-            foreach (string? file in files)
+            foreach (var file in files)
             {
-                string? text = File.ReadAllText(file);
+                var text = File.ReadAllText(file);
                 EvaluateSubmission(text);
             }
 
@@ -248,7 +240,7 @@ namespace InterpreterCSharp
 
         private static void ClearSubmissions()
         {
-            string? dir = GetSubmissionsDirectory();
+            var dir = GetSubmissionsDirectory();
             if (Directory.Exists(dir))
                 Directory.Delete(dir, recursive: true);
         }
@@ -258,11 +250,11 @@ namespace InterpreterCSharp
             if (_loadingSubmission)
                 return;
 
-            string? submissionsDirectory = GetSubmissionsDirectory();
+            var submissionsDirectory = GetSubmissionsDirectory();
             Directory.CreateDirectory(submissionsDirectory);
-            int count = Directory.GetFiles(submissionsDirectory).Length;
-            string? name = $"submission{count:0000}";
-            string? fileName = Path.Combine(submissionsDirectory, name);
+            var count = Directory.GetFiles(submissionsDirectory).Length;
+            var name = $"submission{count:0000}";
+            var fileName = Path.Combine(submissionsDirectory, name);
             File.WriteAllText(fileName, text);
         }
     }

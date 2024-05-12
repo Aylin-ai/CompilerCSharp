@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using CompilerCSharpLibrary.CodeAnalysis;
-using CompilerCSharpLibrary.CodeAnalysis.Binding;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 using CompilerCSharpLibrary.CodeAnalysis.Text;

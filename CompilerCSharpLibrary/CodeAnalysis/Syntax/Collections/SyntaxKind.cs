@@ -8,8 +8,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         WhiteSpaceTrivia,
         SingleLineCommentTrivia,
         LineBreakTrivia,
-        MultiLineCommentTriva,
+        MultiLineCommentTrivia,
         SkippedTextTrivia,
+        SharpToken,
 
         //Tokens
         NumberToken,
@@ -86,5 +87,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         BreakKeyword,
         ContinueKeyword,
         ReturnKeyword,
+        PipeEqualsToken,
+        AmpersandEqualsToken,
+        HatEqualsToken,
+        SlashEqualsToken,
+        StarEqualsToken,
+        MinusEqualsToken,
+        PlusEqualsToken,
     }
 }

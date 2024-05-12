@@ -1,6 +1,6 @@
 using CompilerCSharpLibrary.CodeAnalysis.Text;
 
-namespace InterpreterCSharp.Authoring
+namespace CompilerCSharpLibrary.CodeAnalysis.Authoring
 {
     public sealed class ClassifiedSpan
     {

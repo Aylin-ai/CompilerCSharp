@@ -56,7 +56,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         public static bool IsComment(this SyntaxKind kind)
         {
             return kind == SyntaxKind.SingleLineCommentTrivia ||
-                   kind == SyntaxKind.MultiLineCommentTriva;
+                   kind == SyntaxKind.MultiLineCommentTrivia;
         }
 
         //Получает тип ключевого слова
@@ -215,7 +215,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 case SyntaxKind.LineBreakTrivia:
                 case SyntaxKind.WhiteSpaceTrivia:
                 case SyntaxKind.SingleLineCommentTrivia:
-                case SyntaxKind.MultiLineCommentTriva:
+                case SyntaxKind.MultiLineCommentTrivia:
                     return true;
                 default:
                     return false;
