@@ -234,6 +234,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 case '\0':
                     _kind = SyntaxKind.EndOfFileToken;
                     break;
+                case '#':
+                    _kind = SyntaxKind.SharpToken;
+                    _position++;
+                    break;
                 case '+':
                     _position++;
                     if (Current != '=')

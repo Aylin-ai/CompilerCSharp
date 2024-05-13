@@ -1,0 +1,12 @@
+digraph G {
+    N0 [label = "<Start>", shape = box]
+    N1 [label = "goto Label1 unless x > y", shape = box]
+    N2 [label = "return x", shape = box]
+    N3 [label = "Label1:\lreturn y", shape = box]
+    N4 [label = "<End>", shape = box]
+    N0 -> N1 [label = ""]
+    N1 -> N3 [label = "!(x > y)"]
+    N1 -> N2 [label = "x > y"]
+    N2 -> N4 [label = ""]
+    N3 -> N4 [label = ""]
+}

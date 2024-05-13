@@ -101,19 +101,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
             BoundProgram? program = GetProgram();
 
-            /*
-            string? appPath = Environment.GetCommandLineArgs()[0];
-            string? appDirectory = Path.GetDirectoryName(appPath);
-            string? cfgPath = Path.Combine(appDirectory, "cfg.dot");
-            BoundBlockStatement? cfgStatement = !program.Statement.Statements.Any() && program.Functions.Any()
-                                ? program.Functions.Last().Value
-                                : program.Statement;
-            ControlFlowGraph? cfg = ControlFlowGraph.Create(cfgStatement);
-            using (StreamWriter? streamWriter = new StreamWriter(cfgPath))
-            {
-                cfg.WriteTo(streamWriter);
-            }
-            */
+            // string? appPath = Environment.GetCommandLineArgs()[0];
+            // string? appDirectory = Path.GetDirectoryName(appPath);
+            // string? cfgPath = Path.Combine(appDirectory, "cfg.dot");
+            // BoundBlockStatement? cfgStatement = program.Functions.Last().Value;
+            // ControlFlowGraph? cfg = ControlFlowGraph.Create(cfgStatement);
+            // using (StreamWriter? streamWriter = new StreamWriter(cfgPath))
+            // {
+            //     cfg.WriteTo(streamWriter);
+            // }
 
             if (program.ErrorDiagnostics.Any())
                 return new EvaluationResult(program.Diagnostics, null);
