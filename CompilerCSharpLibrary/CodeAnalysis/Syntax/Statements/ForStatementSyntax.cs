@@ -7,9 +7,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
     public sealed class ForStatementSyntax : StatementSyntax
     {
-        public ForStatementSyntax(SyntaxTree syntaxTree, SyntaxToken forKeyword, SyntaxToken identifier,
-        SyntaxToken equalToken, BaseExpressionSyntax lowerBound, SyntaxToken toKeyword,
-        BaseExpressionSyntax upperBound, StatementSyntax body)
+        public ForStatementSyntax(SyntaxTree syntaxTree,
+                                  SyntaxToken forKeyword,
+                                  SyntaxToken identifier,
+                                  SyntaxToken equalToken,
+                                  BaseExpressionSyntax lowerBound,
+                                  SyntaxToken toKeyword,
+                                  BaseExpressionSyntax upperBound,
+                                  StatementSyntax body)
             : base(syntaxTree)
         {
             ForKeyword = forKeyword;
@@ -28,7 +33,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
         public SyntaxToken ToKeyword { get; }
         public BaseExpressionSyntax UpperBound { get; }
         public StatementSyntax Body { get; }
-
         public override SyntaxKind Kind => SyntaxKind.ForStatement;
 
         public override IEnumerable<SyntaxNode> GetChildren()

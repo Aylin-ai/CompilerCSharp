@@ -7,8 +7,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
     public sealed class DoWhileStatementSyntax : StatementSyntax
     {
-        public DoWhileStatementSyntax(SyntaxTree syntaxTree, SyntaxToken doKeyword,
-        StatementSyntax body, SyntaxToken whileKeyword, BaseExpressionSyntax condition)
+        public DoWhileStatementSyntax(SyntaxTree syntaxTree,
+                                      SyntaxToken doKeyword,
+                                      StatementSyntax body,
+                                      SyntaxToken whileKeyword,
+                                      BaseExpressionSyntax condition)
             : base(syntaxTree)
         {
             DoKeyword = doKeyword;
@@ -21,7 +24,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
         public BaseExpressionSyntax Condition { get; }
         public SyntaxToken DoKeyword { get; }
         public StatementSyntax Body { get; }
-
         public override SyntaxKind Kind => SyntaxKind.DoWhileStatement;
 
         public override IEnumerable<SyntaxNode> GetChildren()

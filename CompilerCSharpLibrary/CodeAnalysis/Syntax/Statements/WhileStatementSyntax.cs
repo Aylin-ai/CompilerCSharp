@@ -7,8 +7,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
     public sealed class WhileStatementSyntax : StatementSyntax
     {
-        public WhileStatementSyntax(SyntaxTree syntaxTree, SyntaxToken whileKeyword,
-        BaseExpressionSyntax condition, StatementSyntax body)
+        public WhileStatementSyntax(SyntaxTree syntaxTree,
+                                    SyntaxToken whileKeyword,
+                                    BaseExpressionSyntax condition,
+                                    StatementSyntax body)
             : base(syntaxTree)
         {
             WhileKeyword = whileKeyword;
@@ -19,7 +21,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
         public SyntaxToken WhileKeyword { get; }
         public BaseExpressionSyntax Condition { get; }
         public StatementSyntax Body { get; }
-
         public override SyntaxKind Kind => SyntaxKind.WhileStatement;
 
         public override IEnumerable<SyntaxNode> GetChildren()

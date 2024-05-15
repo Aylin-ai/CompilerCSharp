@@ -334,7 +334,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 locals[variable] = value;
             }
         }
-    
+
         #endregion
 
     }

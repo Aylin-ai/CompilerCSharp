@@ -21,7 +21,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
         public TypeSymbol Type { get; }
 
         //Список доступных операторов
-        private static BoundUnaryOperator[] _operators = 
+        private static BoundUnaryOperator[] _operators =
         {
             new BoundUnaryOperator(SyntaxKind.BangToken, BoundUnaryOperatorKind.LogicalNegation, TypeSymbol.Bool),
 
@@ -34,9 +34,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
 
         #region Конструкторы класса
 
-        private BoundUnaryOperator(SyntaxKind syntaxKind, BoundUnaryOperatorKind kind, TypeSymbol operandType)
+        private BoundUnaryOperator(SyntaxKind syntaxKind,
+                                   BoundUnaryOperatorKind kind,
+                                   TypeSymbol operandType)
         : this(syntaxKind, kind, operandType, operandType) { }
-        private BoundUnaryOperator(SyntaxKind syntaxKind, BoundUnaryOperatorKind kind, TypeSymbol operandType, TypeSymbol type)
+        private BoundUnaryOperator(SyntaxKind syntaxKind,
+                                   BoundUnaryOperatorKind kind,
+                                   TypeSymbol operandType,
+                                   TypeSymbol type)
         {
             SyntaxKind = syntaxKind;
             Kind = kind;
@@ -47,7 +52,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
         #endregion
 
         #region Методы класса
-        
+
         //Возвращает нужный оператор из списка на основании переданных параметров
         public static BoundUnaryOperator Bind(SyntaxKind syntaxKind, TypeSymbol operandType)
         {

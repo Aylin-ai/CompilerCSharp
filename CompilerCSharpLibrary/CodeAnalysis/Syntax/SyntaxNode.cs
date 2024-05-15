@@ -20,9 +20,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         #region Поля класса
 
         public SyntaxTree SyntaxTree { get; }
-
         public abstract SyntaxKind Kind { get; }
-
         public virtual TextSpan Span
         {
             get
@@ -32,7 +30,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 return TextSpan.FromBounds(first.Start, last.End);
             }
         }
-
         public virtual TextSpan FullSpan
         {
             get
@@ -42,7 +39,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 return TextSpan.FromBounds(first.Start, last.End);
             }
         }
-
         public TextLocation Location => new TextLocation(SyntaxTree.Text, Span);
 
         #endregion
@@ -157,8 +153,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 return writer.ToString();
             }
         }
-    
+
         #endregion
-    
+
     }
 }

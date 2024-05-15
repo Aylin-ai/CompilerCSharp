@@ -10,8 +10,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
     Содержит в себе вид выражения(LiteralExpression), 
     тип литеры внутри(Value.GetType()) и ее значение(Value)
     */
-    public sealed class BoundLiteralExpression : BoundExpression{
-        public BoundLiteralExpression(object value){
+    public sealed class BoundLiteralExpression : BoundExpression
+    {
+        public BoundLiteralExpression(object value)
+        {
             if (value is bool)
                 Type = TypeSymbol.Bool;
             else if (value is int)
@@ -26,9 +28,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
 
         public object Value => ConstantValue.Value;
         public override BoundConstant ConstantValue { get; }
-
         public override TypeSymbol Type { get; }
-
         public override BoundNodeKind Kind => BoundNodeKind.LiteralExpression;
     }
 }

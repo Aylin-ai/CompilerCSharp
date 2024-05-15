@@ -1,7 +1,9 @@
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
-    public sealed class BoundLabel{
-        internal BoundLabel(string name){
+    public sealed class BoundLabel
+    {
+        internal BoundLabel(string name)
+        {
             Name = name;
         }
 

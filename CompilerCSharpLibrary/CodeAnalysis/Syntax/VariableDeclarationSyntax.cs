@@ -6,11 +6,15 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements.Base;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
+    //Синтаксис для объявления/определения функции
     public sealed class VariableDeclarationSyntax : StatementSyntax
     {
-        public VariableDeclarationSyntax(SyntaxTree syntaxTree, SyntaxToken keyword,
-        SyntaxToken identifier, TypeClauseSyntax typeClause,
-        SyntaxToken equalsToken, BaseExpressionSyntax initializer)
+        public VariableDeclarationSyntax(SyntaxTree syntaxTree,
+                                         SyntaxToken keyword,
+                                         SyntaxToken identifier,
+                                         TypeClauseSyntax typeClause,
+                                         SyntaxToken equalsToken,
+                                         BaseExpressionSyntax initializer)
             : base(syntaxTree)
         {
             Keyword = keyword;
@@ -19,8 +23,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             EqualsToken = equalsToken;
             Initializer = initializer;
         }
-        public override SyntaxKind Kind => SyntaxKind.VariableDeclaration;
 
+        public override SyntaxKind Kind => SyntaxKind.VariableDeclaration;
         public SyntaxToken Keyword { get; }
         public SyntaxToken Identifier { get; }
         public TypeClauseSyntax TypeClause { get; }

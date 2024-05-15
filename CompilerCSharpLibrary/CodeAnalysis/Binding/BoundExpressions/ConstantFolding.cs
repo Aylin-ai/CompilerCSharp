@@ -8,7 +8,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
 {
     internal static class ConstantFolding
     {
-        
+
         public static BoundConstant ComputeConstant(BoundUnaryOperator op, BoundExpression operand)
         {
             if (operand.ConstantValue != null)
@@ -111,6 +111,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
                     throw new Exception($"Unexpected binary operator {op.Kind}");
             }
         }
-    
+
     }
 }

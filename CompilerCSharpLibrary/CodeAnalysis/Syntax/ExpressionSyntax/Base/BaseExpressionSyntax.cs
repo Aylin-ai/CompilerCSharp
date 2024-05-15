@@ -9,7 +9,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax.Base
     */
     public abstract class BaseExpressionSyntax : SyntaxNode
     {
-        protected BaseExpressionSyntax(SyntaxTree syntaxTree) 
+        protected BaseExpressionSyntax(SyntaxTree syntaxTree)
             : base(syntaxTree)
         {
         }

@@ -289,8 +289,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering
 
             return base.RewriteConditionalGotoStatement(node);
         }
-    
+
         #endregion
-    
+
     }
 }

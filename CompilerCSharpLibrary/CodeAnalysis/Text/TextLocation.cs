@@ -3,7 +3,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
 {
     public struct TextLocation
     {
-        public TextLocation(SourceText text, TextSpan span){
+        public TextLocation(SourceText text, TextSpan span)
+        {
             Text = text;
             Span = span;
         }

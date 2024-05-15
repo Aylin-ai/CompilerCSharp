@@ -10,19 +10,20 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
     Операнд может ветвиться дальше, то есть
     сам являться деревом, т.к. класса ExpressionSyntax.
     */
-    public sealed class UnaryExpressionSyntax : BaseExpressionSyntax{
-        public UnaryExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken operatorToken, 
-        BaseExpressionSyntax operand)
+    public sealed class UnaryExpressionSyntax : BaseExpressionSyntax
+    {
+        public UnaryExpressionSyntax(SyntaxTree syntaxTree,
+                                     SyntaxToken operatorToken,
+                                     BaseExpressionSyntax operand)
             : base(syntaxTree)
         {
             OperatorToken = operatorToken;
             Operand = operand;
         }
 
-        public override SyntaxKind Kind => SyntaxKind.UnaryExpression;
-
         public SyntaxToken OperatorToken { get; }
         public BaseExpressionSyntax Operand { get; }
+        public override SyntaxKind Kind => SyntaxKind.UnaryExpression;
 
         public override IEnumerable<SyntaxNode> GetChildren()
         {

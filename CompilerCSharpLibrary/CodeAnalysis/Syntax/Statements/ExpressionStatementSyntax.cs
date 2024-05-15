@@ -7,14 +7,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
     public sealed class ExpressionStatementSyntax : StatementSyntax
     {
-        public ExpressionStatementSyntax(SyntaxTree syntaxTree, BaseExpressionSyntax expression)
+        public ExpressionStatementSyntax(SyntaxTree syntaxTree,
+                                         BaseExpressionSyntax expression)
             : base(syntaxTree)
         {
             Expression = expression;
         }
 
         public BaseExpressionSyntax Expression { get; }
-
         public override SyntaxKind Kind => SyntaxKind.ExpressionStatement;
 
         public override IEnumerable<SyntaxNode> GetChildren()

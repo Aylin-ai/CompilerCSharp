@@ -11,7 +11,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
     */
     public sealed class AssignmentExpressionSyntax : BaseExpressionSyntax
     {
-        public AssignmentExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken identifierToken, SyntaxToken equalsToken, BaseExpressionSyntax expression)
+        public AssignmentExpressionSyntax(SyntaxTree syntaxTree,
+                                          SyntaxToken identifierToken,
+                                          SyntaxToken equalsToken,
+                                          BaseExpressionSyntax expression)
             : base(syntaxTree)
         {
             IdentifierToken = identifierToken;
@@ -22,7 +25,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
         public SyntaxToken IdentifierToken { get; }
         public SyntaxToken EqualsToken { get; }
         public BaseExpressionSyntax Expression { get; }
-
         public override SyntaxKind Kind => SyntaxKind.AssignmentExpression;
 
         public override IEnumerable<SyntaxNode> GetChildren()

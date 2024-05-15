@@ -514,7 +514,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             var identifierToken = MatchToken(SyntaxKind.IdentifierToken);
             return new NameExpressionSyntax(_syntaxTree, identifierToken);
         }
-    
+
         #endregion
 
     }

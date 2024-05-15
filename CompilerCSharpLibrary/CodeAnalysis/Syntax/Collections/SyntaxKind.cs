@@ -1,7 +1,8 @@
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
 {
     //Виды токенов
-    public enum SyntaxKind{
+    public enum SyntaxKind
+    {
         BadToken,
 
         #region Trivia
@@ -55,7 +56,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         PlusEqualsToken,
 
         #endregion
-       
+
         #region Expressions
 
         LiteralExpression,
@@ -93,7 +94,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         ReturnStatement,
 
         #endregion
-        
+
         #region Keywords
 
         TrueKeyword,

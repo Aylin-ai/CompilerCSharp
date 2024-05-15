@@ -13,14 +13,14 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax;
 namespace CompilerCSharpLibrary.CodeAnalysis
 {
     /*
-    Класс, содержащий список с пойманными ошибками, а также
-    методы для их отлавливания и добавления в список
+    Класс, содержащий список с пойманными ошибками и предупреждениями, 
+    а также методы для их отлавливания и добавления в список
     */
     public sealed class DiagnosticBag : IEnumerable<Diagnostic>
     {
 
         #region Поля класса 
-        
+
         private readonly List<Diagnostic> _diagnostics = new List<Diagnostic>();
 
         #endregion
@@ -298,8 +298,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                     throw new Exception($"Unexpected syntax {node.Kind}");
             }
         }
-    
+
         #endregion
-    
+
     }
 }

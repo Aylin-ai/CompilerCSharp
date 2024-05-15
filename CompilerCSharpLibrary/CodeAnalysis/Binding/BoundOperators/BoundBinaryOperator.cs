@@ -21,7 +21,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
         public TypeSymbol RightType { get; }
         public TypeSymbol Type { get; }
 
-        private static BoundBinaryOperator[] _operators = 
+        private static BoundBinaryOperator[] _operators =
         {
             new BoundBinaryOperator(SyntaxKind.AmpersandAmpersandToken, BoundBinaryOperatorKind.LogicalAnd, TypeSymbol.Bool),
             new BoundBinaryOperator(SyntaxKind.PipePipeToken, BoundBinaryOperatorKind.LogicalOr, TypeSymbol.Bool),
@@ -57,14 +57,22 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
 
         #region Конструкторы класса
 
-        private BoundBinaryOperator(SyntaxKind syntaxKind, BoundBinaryOperatorKind kind,
-        TypeSymbol operandtype) : this(syntaxKind, kind, operandtype, operandtype, operandtype) { }
+        private BoundBinaryOperator(SyntaxKind syntaxKind,
+                                    BoundBinaryOperatorKind kind,
+                                    TypeSymbol operandtype)
+        : this(syntaxKind, kind, operandtype, operandtype, operandtype) { }
 
-        private BoundBinaryOperator(SyntaxKind syntaxKind, BoundBinaryOperatorKind kind,
-        TypeSymbol operandType, TypeSymbol type) : this(syntaxKind, kind, operandType, operandType, type) { }
+        private BoundBinaryOperator(SyntaxKind syntaxKind,
+                                    BoundBinaryOperatorKind kind,
+                                    TypeSymbol operandType,
+                                    TypeSymbol type)
+        : this(syntaxKind, kind, operandType, operandType, type) { }
 
-        private BoundBinaryOperator(SyntaxKind syntaxKind, BoundBinaryOperatorKind kind,
-        TypeSymbol leftType, TypeSymbol rightType, TypeSymbol type)
+        private BoundBinaryOperator(SyntaxKind syntaxKind,
+                                    BoundBinaryOperatorKind kind,
+                                    TypeSymbol leftType,
+                                    TypeSymbol rightType,
+                                    TypeSymbol type)
         {
             SyntaxKind = syntaxKind;
             Kind = kind;
@@ -89,6 +97,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
         }
 
         #endregion
-    
+
     }
 }

@@ -7,8 +7,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
     public sealed class ReturnStatementSyntax : StatementSyntax
     {
-        public ReturnStatementSyntax(SyntaxTree syntaxTree, SyntaxToken returnKeyword,
-        BaseExpressionSyntax expression)
+        public ReturnStatementSyntax(SyntaxTree syntaxTree,
+                                     SyntaxToken returnKeyword,
+                                     BaseExpressionSyntax expression)
             : base(syntaxTree)
         {
             ReturnKeyword = returnKeyword;
@@ -17,7 +18,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 
         public SyntaxToken ReturnKeyword { get; }
         public BaseExpressionSyntax Expression { get; }
-
         public override SyntaxKind Kind => SyntaxKind.ReturnStatement;
 
         public override IEnumerable<SyntaxNode> GetChildren()

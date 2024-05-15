@@ -6,7 +6,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 {
     public sealed class ElseClauseSyntax : SyntaxNode
     {
-        public ElseClauseSyntax(SyntaxTree syntaxTree, SyntaxToken elseKeyword, StatementSyntax elseStatement)
+        public ElseClauseSyntax(SyntaxTree syntaxTree,
+                                SyntaxToken elseKeyword,
+                                StatementSyntax elseStatement)
             : base(syntaxTree)
         {
             ElseKeyword = elseKeyword;
@@ -15,7 +17,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Statements
 
         public SyntaxToken ElseKeyword { get; }
         public StatementSyntax ElseStatement { get; }
-
         public override SyntaxKind Kind => SyntaxKind.ElseClause;
 
         public override IEnumerable<SyntaxNode> GetChildren()

@@ -1,6 +1,3 @@
-/*
-Граф потока данных
-*/
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -17,6 +14,9 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
+    /*
+        Граф потока данных
+    */
     public sealed class ControlFlowGraph
     {
 
@@ -31,7 +31,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
         #region Конструкторы класса
 
-        private ControlFlowGraph(BasicBlock start, BasicBlock end, List<BasicBlock> blocks, List<BasicBlockBranch> branches)
+        private ControlFlowGraph(BasicBlock start,
+                                 BasicBlock end,
+                                 List<BasicBlock> blocks,
+                                 List<BasicBlockBranch> branches)
         {
             Start = start;
             End = end;
@@ -260,7 +263,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     _statements.Clear();
                 }
             }
-        
+
             #endregion
 
         }
@@ -406,9 +409,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 BoundUnaryOperator? op = BoundUnaryOperator.Bind(SyntaxKind.BangToken, TypeSymbol.Bool);
                 return new BoundUnaryExpression(op, condition);
             }
-        
+
             #endregion
-        
+
         }
 
         #endregion

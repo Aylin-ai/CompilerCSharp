@@ -1,19 +1,3 @@
-/*
-Абстрактное синтаксическое дерево требуется для того, чтобы
-синтаксическое дерево оставалось неизменяемым.
-АСД(AST) является разделением задач.
-Синтаксические классы показывают синтаксис языка программирования
-наиболее четко чтобы отлавливать ошибки.
-АСД нужны для отображения внутреннего состояния компилятора.
-Разделение просто упрощает понимание и написание кода.
-В данном случае в АСД происходит работа с типами выражений, литерал
-и операторов. Мы рассматриваем классы Binding больше с абстрактной точки 
-зрения, чем с конкретной, в отличие от классов Syntax (Пример, оператор +. 
-В Binding на него есть более подробная информация, когда как в Syntax
-все ограничивается его токеном)
-АСД нужно, чтобы хранить больше информации, в отличие от
-синтаксического дерева, а также чтобы последнее было неизменяемо
-*/
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding
@@ -22,7 +6,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
     {
         //Implicity - неявное преобразование
         //Explicity - явное
-        
+
         public static readonly Conversion None = new Conversion(exist: false, isIdentity: false, isImplicit: false);
         //Identity - типы равны
         public static readonly Conversion Identity = new Conversion(exist: true, isIdentity: true, isImplicit: true);
@@ -30,7 +14,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         public static readonly Conversion Implicit = new Conversion(exist: true, isIdentity: false, isImplicit: true);
         //При преобразовании информация не теряется (int -> float)
         public static readonly Conversion Explicit = new Conversion(exist: true, isIdentity: false, isImplicit: false);
-        private Conversion(bool exist, bool isIdentity, bool isImplicit)
+        private Conversion(bool exist,
+                           bool isIdentity,
+                           bool isImplicit)
         {
             Exist = exist;
             IsIdentity = isIdentity;
@@ -62,7 +48,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 if (to == TypeSymbol.String)
                     return Explicit;
             }
-            
+
             if (from == TypeSymbol.String)
             {
                 if (to == TypeSymbol.Int || to == TypeSymbol.Bool)

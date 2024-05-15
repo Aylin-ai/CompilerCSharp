@@ -6,9 +6,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
 {
     public sealed class CallExpressionSyntax : BaseExpressionSyntax
     {
-        public CallExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken identifier, 
-        SyntaxToken openParenthesisToken, SeparatedSyntaxList<BaseExpressionSyntax> arguments, 
-        SyntaxToken closeParenthesisToken)
+        public CallExpressionSyntax(SyntaxTree syntaxTree,
+                                    SyntaxToken identifier,
+                                    SyntaxToken openParenthesisToken,
+                                    SeparatedSyntaxList<BaseExpressionSyntax> arguments,
+                                    SyntaxToken closeParenthesisToken)
             : base(syntaxTree)
         {
             Identifier = identifier;
@@ -16,12 +18,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.ExpressionSyntax
             Arguments = arguments;
             CloseParenthesisToken = closeParenthesisToken;
         }
-        public override SyntaxKind Kind => SyntaxKind.CallExpression;
 
         public SyntaxToken Identifier { get; }
         public SyntaxToken OpenParenthesisToken { get; }
         public SeparatedSyntaxList<BaseExpressionSyntax> Arguments { get; }
         public SyntaxToken CloseParenthesisToken { get; }
+        public override SyntaxKind Kind => SyntaxKind.CallExpression;
 
         public override IEnumerable<SyntaxNode> GetChildren()
         {

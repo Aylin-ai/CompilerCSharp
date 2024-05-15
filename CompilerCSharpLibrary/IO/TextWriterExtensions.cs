@@ -13,7 +13,7 @@ namespace CompilerCSharpLibrary.IO
 {
     public static class TextWriterExtensions
     {
-        
+
         private static bool IsConsole(this TextWriter writer)
         {
             if (writer == Console.Out)
@@ -151,6 +151,6 @@ namespace CompilerCSharpLibrary.IO
 
             writer.WriteLine();
         }
-    
+
     }
 }

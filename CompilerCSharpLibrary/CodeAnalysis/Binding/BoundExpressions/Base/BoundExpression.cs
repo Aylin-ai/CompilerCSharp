@@ -7,7 +7,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions.Base
     BoundNode. Добавляет к виду узла в АСД тип выражения,
     которое содержит в себе.
     */
-    public abstract class BoundExpression : BoundNode{
+    public abstract class BoundExpression : BoundNode
+    {
         public abstract TypeSymbol Type { get; }
         public virtual BoundConstant ConstantValue => null;
     }

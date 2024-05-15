@@ -196,7 +196,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
             _kind = SyntaxKind.SingleLineCommentTrivia;
         }
-        
+
         private void ReadMultiLineComment()
         {
             _position += 2;
@@ -417,8 +417,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 case '"':
                     ReadString();
                     break;
-                case '0': case '1': case '2': case '3': case '4':
-                case '5': case '6': case '7': case '8': case '9':
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
                     ReadNumber();
                     break;
                 case '_':
@@ -510,7 +518,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             var text = _text.ToString(_start, length);
             _kind = SyntaxFacts.GetKeywordKind(text);
         }
-    
+
         #endregion
 
     }

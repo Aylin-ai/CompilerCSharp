@@ -175,8 +175,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
             return Emitter.Emit(program, moduleName, references, outputPath);
         }
-    
+
         #endregion
-    
+
     }
 }

@@ -11,8 +11,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
     Кроме этого содержит тип выражения(int, bool и т.п.) 
     и вид (в данном случае UnaryExpression - унарное выражение)
     */
-    public sealed class BoundUnaryExpression : BoundExpression{
-        public BoundUnaryExpression(BoundUnaryOperator op, BoundExpression operand){
+    public sealed class BoundUnaryExpression : BoundExpression
+    {
+        public BoundUnaryExpression(BoundUnaryOperator op,
+                                    BoundExpression operand)
+        {
             Op = op;
             Operand = operand;
             ConstantValue = ConstantFolding.ComputeConstant(op, operand);
@@ -21,9 +24,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
         public BoundUnaryOperator Op { get; }
         public BoundExpression Operand { get; }
         public override BoundConstant ConstantValue { get; }
-
         public override TypeSymbol Type => Op.Type;
-
         public override BoundNodeKind Kind => BoundNodeKind.UnaryExpression;
     }
 }

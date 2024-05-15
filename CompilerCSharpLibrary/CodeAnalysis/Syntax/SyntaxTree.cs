@@ -9,7 +9,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     /*
     Класс, представляющий синтаксическое дерево. Содержит в себе
     список зафиксированных ошибок Diagnostics, само выражение Root
-    и токен конца файла
+    и текст с кодом
     */
     public sealed class SyntaxTree
     {
@@ -27,7 +27,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         private delegate void ParseHandler(SyntaxTree syntaxTree,
                                            out CompilationUnitSyntax root,
                                            out DiagnosticBag diagnostics);
-        private SyntaxTree(SourceText text, ParseHandler handler)
+        private SyntaxTree(SourceText text,
+                           ParseHandler handler)
         {
             Text = text;
 
@@ -55,12 +56,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             diagnostics = parser.Diagnostics;
         }
 
-        /*
-        Мы получаем построенное синтаксическое дерево
-        с помощью следующих функций, так как они статические,
-        и для них не надо создавать новый объект типа SyntaxTree.
-        */
-        //Создает парсер и возвращает построенное дерево
         public static SyntaxTree Parse(string text)
         {
             SourceText? sourceText = SourceText.From(text);

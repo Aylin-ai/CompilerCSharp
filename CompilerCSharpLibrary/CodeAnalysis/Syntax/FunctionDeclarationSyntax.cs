@@ -7,9 +7,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
     public sealed class FunctionDeclarationSyntax : MemberSyntax
     {
-        public FunctionDeclarationSyntax(SyntaxTree syntaxTree, SyntaxToken functionKeyword, SyntaxToken identifier,
-        SyntaxToken openParenthesisToken, SeparatedSyntaxList<ParameterSyntax> parameters,
-        SyntaxToken closeParenthesisToken, TypeClauseSyntax type, BlockStatementSyntax body)
+        public FunctionDeclarationSyntax(SyntaxTree syntaxTree,
+                                         SyntaxToken functionKeyword,
+                                         SyntaxToken identifier,
+                                         SyntaxToken openParenthesisToken,
+                                         SeparatedSyntaxList<ParameterSyntax> parameters,
+                                         SyntaxToken closeParenthesisToken,
+                                         TypeClauseSyntax type,
+                                         BlockStatementSyntax body)
             : base(syntaxTree)
         {
             FunctionKeyword = functionKeyword;
@@ -21,8 +26,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             Body = body;
         }
 
-        public override SyntaxKind Kind => SyntaxKind.FunctionDeclaration;
-
         public SyntaxToken FunctionKeyword { get; }
         public SyntaxToken Identifier { get; }
         public SyntaxToken OpenParenthesisToken { get; }
@@ -30,6 +33,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         public SyntaxToken CloseParenthesisToken { get; }
         public TypeClauseSyntax Type { get; }
         public BlockStatementSyntax Body { get; }
+        public override SyntaxKind Kind => SyntaxKind.FunctionDeclaration;
 
         public override IEnumerable<SyntaxNode> GetChildren()
         {
