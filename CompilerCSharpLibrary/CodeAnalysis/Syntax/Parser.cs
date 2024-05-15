@@ -14,11 +14,20 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     */
     public class Parser
     {
+
+        #region Поля класса
+
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
         private readonly SyntaxTree _syntaxTree;
         private readonly SourceText _text;
         private readonly List<SyntaxToken> _tokens;
         private int _position;
+        public DiagnosticBag Diagnostics => _diagnostics;
+        private SyntaxToken Current => Peek(0);
+
+        #endregion
+
+        #region Конструкторы класса
 
         public Parser(SyntaxTree syntaxTree)
         {
@@ -68,7 +77,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             _diagnostics.AddRange(lexer.Diagnostics);
         }
 
-        public DiagnosticBag Diagnostics => _diagnostics;
+        #endregion
+
+        #region Методы класса
 
         private SyntaxToken Peek(int offset)
         {
@@ -78,8 +89,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
             return _tokens[index];
         }
-
-        private SyntaxToken Current => Peek(0);
 
         private SyntaxToken NextToken()
         {
@@ -505,5 +514,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             var identifierToken = MatchToken(SyntaxKind.IdentifierToken);
             return new NameExpressionSyntax(_syntaxTree, identifierToken);
         }
+    
+        #endregion
+
     }
 }

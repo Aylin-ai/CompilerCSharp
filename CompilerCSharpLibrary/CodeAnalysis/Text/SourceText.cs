@@ -10,7 +10,18 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
     */
     public sealed class SourceText
     {
+
+        #region Поля класса
+
         private readonly string _text;
+        public List<TextLine> Lines { get; }
+        public char this[int index] => _text[index];
+        public int Length => _text.Length;
+        public string FileName { get; }
+
+        #endregion
+
+        #region Конструкторы класса
 
         private SourceText(string text, string fileName)
         {
@@ -18,6 +29,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
             FileName = fileName;
             Lines = ParseLines(this, text);
         }
+
+        #endregion
+
+        #region Методы класса
 
         public static SourceText From(string text, string fileName = "")
         {
@@ -76,14 +91,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
             return 0;
         }
 
-        public List<TextLine> Lines { get; }
-
-        public char this[int index] => _text[index];
-
-        public int Length => _text.Length;
-
-        public string FileName { get; }
-
         public int GetLineIndex(int position)
         {
             var lower = 0;
@@ -115,5 +122,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Text
         public string ToString(int start, int length) => _text.Substring(start, length);
 
         public string ToString(TextSpan span) => ToString(span.Start, span.Length);
+
+        #endregion
+
     }
 }

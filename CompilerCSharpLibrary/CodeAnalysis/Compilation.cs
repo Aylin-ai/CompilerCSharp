@@ -23,33 +23,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis
     */
     public sealed class Compilation
     {
+
+        #region Поля класса
+
         private BoundGlobalScope _globalScope;
-
-        private Compilation(bool isScript, Compilation previous, params SyntaxTree[] syntaxTrees)
-        {
-            IsScript = isScript;
-            Previous = previous;
-            SyntaxTrees = syntaxTrees.ToList();
-        }
-
-        public static Compilation Create(params SyntaxTree[] syntaxTrees)
-        {
-            return new Compilation(isScript: false, previous: null, syntaxTrees);
-        }
-
-        public static Compilation CreateScript(Compilation previous, params SyntaxTree[] syntaxTrees)
-        {
-            return new Compilation(isScript: true, previous, syntaxTrees);
-        }
-
-        public bool IsScript { get; }
-        public Compilation Previous { get; }
-        public List<SyntaxTree> SyntaxTrees { get; }
-        public FunctionSymbol MainFunction => GlobalScope.MainFunction;
-        public List<FunctionSymbol> Functions => GlobalScope.Functions;
-        public List<VariableSymbol> Variables => GlobalScope.Variables;
-
-
         internal BoundGlobalScope GlobalScope
         {
             get
@@ -62,6 +39,38 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
                 return _globalScope;
             }
+        }
+
+        public bool IsScript { get; }
+        public Compilation Previous { get; }
+        public List<SyntaxTree> SyntaxTrees { get; }
+        public FunctionSymbol MainFunction => GlobalScope.MainFunction;
+        public List<FunctionSymbol> Functions => GlobalScope.Functions;
+        public List<VariableSymbol> Variables => GlobalScope.Variables;
+
+        #endregion
+
+        #region Конструкторы класса
+
+        private Compilation(bool isScript, Compilation previous, params SyntaxTree[] syntaxTrees)
+        {
+            IsScript = isScript;
+            Previous = previous;
+            SyntaxTrees = syntaxTrees.ToList();
+        }
+
+        #endregion
+
+        #region Методы класса
+
+        public static Compilation Create(params SyntaxTree[] syntaxTrees)
+        {
+            return new Compilation(isScript: false, previous: null, syntaxTrees);
+        }
+
+        public static Compilation CreateScript(Compilation previous, params SyntaxTree[] syntaxTrees)
+        {
+            return new Compilation(isScript: true, previous, syntaxTrees);
         }
 
         public IEnumerable<Symbol> GetSymbols()
@@ -166,5 +175,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
 
             return Emitter.Emit(program, moduleName, references, outputPath);
         }
+    
+        #endregion
+    
     }
 }

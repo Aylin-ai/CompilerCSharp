@@ -19,12 +19,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
 {
     internal sealed class Emitter
     {
+
+        #region Поля класса
+
         private DiagnosticBag _diagnostics = new DiagnosticBag();
-        
+
         private TypeDefinition _typeDefinition;
         private FieldDefinition _randomFieldDefinition;
         private readonly AssemblyDefinition _assemblyDefinition;
-        
+
         private readonly MethodReference _consoleWriteLineReference;
         private readonly MethodReference _consoleReadLineReference;
 
@@ -49,41 +52,15 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
         private readonly Dictionary<FunctionSymbol, MethodDefinition> _methods = new Dictionary<FunctionSymbol, MethodDefinition>();
         private readonly Dictionary<TypeSymbol, TypeReference> _knownTypes;
 
+        #endregion
+
+        #region Конструкторы класса
+
         private Emitter(string moduleName, string[] references)
         {
             var assemblies = new List<AssemblyDefinition>();
 
-            foreach (var reference in references)
-            {
-                try
-                {
-                    var assembly = AssemblyDefinition.ReadAssembly(reference);
-                    assemblies.Add(assembly);
-                }
-                catch (BadImageFormatException)
-                {
-                    _diagnostics.ReportInvalidReference(reference);
-                }
-            }
-
-            var builtInTypes = new List<(TypeSymbol type, string MetadataName)>()
-            {
-                (TypeSymbol.Any, "System.Object"),
-                (TypeSymbol.Bool, "System.Boolean"),
-                (TypeSymbol.Int, "System.Int32"),
-                (TypeSymbol.String, "System.String"),
-                (TypeSymbol.Void, "System.Void"),
-            };
-
-            var assemblyName = new AssemblyNameDefinition(moduleName, new Version(1, 0));
-            _assemblyDefinition = AssemblyDefinition.CreateAssembly(assemblyName, moduleName, ModuleKind.Console);
-            _knownTypes = new Dictionary<TypeSymbol, TypeReference>();
-
-            foreach (var (typeSymbol, metadataName) in builtInTypes)
-            {
-                var typeReference = ResolveType(typeSymbol.Name, metadataName);
-                _knownTypes.Add(typeSymbol, typeReference);
-            }
+            #region Внутренние методы
 
             TypeReference ResolveType(string minskName, string metadataName)
             {
@@ -156,23 +133,61 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                 return null;
             }
 
+            #endregion
+
+            foreach (var reference in references)
+            {
+                try
+                {
+                    var assembly = AssemblyDefinition.ReadAssembly(reference);
+                    assemblies.Add(assembly);
+                }
+                catch (BadImageFormatException)
+                {
+                    _diagnostics.ReportInvalidReference(reference);
+                }
+            }
+
+            var builtInTypes = new List<(TypeSymbol type, string MetadataName)>()
+            {
+                (TypeSymbol.Any, "System.Object"),
+                (TypeSymbol.Bool, "System.Boolean"),
+                (TypeSymbol.Int, "System.Int32"),
+                (TypeSymbol.String, "System.String"),
+                (TypeSymbol.Void, "System.Void"),
+            };
+
+            var assemblyName = new AssemblyNameDefinition(moduleName, new Version(1, 0));
+            _assemblyDefinition = AssemblyDefinition.CreateAssembly(assemblyName, moduleName, ModuleKind.Console);
+            _knownTypes = new Dictionary<TypeSymbol, TypeReference>();
+
+            foreach (var (typeSymbol, metadataName) in builtInTypes)
+            {
+                var typeReference = ResolveType(typeSymbol.Name, metadataName);
+                _knownTypes.Add(typeSymbol, typeReference);
+            }
+
             _consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", new[] { "System.Object" });
             _consoleReadLineReference = ResolveMethod("System.Console", "ReadLine", Array.Empty<string>());
-            _stringConcat2Reference = ResolveMethod("System.String", "Concat", new [] { "System.String", "System.String" });
-            _stringConcat3Reference = ResolveMethod("System.String", "Concat", new [] { "System.String", "System.String", "System.String" });
-            _stringConcat4Reference = ResolveMethod("System.String", "Concat", new [] { "System.String", "System.String", "System.String", "System.String" });
-            _stringConcatArrayReference = ResolveMethod("System.String", "Concat", new [] { "System.String[]" });
+            _stringConcat2Reference = ResolveMethod("System.String", "Concat", new[] { "System.String", "System.String" });
+            _stringConcat3Reference = ResolveMethod("System.String", "Concat", new[] { "System.String", "System.String", "System.String" });
+            _stringConcat4Reference = ResolveMethod("System.String", "Concat", new[] { "System.String", "System.String", "System.String", "System.String" });
+            _stringConcatArrayReference = ResolveMethod("System.String", "Concat", new[] { "System.String[]" });
 
             _converToBooleanReference = ResolveMethod("System.Convert", "ToBoolean", new[] { "System.Object" });
             _converToInt32Reference = ResolveMethod("System.Convert", "ToInt32", new[] { "System.Object" });
             _converToStringReference = ResolveMethod("System.Convert", "ToString", new[] { "System.Object" });
 
-            _objectEqualsReference = ResolveMethod("System.Object", "Equals", new [] { "System.Object", "System.Object" });
+            _objectEqualsReference = ResolveMethod("System.Object", "Equals", new[] { "System.Object", "System.Object" });
 
             _randomReference = ResolveType(null, "System.Random");
             _randomCtorReference = ResolveMethod("System.Random", ".ctor", Array.Empty<string>());
-            _randomNextReference = ResolveMethod("System.Random", "Next", new [] { "System.Int32", "System.Int32" });
+            _randomNextReference = ResolveMethod("System.Random", "Next", new[] { "System.Int32", "System.Int32" });
         }
+
+        #endregion
+
+        #region Методы класса
 
         public static DiagnosticBag Emit(BoundProgram program, string moduleName, string[] references, string outputPath)
         {
@@ -340,7 +355,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                 EmitConstantExpression(ilProcessor, node);
                 return;
             }
-            
+
             switch (node.Kind)
             {
                 case BoundNodeKind.UnaryExpression:
@@ -608,7 +623,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
         private void EmitConstantExpression(ILProcessor ilProcessor, BoundExpression node)
         {
             Debug.Assert(node.ConstantValue != null);
-            
+
             if (node.Type == TypeSymbol.Bool)
             {
                 var value = (bool)node.ConstantValue.Value;
@@ -739,5 +754,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Emit
                 throw new Exception($"Unexpected convertion from {node.Expression.Type} to {node.Type}");
             }
         }
+
+        #endregion
+
     }
 }

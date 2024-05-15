@@ -16,14 +16,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     */
     public abstract class SyntaxNode
     {
-        private protected SyntaxNode(SyntaxTree syntaxTree)
-        {
-            SyntaxTree = syntaxTree;
-        }
+
+        #region Поля класса
 
         public SyntaxTree SyntaxTree { get; }
-
-        public SyntaxNode? Parent => SyntaxTree.GetParent(this);
 
         public abstract SyntaxKind Kind { get; }
 
@@ -49,20 +45,18 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
         public TextLocation Location => new TextLocation(SyntaxTree.Text, Span);
 
-        public IEnumerable<SyntaxNode> AncestorsAndSelf()
+        #endregion
+
+        #region Конструкторы класса
+
+        private protected SyntaxNode(SyntaxTree syntaxTree)
         {
-            var node = this;
-            while (node != null)
-            {
-                yield return node;
-                node = node.Parent;
-            }
+            SyntaxTree = syntaxTree;
         }
 
-        public IEnumerable<SyntaxNode> Ancestors()
-        {
-            return AncestorsAndSelf().Skip(1);
-        }
+        #endregion
+
+        #region Методы класса
 
         public abstract IEnumerable<SyntaxNode> GetChildren();
 
@@ -163,5 +157,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                 return writer.ToString();
             }
         }
+    
+        #endregion
+    
     }
 }

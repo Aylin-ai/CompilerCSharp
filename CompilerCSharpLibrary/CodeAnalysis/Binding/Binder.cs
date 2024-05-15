@@ -38,12 +38,20 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
     public sealed class Binder
     {
+
+        #region Поля класса
+
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
         private readonly bool _isScript;
         private readonly FunctionSymbol _function;
         private Stack<(BoundLabel BreakLabel, BoundLabel ContinueLabel)> _loopStack = new Stack<(BoundLabel BreakLabel, BoundLabel ContinueLabel)>();
         private int _labelCounter;
         private BoundScope _scope;
+        public DiagnosticBag Diagnostics => _diagnostics;
+
+        #endregion
+
+        #region Конструкторы класса
 
         private Binder(bool isScript, BoundScope parent, FunctionSymbol function)
         {
@@ -57,6 +65,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     _scope.TryDeclareVariable(p);
             }
         }
+
+        #endregion
+
+        #region Методы класса
 
         public static BoundGlobalScope BindGlobalScope(bool isScript, BoundGlobalScope previous, List<SyntaxTree> syntaxTrees)
         {
@@ -247,8 +259,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             return result;
         }
 
-        public DiagnosticBag Diagnostics => _diagnostics;
-
         private void BindFunctionDeclaration(FunctionDeclarationSyntax syntax)
         {
             List<ParameterSymbol>? parameters = new List<ParameterSymbol>();
@@ -292,7 +302,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         private BoundStatement BindStatement(StatementSyntax syntax, bool isGlobal = false)
         {
             BoundStatement? result = BindStatementInternal(syntax);
-            
+
             if (!_isScript || !isGlobal)
             {
                 if (result is BoundExpressionStatement es)
@@ -773,7 +783,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             bool declare = identifier.IsMissing;
             //Если мы внутри функции (function != null), то локальная переменная. Иначе - глобальная.
             VariableSymbol? variable = _function == null
-            ? (VariableSymbol) new GlobalVariableSymbol(name, isReadOnly, type, constant)
+            ? (VariableSymbol)new GlobalVariableSymbol(name, isReadOnly, type, constant)
                                 : new LocalVariableSymbol(name, isReadOnly, type, constant);
 
             bool isDeclared = _scope.TryDeclareVariable(variable);
@@ -816,5 +826,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     return null;
             }
         }
+    
+        #endregion
+
     }
 }

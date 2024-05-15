@@ -5,9 +5,13 @@ using CompilerCSharpLibrary.IO;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
 {
-    public static class SymbolPrinter{
-        public static void WriteTo(this Symbol symbol, TextWriter writer){
-            switch (symbol.Kind){
+    public static class SymbolPrinter
+    {
+
+        public static void WriteTo(this Symbol symbol, TextWriter writer)
+        {
+            switch (symbol.Kind)
+            {
                 case SymbolKind.Type:
                     WriteTypeTo((TypeSymbol)symbol, writer);
                     break;
@@ -46,7 +50,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
                 symbol.Parameters[i].WriteTo(writer);
             }
             writer.WritePunctuation(SyntaxKind.CloseParenthesisToken);
-            
+
             if (symbol.Type != TypeSymbol.Void)
             {
                 writer.WritePunctuation(SyntaxKind.ColonToken);
@@ -81,5 +85,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Symbols
             writer.WriteSpace();
             symbol.Type.WriteTo(writer);
         }
+
     }
 }

@@ -10,19 +10,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
     тип левого и правого, к которым приставлен оператор и результирующий тип,
     который должен получиться в результате выполнения оператора
     */
-    public sealed class BoundBinaryOperator{
-        private BoundBinaryOperator(SyntaxKind syntaxKind, BoundBinaryOperatorKind kind, 
-        TypeSymbol operandtype) : this(syntaxKind, kind, operandtype, operandtype, operandtype) { }
-        private BoundBinaryOperator(SyntaxKind syntaxKind, BoundBinaryOperatorKind kind, 
-        TypeSymbol operandType, TypeSymbol type) : this(syntaxKind, kind, operandType, operandType, type) { }
-        private BoundBinaryOperator(SyntaxKind syntaxKind, BoundBinaryOperatorKind kind, 
-        TypeSymbol leftType, TypeSymbol rightType, TypeSymbol type){
-            SyntaxKind = syntaxKind;
-            Kind = kind;
-            LeftType = leftType;
-            RightType = rightType;
-            Type = type;
-        }
+    public sealed class BoundBinaryOperator
+    {
+
+        #region Поля класса
 
         public SyntaxKind SyntaxKind { get; }
         public BoundBinaryOperatorKind Kind { get; }
@@ -30,7 +21,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
         public TypeSymbol RightType { get; }
         public TypeSymbol Type { get; }
 
-        private static BoundBinaryOperator[] _operators = {
+        private static BoundBinaryOperator[] _operators = 
+        {
             new BoundBinaryOperator(SyntaxKind.AmpersandAmpersandToken, BoundBinaryOperatorKind.LogicalAnd, TypeSymbol.Bool),
             new BoundBinaryOperator(SyntaxKind.PipePipeToken, BoundBinaryOperatorKind.LogicalOr, TypeSymbol.Bool),
             new BoundBinaryOperator(SyntaxKind.NotEqualsToken, BoundBinaryOperatorKind.NotEquals, TypeSymbol.Bool, TypeSymbol.Bool),
@@ -54,20 +46,49 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
             new BoundBinaryOperator(SyntaxKind.HatToken, BoundBinaryOperatorKind.BitwiseXor, TypeSymbol.Int),
 
             new BoundBinaryOperator(SyntaxKind.PlusToken, BoundBinaryOperatorKind.Addition, TypeSymbol.String),
-            
+
             new BoundBinaryOperator(SyntaxKind.NotEqualsToken, BoundBinaryOperatorKind.NotEquals, TypeSymbol.String, TypeSymbol.Bool),
             new BoundBinaryOperator(SyntaxKind.EqualsEqualsToken, BoundBinaryOperatorKind.Equals, TypeSymbol.String, TypeSymbol.Bool),
             new BoundBinaryOperator(SyntaxKind.EqualsEqualsToken, BoundBinaryOperatorKind.Equals, TypeSymbol.Any),
             new BoundBinaryOperator(SyntaxKind.NotEqualsToken, BoundBinaryOperatorKind.NotEquals, TypeSymbol.Any)
         };
 
-        public static BoundBinaryOperator Bind(SyntaxKind syntaxKind, TypeSymbol leftType, TypeSymbol rightType){
-            foreach (BoundBinaryOperator? op in _operators){
+        #endregion
+
+        #region Конструкторы класса
+
+        private BoundBinaryOperator(SyntaxKind syntaxKind, BoundBinaryOperatorKind kind,
+        TypeSymbol operandtype) : this(syntaxKind, kind, operandtype, operandtype, operandtype) { }
+
+        private BoundBinaryOperator(SyntaxKind syntaxKind, BoundBinaryOperatorKind kind,
+        TypeSymbol operandType, TypeSymbol type) : this(syntaxKind, kind, operandType, operandType, type) { }
+
+        private BoundBinaryOperator(SyntaxKind syntaxKind, BoundBinaryOperatorKind kind,
+        TypeSymbol leftType, TypeSymbol rightType, TypeSymbol type)
+        {
+            SyntaxKind = syntaxKind;
+            Kind = kind;
+            LeftType = leftType;
+            RightType = rightType;
+            Type = type;
+        }
+
+        #endregion
+
+        #region Методы класса
+
+        public static BoundBinaryOperator Bind(SyntaxKind syntaxKind, TypeSymbol leftType, TypeSymbol rightType)
+        {
+            foreach (BoundBinaryOperator? op in _operators)
+            {
                 if (op.SyntaxKind == syntaxKind && op.LeftType == leftType && op.RightType == rightType)
                     return op;
             }
 
             return null;
         }
+
+        #endregion
+    
     }
 }

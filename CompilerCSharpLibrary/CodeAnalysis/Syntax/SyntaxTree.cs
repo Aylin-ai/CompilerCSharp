@@ -13,7 +13,16 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     */
     public sealed class SyntaxTree
     {
-        private Dictionary<SyntaxNode, SyntaxNode?>? _parents;
+
+        #region Поля класса
+
+        public SourceText Text { get; }
+        public DiagnosticBag Diagnostics { get; }
+        public CompilationUnitSyntax Root { get; }
+
+        #endregion
+
+        #region Конструкторы класса
         
         private delegate void ParseHandler(SyntaxTree syntaxTree,
                                            out CompilationUnitSyntax root,
@@ -28,9 +37,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             Root = root;
         }
 
-        public SourceText Text { get; }
-        public DiagnosticBag Diagnostics { get; }
-        public CompilationUnitSyntax Root { get; }
+        #endregion
+
+        #region Методы класса
 
         public static SyntaxTree Load(string fileName)
         {
@@ -45,7 +54,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             root = parser.ParseCompilationUnit();
             diagnostics = parser.Diagnostics;
         }
-
 
         /*
         Мы получаем построенное синтаксическое дерево
@@ -109,33 +117,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             diagnostics = syntaxTree.Diagnostics;
             return tokens;
         }
-
-        internal SyntaxNode? GetParent(SyntaxNode syntaxNode)
-        {
-            if (_parents == null)
-            {
-                var parents = CreateParentsDictionary(Root);
-                Interlocked.CompareExchange(ref _parents, parents, null);
-            }
-
-            return _parents[syntaxNode];
-        }
-
-        private Dictionary<SyntaxNode, SyntaxNode?> CreateParentsDictionary(CompilationUnitSyntax root)
-        {
-            var result = new Dictionary<SyntaxNode, SyntaxNode?>();
-            result.Add(root, null);
-            CreateParentsDictionary(result, root);
-            return result;
-        }
-
-        private void CreateParentsDictionary(Dictionary<SyntaxNode, SyntaxNode?> result, SyntaxNode node)
-        {
-            foreach (var child in node.GetChildren())
-            {
-                result.Add(child, node);
-                CreateParentsDictionary(result, child);
-            }
-        }
+    
+        #endregion
+    
     }
 }

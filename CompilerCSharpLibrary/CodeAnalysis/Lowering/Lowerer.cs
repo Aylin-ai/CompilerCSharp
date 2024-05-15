@@ -10,33 +10,53 @@ using CompilerCSharpLibrary.CodeAnalysis.Binding.Statements.Base;
 using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 
-namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
-    public sealed class Lowerer : BoundTreeRewriter{
+namespace CompilerCSharpLibrary.CodeAnalysis.Lowering
+{
+    public sealed class Lowerer : BoundTreeRewriter
+    {
+
+        #region Поля класса
+
         private int _labelCount;
-        private Lowerer(){
+
+        #endregion
+
+        #region Конструкторы класса
+
+        private Lowerer()
+        {
 
         }
 
-        private BoundLabel GenerateLabel(){
+        #endregion
+
+        #region Методы класса
+
+        private BoundLabel GenerateLabel()
+        {
             string? name = $"Label{++_labelCount}";
             return new BoundLabel(name);
         }
 
-        public static BoundBlockStatement Lower(FunctionSymbol function, BoundStatement statement){
+        public static BoundBlockStatement Lower(FunctionSymbol function, BoundStatement statement)
+        {
             Lowerer? lowerer = new Lowerer();
-            BoundStatement? result = lowerer.RewriteStatement(statement);   
+            BoundStatement? result = lowerer.RewriteStatement(statement);
             return RemoveDeadCode(Flatten(function, result));
         }
 
-        private static BoundBlockStatement Flatten(FunctionSymbol function, BoundStatement statement){
+        private static BoundBlockStatement Flatten(FunctionSymbol function, BoundStatement statement)
+        {
             List<BoundStatement>? builder = new List<BoundStatement>();
             Stack<BoundStatement>? stack = new Stack<BoundStatement>();
             stack.Push(statement);
 
-            while (stack.Count > 0){
+            while (stack.Count > 0)
+            {
                 BoundStatement? current = stack.Pop();
 
-                if (current is BoundBlockStatement block){
+                if (current is BoundBlockStatement block)
+                {
                     block.Statements.Reverse();
                     foreach (BoundStatement? s in block.Statements)
                         stack.Push(s);
@@ -65,7 +85,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 controlFlow.Blocks.SelectMany(b => b.Statements));
 
             var builder = node.Statements;
-            for (int i = builder.Count - 1; i >= 0 ; i--)
+            for (int i = builder.Count - 1; i >= 0; i--)
             {
                 if (!reachableStatements.Contains(builder[i]))
                     builder.RemoveAt(i);
@@ -82,7 +102,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
 
         protected override BoundStatement RewriteIfStatement(BoundIfStatement node)
         {
-            if (node.ElseStatement == null){
+            if (node.ElseStatement == null)
+            {
                 /*
                     if <condition>
                         <then>
@@ -103,7 +124,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 );
                 return RewriteStatement(result);
             }
-            else{
+            else
+            {
                 /*
                     if <condition>
                         <then>
@@ -127,7 +149,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 BoundLabelStatement? endLabelStatement = new BoundLabelStatement(endLabel);
                 BoundBlockStatement? result = new BoundBlockStatement(
                     new List<BoundStatement>(){
-                        gotoFalse, node.ThenStatement, gotoEndStatement, 
+                        gotoFalse, node.ThenStatement, gotoEndStatement,
                         elseLabelStatement, node.ElseStatement, endLabelStatement
                     }
                 );
@@ -152,7 +174,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
             */
 
             BoundLabel? checkLabel = GenerateLabel();
-            
+
             BoundGotoStatement? gotoCheck = new BoundGotoStatement(checkLabel);
             BoundLabelStatement? continueLabelStatement = new BoundLabelStatement(node.ContinueLabel);
             BoundLabelStatement? checkLabelStatement = new BoundLabelStatement(checkLabel);
@@ -161,7 +183,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
 
             BoundBlockStatement? result = new BoundBlockStatement(
                 new List<BoundStatement>(){
-                    gotoCheck, continueLabelStatement, node.Body, 
+                    gotoCheck, continueLabelStatement, node.Body,
                     checkLabelStatement, gotoTrue, breakLabelStatement
                 }
             );
@@ -182,7 +204,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
                 gotoTrue <condition> continue
                 break:
             */
-            
+
             BoundLabelStatement? continueLabelStatement = new BoundLabelStatement(node.ContinueLabel);
             BoundConditionalGotoStatement? gotoTrue = new BoundConditionalGotoStatement(node.ContinueLabel, node.Condition, true);
             BoundLabelStatement? breakLabelStatement = new BoundLabelStatement(node.BreakLabel);
@@ -219,7 +241,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
             LocalVariableSymbol? upperBoundSymbol = new LocalVariableSymbol("upperBound", true, TypeSymbol.Int, node.UpperBound.ConstantValue);
             BoundVariableDeclaration? upperBoundDeclaration = new BoundVariableDeclaration(upperBoundSymbol, node.UpperBound);
             BoundBinaryExpression? condition = new BoundBinaryExpression(
-                variableExpression, 
+                variableExpression,
                 BoundBinaryOperator.Bind(SyntaxKind.LessOrEqualsToken, TypeSymbol.Int, TypeSymbol.Int),
                 new BoundVariableExpression(upperBoundSymbol)
             );
@@ -267,5 +289,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Lowering{
 
             return base.RewriteConditionalGotoStatement(node);
         }
+    
+        #endregion
+    
     }
 }

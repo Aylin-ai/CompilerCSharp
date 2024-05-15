@@ -11,16 +11,26 @@ namespace InterpreterCSharp
 {
     public abstract class Repl
     {
+
+        #region Поля класса
+
         private readonly List<MetaCommand> _metaCommands = new List<MetaCommand>();
         private readonly List<string> _submissionHistory = new List<string>();
         private int _submissionHistoryIndex;
-
         private bool _done;
+
+        #endregion
+
+        #region Конструкторы класса
 
         protected Repl()
         {
             InitializeMetaCommands();
         }
+
+        #endregion
+
+        #region Методы класса
 
         private void InitializeMetaCommands()
         {
@@ -55,114 +65,6 @@ namespace InterpreterCSharp
 
                 _submissionHistory.Add(text);
                 _submissionHistoryIndex = 0;
-            }
-        }
-
-        private delegate object? LineRenderHandler(IReadOnlyList<string> lines, int lineIndex, object? state);
-
-        private sealed class SubmissionView
-        {
-            private readonly LineRenderHandler _lineRenderer;
-            private readonly ObservableCollection<string> _submissionDocument;
-            private int _cursorTop;
-            private int _renderedLineCount;
-            private int _currentLine;
-            private int _currentCharacter;
-
-            public SubmissionView(LineRenderHandler lineRenderer, ObservableCollection<string> submissionDocument)
-            {
-                _lineRenderer = lineRenderer;
-                _submissionDocument = submissionDocument;
-                _submissionDocument.CollectionChanged += SubmissionDocumentChanged;
-                _cursorTop = Console.CursorTop;
-                Render();
-            }
-
-            private void SubmissionDocumentChanged(object sender, NotifyCollectionChangedEventArgs e)
-            {
-                Render();
-            }
-
-            private void Render()
-            {
-                Console.CursorVisible = false;
-
-                var lineCount = 0;
-                var state = (object?)null;
-
-                foreach (var line in _submissionDocument)
-                {
-                    if (_cursorTop + lineCount >= Console.WindowHeight)
-                    {
-                        Console.SetCursorPosition(0, Console.WindowHeight - 1);
-                        Console.WriteLine();
-                        if (_cursorTop > 0)
-                            _cursorTop--;
-                    }
-
-                    Console.SetCursorPosition(0, _cursorTop + lineCount);
-                    Console.ForegroundColor = ConsoleColor.Green;
-
-                    if (lineCount == 0)
-                        Console.Write("» ");
-                    else
-                        Console.Write("· ");
-
-                    Console.ResetColor();
-                    state = _lineRenderer(_submissionDocument, lineCount, state);
-                    Console.Write(new string(' ', Console.WindowWidth - line.Length - 2));
-                    lineCount++;
-                }
-
-                var numberOfBlankLines = _renderedLineCount - lineCount;
-                if (numberOfBlankLines > 0)
-                {
-                    var blankLine = new string(' ', Console.WindowWidth);
-                    for (var i = 0; i < numberOfBlankLines; i++)
-                    {
-                        Console.SetCursorPosition(0, _cursorTop + lineCount + i);
-                        Console.WriteLine(blankLine);
-                    }
-                }
-
-                _renderedLineCount = lineCount;
-
-                Console.CursorVisible = true;
-                UpdateCursorPosition();
-            }
-
-            private void UpdateCursorPosition()
-            {
-                Console.CursorTop = _cursorTop + _currentLine;
-                Console.CursorLeft = 2 + _currentCharacter;
-            }
-
-            public int CurrentLine
-            {
-                get => _currentLine;
-                set
-                {
-                    if (_currentLine != value)
-                    {
-                        _currentLine = value;
-                        _currentCharacter = Math.Min(_submissionDocument[_currentLine].Length, _currentCharacter);
-
-                        UpdateCursorPosition();
-                    }
-                }
-            }
-
-            public int CurrentCharacter
-            {
-                get => _currentCharacter;
-                set
-                {
-                    if (_currentCharacter != value)
-                    {
-                        _currentCharacter = value;
-                        UpdateCursorPosition();
-                    }
-                }
             }
         }
 
@@ -507,37 +409,6 @@ namespace InterpreterCSharp
             command.Method.Invoke(instance, args.ToArray());
         }
 
-        protected abstract bool IsCompleteSubmission(string text);
-
-        protected abstract void EvaluateSubmission(string text);
-
-        [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-        protected sealed class MetaCommandAttribute : Attribute
-        {
-            public MetaCommandAttribute(string name, string description)
-            {
-                Name = name;
-                Description = description;
-            }
-
-            public string Name { get; }
-            public string Description { get; }
-        }
-
-        private sealed class MetaCommand
-        {
-            public MetaCommand(string name, string description, MethodInfo method)
-            {
-                Name = name;
-                Description = description;
-                Method = method;
-            }
-
-            public string Name { get; }
-            public string Description { get; }
-            public MethodInfo Method { get; }
-        }
-
         [MetaCommand("help", "Shows help")]
         protected void EvaluateHelp()
         {
@@ -577,6 +448,176 @@ namespace InterpreterCSharp
                 Console.Out.WriteLine();
             }
         }
+
+        protected abstract bool IsCompleteSubmission(string text);
+
+        protected abstract void EvaluateSubmission(string text);
+
+        #endregion
+
+        #region Внутренние классы
+
+        private delegate object? LineRenderHandler(IReadOnlyList<string> lines, int lineIndex, object? state);
+
+        #region Класс SubmissionView
+
+        private sealed class SubmissionView
+        {
+            #region Поля класса
+            private readonly LineRenderHandler _lineRenderer;
+            private readonly ObservableCollection<string> _submissionDocument;
+            private int _cursorTop;
+            private int _renderedLineCount;
+            private int _currentLine;
+            private int _currentCharacter;
+
+            public int CurrentLine
+            {
+                get => _currentLine;
+                set
+                {
+                    if (_currentLine != value)
+                    {
+                        _currentLine = value;
+                        _currentCharacter = Math.Min(_submissionDocument[_currentLine].Length, _currentCharacter);
+
+                        UpdateCursorPosition();
+                    }
+                }
+            }
+
+            public int CurrentCharacter
+            {
+                get => _currentCharacter;
+                set
+                {
+                    if (_currentCharacter != value)
+                    {
+                        _currentCharacter = value;
+                        UpdateCursorPosition();
+                    }
+                }
+            }
+
+            #endregion
+
+            #region Конструкторы
+
+            public SubmissionView(LineRenderHandler lineRenderer, ObservableCollection<string> submissionDocument)
+            {
+                _lineRenderer = lineRenderer;
+                _submissionDocument = submissionDocument;
+                _submissionDocument.CollectionChanged += SubmissionDocumentChanged;
+                _cursorTop = Console.CursorTop;
+                Render();
+            }
+
+            #endregion
+
+            #region Методы класса
+
+            private void SubmissionDocumentChanged(object sender, NotifyCollectionChangedEventArgs e)
+            {
+                Render();
+            }
+
+            private void Render()
+            {
+                Console.CursorVisible = false;
+
+                var lineCount = 0;
+                var state = (object?)null;
+
+                foreach (var line in _submissionDocument)
+                {
+                    if (_cursorTop + lineCount >= Console.WindowHeight)
+                    {
+                        Console.SetCursorPosition(0, Console.WindowHeight - 1);
+                        Console.WriteLine();
+                        if (_cursorTop > 0)
+                            _cursorTop--;
+                    }
+
+                    Console.SetCursorPosition(0, _cursorTop + lineCount);
+                    Console.ForegroundColor = ConsoleColor.Green;
+
+                    if (lineCount == 0)
+                        Console.Write("» ");
+                    else
+                        Console.Write("· ");
+
+                    Console.ResetColor();
+                    state = _lineRenderer(_submissionDocument, lineCount, state);
+                    Console.Write(new string(' ', Console.WindowWidth - line.Length - 2));
+                    lineCount++;
+                }
+
+                var numberOfBlankLines = _renderedLineCount - lineCount;
+                if (numberOfBlankLines > 0)
+                {
+                    var blankLine = new string(' ', Console.WindowWidth);
+                    for (var i = 0; i < numberOfBlankLines; i++)
+                    {
+                        Console.SetCursorPosition(0, _cursorTop + lineCount + i);
+                        Console.WriteLine(blankLine);
+                    }
+                }
+
+                _renderedLineCount = lineCount;
+
+                Console.CursorVisible = true;
+                UpdateCursorPosition();
+            }
+
+            private void UpdateCursorPosition()
+            {
+                Console.CursorTop = _cursorTop + _currentLine;
+                Console.CursorLeft = 2 + _currentCharacter;
+            }
+
+            #endregion
+
+        }
+
+        #endregion
+
+        #region Класс MetaCommandAttribute
+
+        [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+        protected sealed class MetaCommandAttribute : Attribute
+        {
+            public MetaCommandAttribute(string name, string description)
+            {
+                Name = name;
+                Description = description;
+            }
+
+            public string Name { get; }
+            public string Description { get; }
+        }
+
+        #endregion
+
+        #region Класс MetaCommand
+
+        private sealed class MetaCommand
+        {
+            public MetaCommand(string name, string description, MethodInfo method)
+            {
+                Name = name;
+                Description = description;
+                Method = method;
+            }
+
+            public string Name { get; }
+            public string Description { get; }
+            public MethodInfo Method { get; }
+        }
+
+        #endregion
+
+        #endregion
+
     }
 }
 

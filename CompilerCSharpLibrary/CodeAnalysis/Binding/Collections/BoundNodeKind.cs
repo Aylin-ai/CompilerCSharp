@@ -3,8 +3,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
     /*
     Виды выражений (унарное, бинарное или обычная литера)
     */
-    public enum BoundNodeKind{
-        //Statements
+    public enum BoundNodeKind
+    {
+        
+        #region Statements
+
         BlockStatement,
         NopStatement,
         ExpressionStatement,
@@ -18,7 +21,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
         ConditionalGotoStatement,
         ReturnStatement,
 
-        //Expressions
+        #endregion
+
+        #region Expression
+
         UnaryExpression,
         LiteralExpression,
         BinaryExpression,
@@ -27,5 +33,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
         ErrorExpression,
         CallExpression,
         ConversionExpression,
+
+        #endregion
+
     }
 }

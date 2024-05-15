@@ -4,15 +4,18 @@ using CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 {
-    public static class SyntaxFacts{
-        
+    public static class SyntaxFacts
+    {
+
         //Получает приоритет бинарного оператора
-        public static int GetBinaryOperatorPrecedence(this SyntaxKind kind){
-            switch (kind){
+        public static int GetBinaryOperatorPrecedence(this SyntaxKind kind)
+        {
+            switch (kind)
+            {
                 case SyntaxKind.SlashToken:
                 case SyntaxKind.StarToken:
                     return 5;
-                    
+
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
                     return 4;
@@ -38,10 +41,12 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return 0;
             }
         }
-        
+
         //Получает приоритет унарного оператора
-        public static int GetUnaryOperatorPrecedence(this SyntaxKind kind){
-            switch (kind){
+        public static int GetUnaryOperatorPrecedence(this SyntaxKind kind)
+        {
+            switch (kind)
+            {
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
                 case SyntaxKind.BangToken:
@@ -52,7 +57,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return 0;
             }
         }
-        
+
         public static bool IsComment(this SyntaxKind kind)
         {
             return kind == SyntaxKind.SingleLineCommentTrivia ||
@@ -62,7 +67,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
         //Получает тип ключевого слова
         public static SyntaxKind GetKeywordKind(string text)
         {
-            switch (text){
+            switch (text)
+            {
                 case "true":
                     return SyntaxKind.TrueKeyword;
                 case "false":
@@ -91,30 +97,36 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return SyntaxKind.ContinueKeyword;
                 case "return":
                     return SyntaxKind.ReturnKeyword;
-                
+
                 default:
                     return SyntaxKind.IdentifierToken;
             }
         }
 
-        public static IEnumerable<SyntaxKind> GetBinaryOperators(){
-            SyntaxKind[]? kinds = (SyntaxKind[]) Enum.GetValues(typeof(SyntaxKind));
-            foreach (SyntaxKind kind in kinds){
+        public static IEnumerable<SyntaxKind> GetBinaryOperators()
+        {
+            SyntaxKind[]? kinds = (SyntaxKind[])Enum.GetValues(typeof(SyntaxKind));
+            foreach (SyntaxKind kind in kinds)
+            {
                 if (GetBinaryOperatorPrecedence(kind) > 0)
                     yield return kind;
             }
         }
-        
-        public static IEnumerable<SyntaxKind> GetUnaryOperators(){
-            SyntaxKind[]? kinds = (SyntaxKind[]) Enum.GetValues(typeof(SyntaxKind));
-            foreach (SyntaxKind kind in kinds){
+
+        public static IEnumerable<SyntaxKind> GetUnaryOperators()
+        {
+            SyntaxKind[]? kinds = (SyntaxKind[])Enum.GetValues(typeof(SyntaxKind));
+            foreach (SyntaxKind kind in kinds)
+            {
                 if (GetUnaryOperatorPrecedence(kind) > 0)
                     yield return kind;
             }
         }
 
-        public static string GetText(SyntaxKind kind){
-            switch (kind){
+        public static string GetText(SyntaxKind kind)
+        {
+            switch (kind)
+            {
                 case SyntaxKind.PlusToken:
                     return "+";
                 case SyntaxKind.MinusToken:
@@ -173,7 +185,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return "~";
                 case SyntaxKind.HatToken:
                     return "^";
-                    
+
                 case SyntaxKind.FalseKeyword:
                     return "false";
                 case SyntaxKind.TrueKeyword:
@@ -206,7 +218,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
                     return null;
             }
         }
-    
+
         public static bool IsTrivia(this SyntaxKind kind)
         {
             switch (kind)
@@ -232,6 +244,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             return !kind.IsTrivia() &&
                    (kind.IsKeyword() || kind.ToString().EndsWith("Token"));
         }
-        
+
     }
 }

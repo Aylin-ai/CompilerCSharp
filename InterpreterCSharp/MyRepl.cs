@@ -13,6 +13,9 @@ namespace InterpreterCSharp
 {
     public sealed class MyRepl : Repl
     {
+
+        #region Поля класса
+
         private bool _loadingSubmission;
         private static readonly Compilation emptyCompilation = Compilation.CreateScript(null);
         private Compilation? _previous;
@@ -20,10 +23,18 @@ namespace InterpreterCSharp
         private bool _showProgram;
         private readonly Dictionary<VariableSymbol, object> _variables = new Dictionary<VariableSymbol, object>();
 
+        #endregion
+
+        #region Конструкторы класса
+
         public MyRepl()
         {
             LoadSubmissions();
         }
+
+        #endregion
+
+        #region Методы класса
 
         protected override object? RenderLine(IReadOnlyList<string> lines, int lineIndex, object? state)
         {
@@ -257,6 +268,9 @@ namespace InterpreterCSharp
             var fileName = Path.Combine(submissionsDirectory, name);
             File.WriteAllText(fileName, text);
         }
+    
+        #endregion
+
     }
 }
 

@@ -4,7 +4,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
     public enum SyntaxKind{
         BadToken,
 
-        //Trivia
+        #region Trivia
+
         WhiteSpaceTrivia,
         SingleLineCommentTrivia,
         LineBreakTrivia,
@@ -12,7 +13,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         SkippedTextTrivia,
         SharpToken,
 
-        //Tokens
+        #endregion
+
+        #region Tokens
+
         NumberToken,
         PlusToken,
         MinusToken,
@@ -42,8 +46,18 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         CommaToken,
         ColonToken,
         SemiColonToken,
+        PipeEqualsToken,
+        AmpersandEqualsToken,
+        HatEqualsToken,
+        SlashEqualsToken,
+        StarEqualsToken,
+        MinusEqualsToken,
+        PlusEqualsToken,
+
+        #endregion
        
-        //Expressions
+        #region Expressions
+
         LiteralExpression,
         BinaryExpression,
         ParethesizedExpression,
@@ -52,14 +66,20 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         AssignmentExpression,
         CallExpression,
 
-        //Nodes
+        #endregion
+
+        #region Nodes
+
         CompilationUnit,
         FunctionDeclaration,
         Parameter,
         ElseClause,
         TypeClause,
 
-        //Statements
+        #endregion
+
+        #region Statements
+
         BlockStatement,
         ExpressionStatement,
         VariableDeclaration,
@@ -71,8 +91,11 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         BreakStatement,
         ContinueStatement,
         ReturnStatement,
+
+        #endregion
         
-        //Keywords
+        #region Keywords
+
         TrueKeyword,
         FalseKeyword,
         VarKeyword,
@@ -87,12 +110,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax.Collections
         BreakKeyword,
         ContinueKeyword,
         ReturnKeyword,
-        PipeEqualsToken,
-        AmpersandEqualsToken,
-        HatEqualsToken,
-        SlashEqualsToken,
-        StarEqualsToken,
-        MinusEqualsToken,
-        PlusEqualsToken,
+
+        #endregion
+
     }
 }

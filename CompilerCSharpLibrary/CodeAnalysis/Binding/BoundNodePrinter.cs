@@ -92,7 +92,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
         }
 
         //Indent - отступ от начала строки. У Label его нет, так как делаем Indent--
-
         private static void WriteNestedStatement(this IndentedTextWriter writer, BoundStatement node)
         {
             bool needsIndentation = !(node is BoundBlockStatement);

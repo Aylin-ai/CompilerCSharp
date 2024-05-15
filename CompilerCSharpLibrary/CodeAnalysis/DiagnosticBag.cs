@@ -18,7 +18,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis
     */
     public sealed class DiagnosticBag : IEnumerable<Diagnostic>
     {
+
+        #region Поля класса 
+        
         private readonly List<Diagnostic> _diagnostics = new List<Diagnostic>();
+
+        #endregion
+
+        #region Методы класса
 
         public IEnumerator<Diagnostic> GetEnumerator() => _diagnostics.GetEnumerator();
 
@@ -291,5 +298,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                     throw new Exception($"Unexpected syntax {node.Kind}");
             }
         }
+    
+        #endregion
+    
     }
 }

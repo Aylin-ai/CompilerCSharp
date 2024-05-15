@@ -10,15 +10,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
     тип операнда, к которому приставлен оператор и результирующий тип,
     который должен получиться в результате выполнения оператора
     */
-    public sealed class BoundUnaryOperator{
-        private BoundUnaryOperator(SyntaxKind syntaxKind, BoundUnaryOperatorKind kind, TypeSymbol operandType)
-        : this(syntaxKind, kind, operandType, operandType) { }
-        private BoundUnaryOperator(SyntaxKind syntaxKind, BoundUnaryOperatorKind kind, TypeSymbol operandType, TypeSymbol type){
-            SyntaxKind = syntaxKind;
-            Kind = kind;
-            OperandType = operandType;
-            Type = type;
-        }
+    public sealed class BoundUnaryOperator
+    {
+
+        #region Поля класса
 
         public SyntaxKind SyntaxKind { get; }
         public BoundUnaryOperatorKind Kind { get; }
@@ -26,22 +21,46 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundOperators
         public TypeSymbol Type { get; }
 
         //Список доступных операторов
-        private static BoundUnaryOperator[] _operators = {
+        private static BoundUnaryOperator[] _operators = 
+        {
             new BoundUnaryOperator(SyntaxKind.BangToken, BoundUnaryOperatorKind.LogicalNegation, TypeSymbol.Bool),
-            
+
             new BoundUnaryOperator(SyntaxKind.PlusToken, BoundUnaryOperatorKind.Identity, TypeSymbol.Int),
             new BoundUnaryOperator(SyntaxKind.MinusToken, BoundUnaryOperatorKind.Negation, TypeSymbol.Int),
             new BoundUnaryOperator(SyntaxKind.TildeToken, BoundUnaryOperatorKind.OnesComplement, TypeSymbol.Int)
         };
 
+        #endregion
+
+        #region Конструкторы класса
+
+        private BoundUnaryOperator(SyntaxKind syntaxKind, BoundUnaryOperatorKind kind, TypeSymbol operandType)
+        : this(syntaxKind, kind, operandType, operandType) { }
+        private BoundUnaryOperator(SyntaxKind syntaxKind, BoundUnaryOperatorKind kind, TypeSymbol operandType, TypeSymbol type)
+        {
+            SyntaxKind = syntaxKind;
+            Kind = kind;
+            OperandType = operandType;
+            Type = type;
+        }
+
+        #endregion
+
+        #region Методы класса
+        
         //Возвращает нужный оператор из списка на основании переданных параметров
-        public static BoundUnaryOperator Bind(SyntaxKind syntaxKind, TypeSymbol operandType){
-            foreach (BoundUnaryOperator? op in _operators){
+        public static BoundUnaryOperator Bind(SyntaxKind syntaxKind, TypeSymbol operandType)
+        {
+            foreach (BoundUnaryOperator? op in _operators)
+            {
                 if (op.SyntaxKind == syntaxKind && op.OperandType == operandType)
                     return op;
             }
 
             return null;
         }
+
+        #endregion
+
     }
 }

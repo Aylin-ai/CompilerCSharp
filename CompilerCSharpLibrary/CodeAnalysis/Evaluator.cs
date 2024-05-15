@@ -16,6 +16,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis
     */
     public class Evaluator
     {
+
+        #region Поля класса
+
         private readonly BoundProgram _program;
         private readonly Dictionary<VariableSymbol, object> _globals;
         private readonly Dictionary<FunctionSymbol, BoundBlockStatement> _functions = new Dictionary<FunctionSymbol, BoundBlockStatement>();
@@ -23,6 +26,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis
         private Random? _random;
 
         private object? _lastValue;
+
+        #endregion
+
+        #region Конструкторы класса
 
         public Evaluator(BoundProgram program, Dictionary<VariableSymbol, object> variables)
         {
@@ -43,6 +50,10 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 current = current.Previous;
             }
         }
+
+        #endregion
+
+        #region Методы класса
 
         public object? Evaluate()
         {
@@ -323,5 +334,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis
                 locals[variable] = value;
             }
         }
+    
+        #endregion
+
     }
 }

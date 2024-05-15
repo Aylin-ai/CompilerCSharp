@@ -12,18 +12,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     */
     public sealed class SyntaxToken : SyntaxNode
     {
-        internal SyntaxToken(SyntaxTree syntaxTree, SyntaxKind kind, int position, string? text, object? value, 
-        List<SyntaxTrivia> leadingTrivia, List<SyntaxTrivia> trailingTrivia)
-            : base(syntaxTree)
-        {
-            Kind = kind;
-            Position = position;
-            Text = text ?? string.Empty;
-            IsMissing = text == null;
-            Value = value;
-            LeadingTrivia = leadingTrivia;
-            TrailingTrivia = trailingTrivia;
-        }
+
+        #region Поля класса
 
         public override SyntaxKind Kind { get; }
         public int Position { get; }
@@ -44,17 +34,41 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             }
         }
 
+        /// <summary>
+        /// A token is missing if it was inserted by the parser and doesn't appear in source.
+        /// </summary>
+        public bool IsMissing { get; }
+
         public List<SyntaxTrivia> LeadingTrivia { get;}
         public List<SyntaxTrivia> TrailingTrivia { get; }
+
+        #endregion
+
+        #region Конструкторы класса
+
+        internal SyntaxToken(SyntaxTree syntaxTree, SyntaxKind kind, int position, string? text, object? value, 
+        List<SyntaxTrivia> leadingTrivia, List<SyntaxTrivia> trailingTrivia)
+            : base(syntaxTree)
+        {
+            Kind = kind;
+            Position = position;
+            Text = text ?? string.Empty;
+            IsMissing = text == null;
+            Value = value;
+            LeadingTrivia = leadingTrivia;
+            TrailingTrivia = trailingTrivia;
+        }
+
+        #endregion
+
+        #region Методы класса 
 
         public override IEnumerable<SyntaxNode> GetChildren()
         {
             return Array.Empty<SyntaxNode>();
         }
 
-        /// <summary>
-        /// A token is missing if it was inserted by the parser and doesn't appear in source.
-        /// </summary>
-        public bool IsMissing { get; }
+        #endregion
+        
     }
 }

@@ -19,6 +19,18 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 {
     public sealed class ControlFlowGraph
     {
+
+        #region Поля класса
+
+        public BasicBlock Start { get; }
+        public BasicBlock End { get; }
+        public List<BasicBlock> Blocks { get; }
+        public List<BasicBlockBranch> Branches { get; }
+
+        #endregion
+
+        #region Конструкторы класса
+
         private ControlFlowGraph(BasicBlock start, BasicBlock end, List<BasicBlock> blocks, List<BasicBlockBranch> branches)
         {
             Start = start;
@@ -27,13 +39,89 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
             Branches = branches;
         }
 
-        public BasicBlock Start { get; }
-        public BasicBlock End { get; }
-        public List<BasicBlock> Blocks { get; }
-        public List<BasicBlockBranch> Branches { get; }
+        #endregion
+
+        #region Методы класса
+
+        public void WriteTo(TextWriter writer)
+        {
+            string Quote(string text)
+            {
+                return "\"" + text.TrimEnd().Replace("\\", "\\\\").Replace("\"", "\\\"").Replace(Environment.NewLine, "\\l") + "\"";
+            }
+
+            writer.WriteLine("digraph G {");
+
+            Dictionary<BasicBlock, string>? blockIds = new Dictionary<BasicBlock, string>();
+
+            for (int i = 0; i < Blocks.Count; i++)
+            {
+                string? id = $"N{i}";
+                blockIds.Add(Blocks[i], id);
+            }
+
+            foreach (BasicBlock? block in Blocks)
+            {
+                string? id = blockIds[block];
+                string? label = Quote(block.ToString());
+                writer.WriteLine($"    {id} [label = {label}, shape = box]");
+            }
+
+            foreach (BasicBlockBranch? branch in Branches)
+            {
+                string? fromId = blockIds[branch.From];
+                string? toId = blockIds[branch.To];
+                string? label = Quote(branch.ToString());
+                writer.WriteLine($"    {fromId} -> {toId} [label = {label}]");
+            }
+
+            writer.WriteLine("}");
+        }
+
+        public static ControlFlowGraph Create(BoundBlockStatement body)
+        {
+            BasicBlockBuilder? basicBlockBuilder = new BasicBlockBuilder();
+            List<BasicBlock>? blocks = basicBlockBuilder.Build(body);
+
+            GraphBuilder? graphBuilder = new GraphBuilder();
+            return graphBuilder.Build(blocks);
+        }
+
+        public static bool AllPathsReturn(BoundBlockStatement body)
+        {
+            ControlFlowGraph? graph = Create(body);
+
+            foreach (BasicBlockBranch? branch in graph.End.Incoming)
+            {
+                BoundStatement? lastStatement = branch.From.Statements.LastOrDefault();
+                if (lastStatement == null || lastStatement.Kind != BoundNodeKind.ReturnStatement)
+                    return false;
+            }
+
+            return true;
+        }
+
+        #endregion
+
+        #region Внутренние классы
+
+        #region Класс BasicBlock
 
         public sealed class BasicBlock
         {
+
+            #region Поля класса
+
+            public bool IsStart { get; }
+            public bool IsEnd { get; }
+            public List<BoundStatement> Statements { get; } = new List<BoundStatement>();
+            public List<BasicBlockBranch> Incoming { get; } = new List<BasicBlockBranch>();
+            public List<BasicBlockBranch> Outgoing { get; } = new List<BasicBlockBranch>();
+
+            #endregion
+
+            #region Конструкторы класса
+
             public BasicBlock()
             {
             }
@@ -44,11 +132,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 IsEnd = !isStart;
             }
 
-            public bool IsStart { get; }
-            public bool IsEnd { get; }
-            public List<BoundStatement> Statements { get; } = new List<BoundStatement>();
-            public List<BasicBlockBranch> Incoming { get; } = new List<BasicBlockBranch>();
-            public List<BasicBlockBranch> Outgoing { get; } = new List<BasicBlockBranch>();
+            #endregion
+
+            #region Методы класса
 
             public override string ToString()
             {
@@ -67,10 +153,28 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     return writer.ToString();
                 }
             }
+
+            #endregion
+
         }
+
+        #endregion
+
+        #region Класс BasicBlockBranch
 
         public sealed class BasicBlockBranch
         {
+
+            #region Поля класса
+
+            public BasicBlock From { get; }
+            public BasicBlock To { get; }
+            public BoundExpression Condition { get; }
+
+            #endregion
+
+            #region Конструкторы класса
+
             public BasicBlockBranch(BasicBlock from, BasicBlock to, BoundExpression condition)
             {
                 From = from;
@@ -78,9 +182,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 Condition = condition;
             }
 
-            public BasicBlock From { get; }
-            public BasicBlock To { get; }
-            public BoundExpression Condition { get; }
+            #endregion
+
+            #region Методы класса
 
             public override string ToString()
             {
@@ -89,12 +193,26 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
 
                 return Condition.ToString();
             }
+
+            #endregion
+
         }
+
+        #endregion
+
+        #region Класс BasicBlockBuilder
 
         public sealed class BasicBlockBuilder
         {
+
+            #region Поля класса
+
             private List<BoundStatement> _statements = new List<BoundStatement>();
             private List<BasicBlock> _blocks = new List<BasicBlock>();
+
+            #endregion
+
+            #region Методы класса
 
             public List<BasicBlock> Build(BoundBlockStatement block)
             {
@@ -142,15 +260,29 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     _statements.Clear();
                 }
             }
+        
+            #endregion
+
         }
+
+        #endregion
+
+        #region Класс GraphBuilder
 
         public sealed class GraphBuilder
         {
+
+            #region Поля класса
+
             private Dictionary<BoundStatement, BasicBlock> _blockFromStatement = new Dictionary<BoundStatement, BasicBlock>();
             private Dictionary<BoundLabel, BasicBlock> _blockFromLabel = new Dictionary<BoundLabel, BasicBlock>();
             private List<BasicBlockBranch> _branches = new List<BasicBlockBranch>();
             private BasicBlock _start = new BasicBlock(isStart: true);
             private BasicBlock _end = new BasicBlock(isStart: false);
+
+            #endregion
+
+            #region Методы класса
 
             public ControlFlowGraph Build(List<BasicBlock> blocks)
             {
@@ -210,7 +342,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                     }
                 }
 
-                //Удаляет недостижимые блоки
+            //Удаляет недостижимые блоки
             ScanAgain:
                 foreach (BasicBlock? block in blocks)
                 {
@@ -274,64 +406,14 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding
                 BoundUnaryOperator? op = BoundUnaryOperator.Bind(SyntaxKind.BangToken, TypeSymbol.Bool);
                 return new BoundUnaryExpression(op, condition);
             }
+        
+            #endregion
+        
         }
 
-        public void WriteTo(TextWriter writer)
-        {
-            string Quote(string text)
-            {
-                return "\"" + text.TrimEnd().Replace("\\", "\\\\").Replace("\"", "\\\"").Replace(Environment.NewLine, "\\l") + "\"";
-            }
+        #endregion
 
-            writer.WriteLine("digraph G {");
+        #endregion
 
-            Dictionary<BasicBlock, string>? blockIds = new Dictionary<BasicBlock, string>();
-
-            for (int i = 0; i < Blocks.Count; i++)
-            {
-                string? id = $"N{i}";
-                blockIds.Add(Blocks[i], id);
-            }
-
-            foreach (BasicBlock? block in Blocks)
-            {
-                string? id = blockIds[block];
-                string? label = Quote(block.ToString());
-                writer.WriteLine($"    {id} [label = {label}, shape = box]");
-            }
-
-            foreach (BasicBlockBranch? branch in Branches)
-            {
-                string? fromId = blockIds[branch.From];
-                string? toId = blockIds[branch.To];
-                string? label = Quote(branch.ToString());
-                writer.WriteLine($"    {fromId} -> {toId} [label = {label}]");
-            }
-
-            writer.WriteLine("}");
-        }
-
-        public static ControlFlowGraph Create(BoundBlockStatement body)
-        {
-            BasicBlockBuilder? basicBlockBuilder = new BasicBlockBuilder();
-            List<BasicBlock>? blocks = basicBlockBuilder.Build(body);
-
-            GraphBuilder? graphBuilder = new GraphBuilder();
-            return graphBuilder.Build(blocks);
-        }
-
-        public static bool AllPathsReturn(BoundBlockStatement body)
-        {
-            ControlFlowGraph? graph = Create(body);
-
-            foreach (BasicBlockBranch? branch in graph.End.Incoming)
-            {
-                BoundStatement? lastStatement = branch.From.Statements.LastOrDefault();
-                if (lastStatement == null || lastStatement.Kind != BoundNodeKind.ReturnStatement)
-                    return false;
-            }
-
-            return true;
-        }
     }
 }

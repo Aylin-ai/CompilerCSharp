@@ -13,15 +13,24 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
     */
     public class Lexer
     {
+
+        #region Поля класса
+
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
         private readonly SyntaxTree _syntaxTree;
         private readonly SourceText _text;
         private int _position;
-
         private int _start;
         private SyntaxKind _kind;
         private object? _value;
         private List<SyntaxTrivia> _triviaList = new List<SyntaxTrivia>();
+        public DiagnosticBag Diagnostics => _diagnostics;
+        private char Current => Peek(0);
+        private char Lookahead => Peek(1);
+
+        #endregion
+
+        #region Конструкторы класса
 
         public Lexer(SyntaxTree syntaxTree)
         {
@@ -29,11 +38,9 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             _text = syntaxTree.Text;
         }
 
-        public DiagnosticBag Diagnostics => _diagnostics;
+        #endregion
 
-        private char Current => Peek(0);
-
-        private char Lookahead => Peek(1);
+        #region Методы класса
 
         private char Peek(int offset)
         {
@@ -167,7 +174,6 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             _kind = SyntaxKind.WhiteSpaceTrivia;
         }
 
-
         private void ReadSingleLineComment()
         {
             _position += 2;
@@ -190,7 +196,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
 
             _kind = SyntaxKind.SingleLineCommentTrivia;
         }
-
+        
         private void ReadMultiLineComment()
         {
             _position += 2;
@@ -504,5 +510,8 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Syntax
             var text = _text.ToString(_start, length);
             _kind = SyntaxFacts.GetKeywordKind(text);
         }
+    
+        #endregion
+
     }
 }
