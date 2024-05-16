@@ -463,7 +463,9 @@ namespace InterpreterCSharp
 
         private sealed class SubmissionView
         {
+            
             #region Поля класса
+            
             private readonly LineRenderHandler _lineRenderer;
             private readonly ObservableCollection<string> _submissionDocument;
             private int _cursorTop;

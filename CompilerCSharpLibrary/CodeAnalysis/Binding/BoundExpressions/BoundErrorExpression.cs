@@ -4,7 +4,8 @@ using CompilerCSharpLibrary.CodeAnalysis.Symbols;
 
 namespace CompilerCSharpLibrary.CodeAnalysis.Binding.BoundExpressions
 {
-    public sealed class BoundErrorExpression : BoundExpression{
+    public sealed class BoundErrorExpression : BoundExpression
+    {
         public override TypeSymbol Type => TypeSymbol.Error;
         public override BoundNodeKind Kind => BoundNodeKind.ErrorExpression;
     }

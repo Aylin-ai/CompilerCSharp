@@ -30,6 +30,7 @@ namespace CompilerCSharpLibrary.CodeAnalysis.Binding.Collections
         ErrorExpression,
         CallExpression,
         ConversionExpression,
+        CompoundAssignmentExpression,
 
         #endregion
 
