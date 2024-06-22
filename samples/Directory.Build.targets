@@ -17,7 +17,7 @@
 
       <MoscowScriptExt Condition="$([MSBuild]::IsOSUnixLike())">.sh</MoscowScriptExt>
       <MoscowScriptExt Condition="$([MSBuild]::IsOSPlatform('Windows'))">.cmd</MoscowScriptExt>
-      <MoscowCompilerScript Condition="'$(MoscowCompilerScript)' == ''">mc$(MinskScriptExt)</MoscowCompilerScript>
+      <MoscowCompilerScript Condition="'$(MoscowCompilerScript)' == ''">mc$(MoscowScriptExt)</MoscowCompilerScript>
       <MoscowCompileCommand>"$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\', '$(MoscowCompilerScript)'))" $(MoscowCompilerArgs)</MoscowCompileCommand>
     </PropertyGroup>
 
